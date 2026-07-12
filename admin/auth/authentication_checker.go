@@ -14,7 +14,7 @@ import (
 const AuthenticationCookieName = "JinyaApiKey"
 
 type ApiKeyInvalidError struct {
-	Message string
+	Message string `json:"message"`
 }
 
 func (e *ApiKeyInvalidError) Error() string {
@@ -22,8 +22,8 @@ func (e *ApiKeyInvalidError) Error() string {
 }
 
 type MissingPermissionsError struct {
-	Message string
-	Role    string
+	Message string `json:"message"`
+	Role    string `json:"role"`
 }
 
 func (e *MissingPermissionsError) Error() string {

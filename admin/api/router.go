@@ -4,6 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"jinya.de/goji/api/middleware"
+	"jinya.de/goji/auth"
+	"jinya.de/goji/localization"
 )
 
 func SetupAdminApiRouter(router *mux.Router) {
@@ -11,194 +14,585 @@ func SetupAdminApiRouter(router *mux.Router) {
 
 	// Blog Category
 	blogCategoryRouter := apiRouter.PathPrefix("/blog-category").Subrouter()
-	blogCategoryRouter.HandleFunc("", GetAllBlogCategories).Methods(http.MethodGet)
-	blogCategoryRouter.HandleFunc("", CreateBlogCategory).Methods(http.MethodPost)
-	blogCategoryRouter.HandleFunc("/{id}", GetBlogCategoryById).Methods(http.MethodGet)
-	blogCategoryRouter.HandleFunc("/{id}", UpdateBlogCategory).Methods(http.MethodPut)
-	blogCategoryRouter.HandleFunc("/{id}", DeleteBlogCategory).Methods(http.MethodDelete)
-	blogCategoryRouter.HandleFunc("/{id}/post", GetPostsByCategory).Methods(http.MethodGet)
+	blogCategoryRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllBlogCategories))).
+		Methods(http.MethodGet)
+	blogCategoryRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateBlogCategory))).
+		Methods(http.MethodPost)
+	blogCategoryRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(GetBlogCategoryById))).
+		Methods(http.MethodGet)
+	blogCategoryRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateBlogCategory))).
+		Methods(http.MethodPut)
+	blogCategoryRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteBlogCategory))).
+		Methods(http.MethodDelete)
+	blogCategoryRouter.
+		Path("/{id}/post").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetPostsByCategory))).
+		Methods(http.MethodGet)
 
 	// Blog Post
 	blogPostRouter := apiRouter.PathPrefix("/blog-post").Subrouter()
-	blogPostRouter.HandleFunc("", GetAllBlogPosts).Methods(http.MethodGet)
-	blogPostRouter.HandleFunc("", CreateBlogPost).Methods(http.MethodPost)
-	blogPostRouter.HandleFunc("/{id}", GetBlogPostById).Methods(http.MethodGet)
-	blogPostRouter.HandleFunc("/{id}", UpdateBlogPost).Methods(http.MethodPut)
-	blogPostRouter.HandleFunc("/{id}", DeleteBlogPost).Methods(http.MethodDelete)
-	blogPostRouter.HandleFunc("/{id}/section", GetBlogPostSections).Methods(http.MethodGet)
-	blogPostRouter.HandleFunc("/{id}/section", UpdateBlogPostSections).Methods(http.MethodPut)
+	blogPostRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllBlogPosts))).
+		Methods(http.MethodGet)
+	blogPostRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateBlogPost))).
+		Methods(http.MethodPost)
+	blogPostRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetBlogPostById))).
+		Methods(http.MethodGet)
+	blogPostRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateBlogPost))).
+		Methods(http.MethodPut)
+	blogPostRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteBlogPost))).
+		Methods(http.MethodDelete)
+	blogPostRouter.
+		Path("/{id}/section").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetBlogPostSections))).
+		Methods(http.MethodGet)
+	blogPostRouter.
+		Path("/{id}/section").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateBlogPostSections))).
+		Methods(http.MethodPut)
 
 	// Artist (User)
 	userRouter := apiRouter.PathPrefix("/user").Subrouter()
-	userRouter.HandleFunc("", GetAllArtists).Methods(http.MethodGet)
-	userRouter.HandleFunc("", CreateArtist).Methods(http.MethodPost)
-	userRouter.HandleFunc("/{id}", GetArtistById).Methods(http.MethodGet)
-	userRouter.HandleFunc("/{id}", UpdateArtist).Methods(http.MethodPut)
-	userRouter.HandleFunc("/{id}", DeleteArtist).Methods(http.MethodDelete)
-	userRouter.HandleFunc("/{id}/activation", ActivateUser).Methods(http.MethodPost)
-	userRouter.HandleFunc("/{id}/totp", UpdateUserTotp).Methods(http.MethodPut)
-	userRouter.HandleFunc("/{id}/profilepicture", UpdateUserProfilePicture).Methods(http.MethodPut)
-	userRouter.HandleFunc("/{id}/password", UpdateUserPassword).Methods(http.MethodPut)
+	userRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllArtists))).
+		Methods(http.MethodGet)
+	userRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(CreateArtist))).
+		Methods(http.MethodPost)
+	userRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetArtistById))).
+		Methods(http.MethodGet)
+	userRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateArtist))).
+		Methods(http.MethodPut)
+	userRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(DeleteArtist))).
+		Methods(http.MethodDelete)
+	userRouter.
+		Path("/{id}/activation").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(ActivateUser))).
+		Methods(http.MethodPost)
+	userRouter.
+		Path("/{id}/totp").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateUserTotp))).
+		Methods(http.MethodPut)
+	userRouter.
+		Path("/{id}/profilepicture").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateUserProfilePicture))).
+		Methods(http.MethodPut)
+	userRouter.
+		Path("/{id}/password").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateUserPassword))).
+		Methods(http.MethodPut)
 
 	// File
 	fileRouter := apiRouter.PathPrefix("/file").Subrouter()
-	fileRouter.HandleFunc("", GetAllFiles).Methods(http.MethodGet)
-	fileRouter.HandleFunc("", CreateFile).Methods(http.MethodPost)
-	fileRouter.HandleFunc("/{id}", GetFileById).Methods(http.MethodGet)
-	fileRouter.HandleFunc("/{id}", UpdateFile).Methods(http.MethodPut)
-	fileRouter.HandleFunc("/{id}", DeleteFile).Methods(http.MethodDelete)
-	fileRouter.HandleFunc("/{id}/content", StartUpload).Methods(http.MethodPut)
-	fileRouter.HandleFunc("/{id}/content/{position}", UploadChunk).Methods(http.MethodPut)
-	fileRouter.HandleFunc("/{id}/content/finish", FinishUpload).Methods(http.MethodPut)
+	fileRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllFiles))).
+		Methods(http.MethodGet)
+	fileRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateFile))).
+		Methods(http.MethodPost)
+	fileRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetFileById))).
+		Methods(http.MethodGet)
+	fileRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateFile))).
+		Methods(http.MethodPut)
+	fileRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteFile))).
+		Methods(http.MethodDelete)
+	fileRouter.
+		Path("/{id}/content").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(StartUpload))).
+		Methods(http.MethodPut)
+	fileRouter.
+		Path("/{id}/content/{position}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UploadChunk))).
+		Methods(http.MethodPut)
+	fileRouter.
+		Path("/{id}/content/finish").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(FinishUpload))).
+		Methods(http.MethodPut)
 
 	// Gallery
 	galleryRouter := apiRouter.PathPrefix("/gallery").Subrouter()
-	galleryRouter.HandleFunc("", GetAllGalleries).Methods(http.MethodGet)
-	galleryRouter.HandleFunc("", CreateGallery).Methods(http.MethodPost)
-	galleryRouter.HandleFunc("/{id}", GetGalleryById).Methods(http.MethodGet)
-	galleryRouter.HandleFunc("/{id}", UpdateGallery).Methods(http.MethodPut)
-	galleryRouter.HandleFunc("/{id}", DeleteGallery).Methods(http.MethodDelete)
-	galleryRouter.HandleFunc("/{id}/file", GetGalleryFiles).Methods(http.MethodGet)
-	galleryRouter.HandleFunc("/{id}/file", AddFileToGallery).Methods(http.MethodPost)
-	galleryRouter.HandleFunc("/{id}/file/{position}", GetGalleryFileByPosition).Methods(http.MethodGet)
-	galleryRouter.HandleFunc("/{id}/file/{position}", UpdateGalleryFile).Methods(http.MethodPut)
-	galleryRouter.HandleFunc("/{id}/file/{position}", DeleteGalleryFile).Methods(http.MethodDelete)
+	galleryRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllGalleries))).
+		Methods(http.MethodGet)
+	galleryRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateGallery))).
+		Methods(http.MethodPost)
+	galleryRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetGalleryById))).
+		Methods(http.MethodGet)
+	galleryRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateGallery))).
+		Methods(http.MethodPut)
+	galleryRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteGallery))).
+		Methods(http.MethodDelete)
+	galleryRouter.
+		Path("/{id}/file").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetGalleryFiles))).
+		Methods(http.MethodGet)
+	galleryRouter.
+		Path("/{id}/file").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(AddFileToGallery))).
+		Methods(http.MethodPost)
+	galleryRouter.
+		Path("/{id}/file/{position}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetGalleryFileByPosition))).
+		Methods(http.MethodGet)
+	galleryRouter.
+		Path("/{id}/file/{position}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateGalleryFile))).
+		Methods(http.MethodPut)
+	galleryRouter.
+		Path("/{id}/file/{position}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteGalleryFile))).
+		Methods(http.MethodDelete)
 
 	// Classic Page
 	classicPageRouter := apiRouter.PathPrefix("/classic-page").Subrouter()
-	classicPageRouter.HandleFunc("", GetAllClassicPages).Methods(http.MethodGet)
-	classicPageRouter.HandleFunc("", CreateClassicPage).Methods(http.MethodPost)
-	classicPageRouter.HandleFunc("/{id}", GetClassicPageById).Methods(http.MethodGet)
-	classicPageRouter.HandleFunc("/{id}", UpdateClassicPage).Methods(http.MethodPut)
-	classicPageRouter.HandleFunc("/{id}", DeleteClassicPage).Methods(http.MethodDelete)
+	classicPageRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllClassicPages))).
+		Methods(http.MethodGet)
+	classicPageRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateClassicPage))).
+		Methods(http.MethodPost)
+	classicPageRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetClassicPageById))).
+		Methods(http.MethodGet)
+	classicPageRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateClassicPage))).
+		Methods(http.MethodPut)
+	classicPageRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteClassicPage))).
+		Methods(http.MethodDelete)
 
 	// Modern Page
 	modernPageRouter := apiRouter.PathPrefix("/modern-page").Subrouter()
-	modernPageRouter.HandleFunc("", GetAllModernPages).Methods(http.MethodGet)
-	modernPageRouter.HandleFunc("", CreateModernPage).Methods(http.MethodPost)
-	modernPageRouter.HandleFunc("/{id}", GetModernPageById).Methods(http.MethodGet)
-	modernPageRouter.HandleFunc("/{id}", UpdateModernPage).Methods(http.MethodPut)
-	modernPageRouter.HandleFunc("/{id}", DeleteModernPage).Methods(http.MethodDelete)
-	modernPageRouter.HandleFunc("/{id}/section", GetModernPageSections).Methods(http.MethodGet)
-	modernPageRouter.HandleFunc("/{id}/section", UpdateModernPageSections).Methods(http.MethodPut)
+	modernPageRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllModernPages))).
+		Methods(http.MethodGet)
+	modernPageRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateModernPage))).
+		Methods(http.MethodPost)
+	modernPageRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetModernPageById))).
+		Methods(http.MethodGet)
+	modernPageRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateModernPage))).
+		Methods(http.MethodPut)
+	modernPageRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteModernPage))).
+		Methods(http.MethodDelete)
+	modernPageRouter.
+		Path("/{id}/section").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetModernPageSections))).
+		Methods(http.MethodGet)
+	modernPageRouter.
+		Path("/{id}/section").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateModernPageSections))).
+		Methods(http.MethodPut)
 
 	// Menu
 	menuRouter := apiRouter.PathPrefix("/menu").Subrouter()
-	menuRouter.HandleFunc("", GetAllMenus).Methods(http.MethodGet)
-	menuRouter.HandleFunc("", CreateMenu).Methods(http.MethodPost)
-	menuRouter.HandleFunc("/{id}", GetMenuById).Methods(http.MethodGet)
-	menuRouter.HandleFunc("/{id}", UpdateMenu).Methods(http.MethodPut)
-	menuRouter.HandleFunc("/{id}", DeleteMenu).Methods(http.MethodDelete)
-	menuRouter.HandleFunc("/{id}/item", GetMenuItems).Methods(http.MethodGet)
-	menuRouter.HandleFunc("/{id}/item", AddMenuItem).Methods(http.MethodPost)
-	menuRouter.HandleFunc("/{id}/item/{position}", UpdateMenuItem).Methods(http.MethodPut)
-	menuRouter.HandleFunc("/{id}/item/{position}", DeleteMenuItem).Methods(http.MethodDelete)
+	menuRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllMenus))).
+		Methods(http.MethodGet)
+	menuRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateMenu))).
+		Methods(http.MethodPost)
+	menuRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetMenuById))).
+		Methods(http.MethodGet)
+	menuRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateMenu))).
+		Methods(http.MethodPut)
+	menuRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteMenu))).
+		Methods(http.MethodDelete)
+	menuRouter.
+		Path("/{id}/item").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetMenuItems))).
+		Methods(http.MethodGet)
+	menuRouter.
+		Path("/{id}/item").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(AddMenuItem))).
+		Methods(http.MethodPost)
+	menuRouter.
+		Path("/{id}/item/{position}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateMenuItem))).
+		Methods(http.MethodPut)
+	menuRouter.
+		Path("/{id}/item/{position}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteMenuItem))).
+		Methods(http.MethodDelete)
 
 	// Theme
 	themeRouter := apiRouter.PathPrefix("/theme").Subrouter()
-	themeRouter.HandleFunc("", GetAllThemes).Methods(http.MethodGet)
-	themeRouter.HandleFunc("", CreateTheme).Methods(http.MethodPost)
-	themeRouter.HandleFunc("/{id}", GetThemeById).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}", UpdateTheme).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}", DeleteTheme).Methods(http.MethodDelete)
-	themeRouter.HandleFunc("/{id}/active", ActivateTheme).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/assets", GetThemeAssets).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/configuration", GetThemeConfiguration).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/configuration", UpdateThemeConfiguration).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/configuration/default", GetThemeDefaultConfiguration).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/configuration/structure", GetThemeConfigurationStructure).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/styling", GetThemeStyling).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/styling", UpdateThemeStyling).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/blog-category", GetThemeBlogCategories).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/blog-category/{name}", UpdateThemeBlogCategory).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/classic-page", GetThemeClassicPages).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/classic-page/{name}", UpdateThemeClassicPage).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/file", GetThemeFiles).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/file/{name}", UpdateThemeFile).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/gallery", GetThemeGalleries).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/gallery/{name}", UpdateThemeGallery).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/menu", GetThemeMenus).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/menu/{name}", UpdateThemeMenu).Methods(http.MethodPut)
-	themeRouter.HandleFunc("/{id}/modern-page", GetThemeModernPages).Methods(http.MethodGet)
-	themeRouter.HandleFunc("/{id}/modern-page/{name}", UpdateThemeModernPage).Methods(http.MethodPut)
+	themeRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllThemes))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateTheme))).
+		Methods(http.MethodPost)
+	themeRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeById))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateTheme))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteTheme))).
+		Methods(http.MethodDelete)
+	themeRouter.
+		Path("/{id}/active").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(ActivateTheme))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/assets").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeAssets))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/configuration").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeConfiguration))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/configuration").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeConfiguration))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/configuration/default").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeDefaultConfiguration))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/configuration/structure").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeConfigurationStructure))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/styling").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeStyling))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/styling").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeStyling))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/blog-category").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeBlogCategories))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/blog-category/{name}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeBlogCategory))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/classic-page").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeClassicPages))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/classic-page/{name}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeClassicPage))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/file").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeFiles))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/file/{name}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeFile))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/gallery").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeGalleries))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/gallery/{name}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeGallery))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/menu").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeMenus))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/menu/{name}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeMenu))).
+		Methods(http.MethodPut)
+	themeRouter.
+		Path("/{id}/modern-page").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetThemeModernPages))).
+		Methods(http.MethodGet)
+	themeRouter.
+		Path("/{id}/modern-page/{name}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateThemeModernPage))).
+		Methods(http.MethodPut)
 
 	// API Key
 	apiKeyRouter := apiRouter.PathPrefix("/api-key").Subrouter()
-	apiKeyRouter.HandleFunc("", GetAllApiKeys).Methods(http.MethodGet)
-	apiKeyRouter.HandleFunc("/{key}", DeleteApiKey).Methods(http.MethodDelete)
+	apiKeyRouter.
+		Path("").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetAllApiKeys))).
+		Methods(http.MethodGet)
+	apiKeyRouter.
+		Path("/{key}").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(DeleteApiKey))).
+		Methods(http.MethodDelete)
 
 	// Configuration
 	configurationRouter := apiRouter.PathPrefix("/configuration").Subrouter()
-	configurationRouter.HandleFunc("", GetConfiguration).Methods(http.MethodGet)
-	configurationRouter.HandleFunc("", UpdateConfiguration).Methods(http.MethodPut)
+	configurationRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(GetConfiguration))).
+		Methods(http.MethodGet)
+	configurationRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateConfiguration))).
+		Methods(http.MethodPut)
 
 	// File Tag
 	fileTagRouter := apiRouter.PathPrefix("/file-tag").Subrouter()
-	fileTagRouter.HandleFunc("", GetAllFileTags).Methods(http.MethodGet)
-	fileTagRouter.HandleFunc("", CreateFileTag).Methods(http.MethodPost)
-	fileTagRouter.HandleFunc("/{id}", GetFileTagById).Methods(http.MethodGet)
-	fileTagRouter.HandleFunc("/{id}", UpdateFileTag).Methods(http.MethodPut)
-	fileTagRouter.HandleFunc("/{id}", DeleteFileTag).Methods(http.MethodDelete)
+	fileTagRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllFileTags))).
+		Methods(http.MethodGet)
+	fileTagRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateFileTag))).
+		Methods(http.MethodPost)
+	fileTagRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetFileTagById))).
+		Methods(http.MethodGet)
+	fileTagRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateFileTag))).
+		Methods(http.MethodPut)
+	fileTagRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteFileTag))).
+		Methods(http.MethodDelete)
 
 	// Folder
 	folderRouter := apiRouter.PathPrefix("/folder").Subrouter()
-	folderRouter.HandleFunc("", GetAllFolders).Methods(http.MethodGet)
-	folderRouter.HandleFunc("", CreateFolder).Methods(http.MethodPost)
-	folderRouter.HandleFunc("/{id}", GetFolderById).Methods(http.MethodGet)
-	folderRouter.HandleFunc("/{id}", UpdateFolder).Methods(http.MethodPut)
-	folderRouter.HandleFunc("/{id}", DeleteFolder).Methods(http.MethodDelete)
+	folderRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetAllFolders))).
+		Methods(http.MethodGet)
+	folderRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(CreateFolder))).
+		Methods(http.MethodPost)
+	folderRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetFolderById))).
+		Methods(http.MethodGet)
+	folderRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(UpdateFolder))).
+		Methods(http.MethodPut)
+	folderRouter.
+		Path("/{id}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(DeleteFolder))).
+		Methods(http.MethodDelete)
 
 	// IP Location
 	ipLocationRouter := apiRouter.PathPrefix("/ip-location").Subrouter()
-	ipLocationRouter.HandleFunc("{ip}", GetIpLocation).Methods(http.MethodGet)
+	ipLocationRouter.
+		Path("{ip}").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetIpLocation))).
+		Methods(http.MethodGet)
 
 	// Known Device
 	knownDeviceRouter := apiRouter.PathPrefix("/known-device").Subrouter()
-	knownDeviceRouter.HandleFunc("", GetAllKnownDevices).Methods(http.MethodGet)
-	knownDeviceRouter.HandleFunc("/{key}", DeleteKnownDevice).Methods(http.MethodDelete)
-	knownDeviceRouter.HandleFunc("/{key}", CheckKnownDevice).Methods(http.MethodHead)
+	knownDeviceRouter.
+		Path("").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetAllKnownDevices))).
+		Methods(http.MethodGet)
+	knownDeviceRouter.
+		Path("/{key}").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(DeleteKnownDevice))).
+		Methods(http.MethodDelete)
+	knownDeviceRouter.
+		Path("/{key}").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(CheckKnownDevice))).
+		Methods(http.MethodHead)
 
 	// Me
 	meRouter := apiRouter.PathPrefix("/me").Subrouter()
-	meRouter.HandleFunc("", GetMe).Methods(http.MethodGet)
-	meRouter.HandleFunc("", UpdateMe).Methods(http.MethodPut)
-	meRouter.HandleFunc("/colorscheme", GetMeColorScheme).Methods(http.MethodGet)
-	meRouter.HandleFunc("/colorscheme", UpdateMeColorScheme).Methods(http.MethodPut)
-	meRouter.HandleFunc("/preferences", GetMePreferences).Methods(http.MethodGet)
-	meRouter.HandleFunc("/preferences", UpdateMePreferences).Methods(http.MethodPut)
-	meRouter.HandleFunc("/profilepicture", GetMeProfilePicture).Methods(http.MethodGet)
-	meRouter.HandleFunc("/profilepicture", UpdateMeProfilePicture).Methods(http.MethodPut)
-	meRouter.HandleFunc("/otp/app", SetupOtpApp).Methods(http.MethodPost)
-	meRouter.HandleFunc("/otp/app/verify", VerifyOtpApp).Methods(http.MethodPost)
+	meRouter.
+		Path("").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetMe))).
+		Methods(http.MethodGet)
+	meRouter.
+		Path("").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(UpdateMe))).
+		Methods(http.MethodPut)
+	meRouter.
+		Path("/colorscheme").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetMeColorScheme))).
+		Methods(http.MethodGet)
+	meRouter.
+		Path("/colorscheme").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(UpdateMeColorScheme))).
+		Methods(http.MethodPut)
+	meRouter.
+		Path("/preferences").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetMePreferences))).
+		Methods(http.MethodGet)
+	meRouter.
+		Path("/preferences").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(UpdateMePreferences))).
+		Methods(http.MethodPut)
+	meRouter.
+		Path("/profilepicture").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetMeProfilePicture))).
+		Methods(http.MethodGet)
+	meRouter.
+		Path("/profilepicture").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(UpdateMeProfilePicture))).
+		Methods(http.MethodPut)
+	meRouter.
+		Path("/otp/app").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(SetupOtpApp))).
+		Methods(http.MethodPost)
+	meRouter.
+		Path("/otp/app/verify").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(VerifyOtpApp))).
+		Methods(http.MethodPost)
 
 	// Media
 	mediaRouter := apiRouter.PathPrefix("/media").Subrouter()
-	mediaRouter.HandleFunc("", GetMedia).Methods(http.MethodGet)
+	mediaRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetMedia))).
+		Methods(http.MethodGet)
 
 	// Statistics
 	statisticsRouter := apiRouter.PathPrefix("/statistics").Subrouter()
-	statisticsRouter.HandleFunc("/{group}/{months}/month", GetGroupStatisticsByMonth).Methods(http.MethodGet)
-	statisticsRouter.HandleFunc("/{group}/{years}/year", GetGroupStatisticsByYear).Methods(http.MethodGet)
-	statisticsRouter.HandleFunc("/visits/{interval}/month/{entityType}/{entityId}", GetEntityStatisticsByMonth).Methods(http.MethodGet)
-	statisticsRouter.HandleFunc("/visits/{interval}/year/{entityType}/{entityId}", GetEntityStatisticsByYear).Methods(http.MethodGet)
-	statisticsRouter.HandleFunc("/visits/{months}/month", GetVisitStatisticsByMonth).Methods(http.MethodGet)
-	statisticsRouter.HandleFunc("/visits/{years}/year", GetVisitStatisticsByYear).Methods(http.MethodGet)
-	statisticsRouter.HandleFunc("/{years}/year", GetStatisticsByYear).Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/{group}/{months}/month").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetGroupStatisticsByMonth))).
+		Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/{group}/{years}/year").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetGroupStatisticsByYear))).
+		Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/visits/{interval}/month/{entityType}/{entityId}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetEntityStatisticsByMonth))).
+		Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/visits/{interval}/year/{entityType}/{entityId}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetEntityStatisticsByYear))).
+		Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/visits/{months}/month").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetVisitStatisticsByMonth))).
+		Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/visits/{years}/year").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetVisitStatisticsByYear))).
+		Methods(http.MethodGet)
+	statisticsRouter.
+		Path("/{years}/year").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(GetStatisticsByYear))).
+		Methods(http.MethodGet)
 
 	// Account
 	accountRouter := apiRouter.PathPrefix("/account").Subrouter()
-	accountRouter.HandleFunc("password", UpdatePassword).Methods(http.MethodPut)
+	accountRouter.
+		Path("/password").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(UpdatePassword))).
+		Methods(http.MethodPut)
 
 	// Version
 	versionRouter := apiRouter.PathPrefix("/version").Subrouter()
-	versionRouter.HandleFunc("", GetVersion).Methods(http.MethodGet)
+	versionRouter.
+		Path("").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(GetVersion))).
+		Methods(http.MethodGet)
 
 	// Authentication
-	apiRouter.HandleFunc("/login", Login).Methods(http.MethodPost)
-	apiRouter.HandleFunc("/login", CheckApiKey).Methods(http.MethodHead)
-	apiRouter.HandleFunc("/logout", Logout).Methods(http.MethodDelete)
-	apiRouter.HandleFunc("/2fa", VerifyOtp).Methods(http.MethodPost)
+	apiRouter.
+		Path("/login").
+		HandlerFunc(Login).
+		Methods(http.MethodPost)
+	apiRouter.
+		Path("/login").
+		HandlerFunc(CheckApiKey).
+		Methods(http.MethodHead)
+	apiRouter.
+		Path("/logout").
+		HandlerFunc(Logout).
+		Methods(http.MethodDelete)
+	apiRouter.
+		Path("/2fa").
+		HandlerFunc(VerifyOtp).
+		Methods(http.MethodPost)
 
 	// Theme preview
-	router.HandleFunc("/api/theme/{id}/preview", GetThemePreview).Methods(http.MethodGet)
+	router.
+		Path("/api/theme/{id}/preview").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetThemePreview))).
+		Methods(http.MethodGet)
+
+	apiRouter.Use(middleware.ContentTypeJson)
+
+	router.Use(localization.SetLanguageMiddleware)
 }
