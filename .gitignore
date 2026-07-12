@@ -126,3 +126,5 @@ go.work.sum
 # env file
 .env
 .idea
+/admin/data/
+/node_modules/

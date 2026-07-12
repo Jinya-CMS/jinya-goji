@@ -1,0 +1,36 @@
+{
+  "name": "jinya-cms",
+  "version": "26.3.1",
+  "description": "Jinya Gallery CMS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jinya-CMS/jinya-cms.git"
+  },
+  "author": "Jinya Developers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Jinya-CMS/jinya-cms/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "designer:prettier": "prettier public/designer/js public/designer/templates --check",
+    "designer:eslint": "eslint -c eslint.config.cjs public/designer/js/ public/designer/lang/",
+    "designer:stylelint": "stylelint public/designer/**/*.css",
+    "designer:format": "prettier public/designer/js public/designer/templates --write",
+    "designer:lint": "bun run designer:prettier && bun run designer:eslint && bun run designer:stylelint",
+    "installer:prettier": "prettier public/installer --check",
+    "installer:eslint": "eslint -c eslint.config.cjs public/installer/",
+    "installer:stylelint": "stylelint public/installer/**/*.css --fix",
+    "installer:format": "prettier public/installer --write"
+  },
+  "homepage": "https://jinya.de",
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.7.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.7.0",
+    "prettier": "3.9.5",
+    "stylelint": "17.14.0",
+    "stylelint-config-standard": "40.0.0"
+  }
+}

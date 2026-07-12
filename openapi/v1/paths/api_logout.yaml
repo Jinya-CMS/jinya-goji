@@ -1,0 +1,17 @@
+delete:
+  summary: Logout
+  tags:
+    - authentication
+  parameters:
+    - name: fully
+      in: query
+      required: false
+      schema:
+        type: boolean
+  responses:
+    '204':
+      description: Successfully logged out
+  operationId: logout
+  description: >-
+    Logs the user out and deletes the api key
+  security: []

@@ -1,0 +1,8 @@
+.jinya-update__text {
+    font-weight: var(--font-weight-light);
+    margin-bottom: 0.75rem;
+}
+
+.jinya-update__text b {
+    font-weight: var(--font-weight-bold);
+}
