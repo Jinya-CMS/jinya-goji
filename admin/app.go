@@ -9,7 +9,9 @@ import (
 	"github.com/gorilla/mux"
 	"jinya.de/goji/api"
 	"jinya.de/goji/database"
+	"jinya.de/goji/localization"
 	"jinya.de/goji/logging"
+	"jinya.de/goji/mailing"
 	"jinya.de/goji/web"
 
 	_ "github.com/joho/godotenv/autoload"
@@ -26,6 +28,11 @@ func main() {
 
 	slog.Info("Preparing the database")
 	database.SetupDatabase()
+
+	localization.SetupLocalization()
+
+	slog.Info("Preparing mailing")
+	mailing.SetupMailing()
 
 	defer database.GetDbMap().Db.Close()
 

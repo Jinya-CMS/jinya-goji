@@ -1,0 +1,17 @@
+{{define "email-body"}}
+<p>
+    {{localize "greeting" .ArtistName}}<br/><br/>
+    {{localize "new_device_greeting_line"}}
+</p>
+<p>
+    {{localize "new_device_ip_line" .RemoteAddress}}
+    {{if ne .Location.City ""}}
+    {{localize "new_device_location_line" .Location.City .Location.Country}}
+    {{end}}
+</p>
+{{if ne .Browser ""}}
+<p>
+    {{localize "new_device_browser_line" .Browser}}
+</p>
+{{end}}
+{{end}}

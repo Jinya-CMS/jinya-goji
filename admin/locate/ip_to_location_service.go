@@ -18,52 +18,6 @@ type Location struct {
 	Country string `json:"country"`
 }
 
-func PopulateUnitTestDb() error {
-	dbMap := database.GetDbMap()
-	_, err := dbMap.Exec("DELETE FROM ip_address")
-	if err != nil {
-		return err
-	}
-
-	ips := []struct {
-		addressType string
-		ip          string
-		country     string
-		city        string
-	}{
-		{"ipv4", "8.8.8.8", "DE", "Nuremberg"},
-		{"ipv4", "127.0.0.1", "ZZ", ""},
-		{"ipv4", "192.168.178.1", "ZZ", ""},
-		{"ipv6", "2a03:4000:64:134::1", "DE", "Nuremberg"},
-		{"ipv6", "::1", "ZZ", ""},
-		{"ipv6", "2001:db8:ffff:ffff:ffff:ffff:ffff:ffff", "ZZ", ""},
-	}
-
-	for _, item := range ips {
-		ip := net.ParseIP(item.ip)
-		var ipBytes []byte
-		if item.addressType == "ipv4" {
-			ipBytes = ip.To4()
-		} else {
-			ipBytes = ip.To16()
-		}
-
-		addr := database.IpAddress{
-			AddressType: item.addressType,
-			IpStart:     ipBytes,
-			IpEnd:       ipBytes,
-			Country:     item.country,
-			City:        item.city,
-		}
-		err = database.Insert(&addr)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func PopulateDatabase() error {
 	databaseUrl := "https://download.db-ip.com/free/dbip-city-lite-{YEAR}-{MONTH}.csv.gz"
 	conf, err := database.FindJinyaConfiguration("ip_database_url", "jinya")

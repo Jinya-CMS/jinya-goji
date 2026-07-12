@@ -1,0 +1,16 @@
+{
+  "new_login_subject": "Wir haben einen neuen Login registriert",
+  "new_login_greeting_line": "Es gab einen neuen erfolgreichen Login für deinen Account.",
+  "new_login_ip_line": "Der Login war von der IP-Adresse %1.",
+  "new_login_location_line": "Die Adresse liegt in %1 in %2.",
+  "new_login_browser_line": "Der verwendete Browser war %1.",
+  "new_device_subject": "Neues Gerät gespeichert",
+  "new_device_greeting_line": "Es wurde ein neues Gerät in deinem Account gespeichert.",
+  "new_device_ip_line": "Die IP-Adresse des Geräts ist %1.",
+  "new_device_location_line": "Die Adresse liegt in %1 in %2.",
+  "new_device_browser_line": "Der verwendete Browser war %1.",
+  "two_factor_code_subject": "Dein Zwei-Faktor-Code",
+  "two_factor_code_text_line": "Du hast dich von einem neuen Gerät angemeldet, bitte benutze den angezeigten Code um dich zu verfizieren.",
+  "greeting": "Hallo %1",
+  "ip_db": "Die IP-Adresse wurde mit Daten von <a href=\"https://db-ip.com\">db-ip.com</a> lokalisiert"
+}

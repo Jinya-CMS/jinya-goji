@@ -1,0 +1,11 @@
+[package]
+name = "templating"
+version = "1.0.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+mrml = { version = "6", features = ["async", "parse", "render"] }
+libc = "0.2"

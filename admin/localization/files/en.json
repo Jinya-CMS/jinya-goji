@@ -1,0 +1,16 @@
+{
+  "new_login_subject": "New login for your account",
+  "new_login_greeting_line": "There was a new successful login for your account.",
+  "new_login_ip_line": "The login was from the IP address %1.",
+  "new_login_location_line": "Which is located at, %1 in %2",
+  "new_login_browser_line": "The browser in use was %1.",
+  "new_device_subject": "New device added to your account",
+  "new_device_greeting_line": "A new device was saved in your account.",
+  "new_device_ip_line": "The device IP address is %1.",
+  "new_device_location_line": "Which is located at, %1 in %2",
+  "new_device_browser_line": "The browser in use was %1.",
+  "two_factor_code_subject": "Your Two-factor code",
+  "two_factor_code_text_line": "You tried to log in from a new device, please verify with this code that this was actually you.",
+  "greeting": "Hello %1",
+  "ip_db": "The IP address was located with <a href=\"https://db-ip.com\">db-ip.com</a>"
+}

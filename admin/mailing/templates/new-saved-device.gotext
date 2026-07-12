@@ -1,0 +1,14 @@
+{{-define "email"-}}
+{{localize "greeting" .ArtistName}}
+{{localize "new_device_greeting_line"}}
+
+{{localize "new_device_ip_line" .RemoteAddress}}
+{{-if ne .Location.City ""-}}
+{{localize "new_device_location_line" .Location.City .Location.Country}}
+{{-end-}}
+{{-if ne .Browser ""-}}
+{{localize "new_device_browser_line" .Browser}}
+-- Jinny - Jinya CMS bot
+
+{{localize "ip_db"}}
+{{-end-}}

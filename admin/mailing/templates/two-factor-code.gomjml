@@ -1,0 +1,9 @@
+{{define "email-body"}}
+<p>
+{{localize "greeting" .ArtistName}}<br /><br />
+{{localize "two_factor_code_text_line"}}
+</p>
+<center>
+    <code>{{ .TwoFactorCode }}</code>
+</center>
+{{end}}
