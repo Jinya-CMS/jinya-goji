@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"jinya.de/goji/configuration"
 	"jinya.de/goji/database"
 )
 
@@ -19,11 +20,7 @@ type Location struct {
 }
 
 func PopulateDatabase() error {
-	databaseUrl := "https://download.db-ip.com/free/dbip-city-lite-{YEAR}-{MONTH}.csv.gz"
-	conf, err := database.FindJinyaConfiguration("ip_database_url", "jinya")
-	if err == nil && conf != nil {
-		databaseUrl = conf.Value
-	}
+	databaseUrl := configuration.GetString("jinya", "ip_database_url", "https://download.db-ip.com/free/dbip-city-lite-{YEAR}-{MONTH}.csv.gz")
 
 	yesterday := time.Now().AddDate(0, 0, -1)
 	databaseUrl = strings.ReplaceAll(databaseUrl, "{YEAR}", yesterday.Format("2006"))

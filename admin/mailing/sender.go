@@ -4,11 +4,10 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"os"
-	"strconv"
 	"strings"
 
 	"jinya.de/goji/analytics"
+	"jinya.de/goji/configuration"
 	"jinya.de/goji/localization"
 	"jinya.de/goji/locate"
 
@@ -19,7 +18,7 @@ func sendEmailByRequest(r *http.Request, plainBody, htmlBody, subject, to string
 	slog.Debug("Send email", "to", to, "subject", subject)
 	message := mail.NewMsg()
 	_ = message.To(to)
-	_ = message.FromFormat(localization.Localize(r, "mailer-from", os.Getenv("APP_NAME")), os.Getenv("MAILER_FROM"))
+	_ = message.From(configuration.GetString("mailer", "from", ""))
 
 	return sendEmail(message, subject, plainBody, htmlBody)
 }
@@ -29,21 +28,22 @@ func sendEmail(message *mail.Msg, subject string, plainBody string, htmlBody str
 	message.SetBodyString(mail.TypeTextPlain, plainBody)
 	message.SetBodyString(mail.TypeTextHTML, htmlBody)
 
-	senderHost := os.Getenv("MAILER_SERVER")
-	senderUser := os.Getenv("MAILER_USER")
-	senderPass := os.Getenv("MAILER_PASSWORD")
-	useSsl := os.Getenv("MAILER_ENCRYPTION") == "ssl"
-	useStartTls := os.Getenv("MAILER_ENCRYPTION") == "tls"
-	port, err := strconv.Atoi(os.Getenv("MAILER_PORT"))
-	if err != nil {
-		if useSsl {
-			port = mail.DefaultPortSSL
-		} else if useStartTls {
-			port = mail.DefaultPortTLS
-		} else {
-			port = mail.DefaultPort
-		}
+	senderHost := configuration.GetString("mailer", "server", "")
+	senderUser := configuration.GetString("mailer", "user", "")
+	senderPass := configuration.GetString("mailer", "password", "")
+	useSsl := configuration.GetString("mailer", "encryption", "") == "ssl"
+	useStartTls := configuration.GetString("mailer", "encryption", "") == "tls"
+	var port int
+	if useSsl {
+		port = mail.DefaultPortSSL
+	} else if useStartTls {
+		port = mail.DefaultPortTLS
+	} else {
+		port = mail.DefaultPort
 	}
+
+	port = configuration.GetInteger("mailer", "port", port)
+
 	options := []mail.Option{
 		mail.WithPort(port),
 	}
@@ -59,7 +59,7 @@ func sendEmail(message *mail.Msg, subject string, plainBody string, htmlBody str
 	if !useSsl && !useStartTls {
 		options = append(options, mail.WithTLSPolicy(mail.NoTLS))
 	}
-	if strings.ToLower(os.Getenv("LOG_LEVEL")) == "debug" {
+	if strings.ToLower(configuration.GetString("app", "log_level", "info")) == "debug" {
 		options = append(options, mail.WithDebugLog())
 	}
 

@@ -92,7 +92,7 @@ select add_foreign_key_if_not_exists('modern_page', 'updated_by_id', 'users', 'i
 		panic(err)
 	}
 
-	slog.Info("Add foreign keys for pages")
+	slog.Info("Add foreign keys for theme")
 	_, err = conn.Exec(`
 select add_foreign_key_if_not_exists('theme_asset', 'theme_id', 'theme', 'id');
 

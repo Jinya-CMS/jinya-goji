@@ -4,6 +4,8 @@ import (
 	"context"
 	"log/slog"
 	"os"
+
+	"jinya.de/goji/configuration"
 )
 
 type customHandler struct {
@@ -28,7 +30,7 @@ func (c customHandler) WithGroup(name string) slog.Handler {
 
 func SetupLogging() {
 	slogLevel := slog.LevelInfo
-	switch os.Getenv("LOG_LEVEL") {
+	switch configuration.GetString("app", "log_level", "info") {
 	case "debug":
 		slogLevel = slog.LevelDebug
 	case "warn":
