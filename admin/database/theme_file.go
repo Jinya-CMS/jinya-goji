@@ -37,15 +37,12 @@ func (tf *ThemeFile) Delete() error {
 
 func FindThemeFileByThemeAndName(themeId int, name string) (*ThemeFile, error) {
 	return SelectOne[ThemeFile](`
-SELECT
-    name,
-    theme_id,
-    file_id
-FROM
-    theme_file
-WHERE
-    theme_id = ?
-    AND name = ?
+SELECT name,
+       theme_id,
+       file_id
+FROM theme_file
+WHERE theme_id = $1
+  AND name = $2
 `, themeId, name)
 }
 
@@ -59,13 +56,10 @@ func (tf *ThemeFile) GetFile() (*File, error) {
 
 func FindThemeFilesByTheme(themeId int) ([]ThemeFile, error) {
 	return Select[ThemeFile](`
-SELECT
-    name,
-    theme_id,
-    file_id
-FROM
-    theme_file
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       file_id
+from theme_file
+where theme_id = $1
 `, themeId)
 }

@@ -10,6 +10,7 @@ import (
 	"jinya.de/goji/api"
 	"jinya.de/goji/database"
 	"jinya.de/goji/localization"
+	"jinya.de/goji/locate"
 	"jinya.de/goji/logging"
 	"jinya.de/goji/mailing"
 	"jinya.de/goji/web"
@@ -35,6 +36,16 @@ func main() {
 	mailing.SetupMailing()
 
 	defer database.GetDbMap().Db.Close()
+
+	go func() {
+		slog.Info("Populate ip database")
+		err := locate.PopulateDatabase()
+		if err != nil {
+			slog.Error("Failed to populate ip database", "error", err)
+		} else {
+			slog.Info("Populated ip database")
+		}
+	}()
 
 	slog.Info("Starting server")
 	router := mux.NewRouter()

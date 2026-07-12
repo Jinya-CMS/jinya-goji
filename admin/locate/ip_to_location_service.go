@@ -14,8 +14,8 @@ import (
 )
 
 type Location struct {
-	City    string `json:"city"`
-	Country string `json:"country"`
+	City    string `json:"city" db:"city"`
+	Country string `json:"country" db:"country"`
 }
 
 func PopulateDatabase() error {
@@ -49,7 +49,9 @@ func PopulateDatabase() error {
 	csvReader.ReuseRecord = true
 
 	dbMap := database.GetDbMap()
-	_, err = dbMap.Exec("DELETE FROM ip_address")
+	_, err = dbMap.Exec(`
+delete
+from ip_address`)
 	if err != nil {
 		return err
 	}
@@ -57,10 +59,12 @@ func PopulateDatabase() error {
 	batchSize := 1000
 	counter := 0
 
-	trans, err := dbMap.Begin()
+	tx, err := dbMap.Begin()
 	if err != nil {
 		return err
 	}
+
+	defer tx.Rollback()
 
 	for {
 		record, err := csvReader.Read()
@@ -68,7 +72,6 @@ func PopulateDatabase() error {
 			break
 		}
 		if err != nil {
-			trans.Rollback()
 			return err
 		}
 
@@ -82,73 +85,51 @@ func PopulateDatabase() error {
 		city := record[5]
 
 		ipFrom := net.ParseIP(ipFromStr)
-		ipTo := net.ParseIP(ipToStr)
 
 		var addressType string
-		var ipFromBytes, ipToBytes []byte
 
 		if ipFrom.To4() != nil {
 			addressType = "ipv4"
-			ipFromBytes = ipFrom.To4()
-			ipToBytes = ipTo.To4()
 		} else {
 			addressType = "ipv6"
-			ipFromBytes = ipFrom.To16()
-			ipToBytes = ipTo.To16()
 		}
 
-		addr := database.IpAddress{
-			AddressType: addressType,
-			IpStart:     ipFromBytes,
-			IpEnd:       ipToBytes,
-			Country:     countryCode,
-			City:        city,
-		}
-
-		err = trans.Insert(&addr)
+		_, err = tx.Exec(`
+insert into ip_address (address_type, ip_start, ip_end, country, city)
+values ($1, $2, $3, $4, $5)`, addressType, ipFromStr, ipToStr, countryCode, city)
 		if err != nil {
-			trans.Rollback()
 			return err
 		}
 
 		counter++
 		if counter%batchSize == 0 {
-			err = trans.Commit()
+			err = tx.Commit()
 			if err != nil {
 				return err
 			}
-			trans, err = dbMap.Begin()
+			tx, err = dbMap.Begin()
 			if err != nil {
 				return err
 			}
 		}
 	}
 
-	return trans.Commit()
+	return tx.Commit()
 }
 
-func LocateIp(ipStr string) (Location, error) {
+func LocalizeIp(ipStr string) (Location, error) {
 	ip := net.ParseIP(ipStr)
 	if ip == nil {
 		return Location{Country: "-1", City: "-1"}, nil
 	}
 
-	var addressType string
-	var ipBytes []byte
-	if ip.To4() != nil {
-		addressType = "ipv4"
-		ipBytes = ip.To4()
-	} else {
-		addressType = "ipv6"
-		ipBytes = ip.To16()
-	}
-
-	addr, err := database.SelectOne[database.IpAddress](`
-SELECT country, city
-FROM ip_address
-WHERE address_type = ? AND ip_start <= ? AND ? <= ip_end
-LIMIT 1
-`, addressType, ipBytes, ipBytes)
+	addr, err := database.SelectOne[Location](`
+select country, city
+from ip_address
+where ip_start <= $1
+  and $1 <= ip_end
+limit 1
+`, ipStr)
 
 	if err != nil {
 		return Location{Country: "-1", City: "-1"}, nil

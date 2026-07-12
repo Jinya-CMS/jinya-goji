@@ -95,18 +95,16 @@ func FindGalleryById(id int) (*Gallery, error) {
 
 func FindAllGalleries() ([]Gallery, error) {
 	return Select[Gallery](`
-SELECT
-    id,
-    creator_id,
-    updated_by_id,
-    created_at,
-    last_updated_at,
-    name,
-    description,
-    type,
-    orientation
-FROM
-    gallery
+select id,
+       creator_id,
+       updated_by_id,
+       created_at,
+       last_updated_at,
+       name,
+       description,
+       type,
+       orientation
+from gallery
 `)
 }
 

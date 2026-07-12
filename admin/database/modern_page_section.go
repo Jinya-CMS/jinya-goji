@@ -46,12 +46,8 @@ func (section *ModernPageSection) MarshalJSON() ([]byte, error) {
 				"type": file.Type,
 				"path": file.Path,
 			}
-			if section.Action != nil {
-				if *section.Action == "script" {
-					data["script"] = section.Script
-				} else if *section.Action == "link" {
-					data["link"] = section.Target
-				}
+			if section.Action != nil && *section.Action == "link" {
+				data["link"] = section.Target
 			}
 		}
 	} else {
@@ -79,22 +75,18 @@ func FindModernPageSectionById(id int) (*ModernPageSection, error) {
 
 func FindModernPageSectionsByPage(pageId int) ([]ModernPageSection, error) {
 	return Select[ModernPageSection](`
-SELECT
-    id,
-    position,
-    gallery_id,
-    file_id,
-    html,
-    page_id,
-    action,
-    script,
-    target
-FROM
-    segment_page_section
-WHERE
-    page_id = ?
-ORDER BY
-    position
+select id,
+       position,
+       gallery_id,
+       file_id,
+       html,
+       page_id,
+       action,
+       script,
+       target
+from modern_page_section
+where page_id = $1
+order by position
 `, pageId)
 }
 

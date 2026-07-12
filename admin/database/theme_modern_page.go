@@ -5,7 +5,7 @@ import "encoding/json"
 type ThemeModernPage struct {
 	ThemeId      int    `db:"theme_id,primarykey"`
 	Name         string `db:"name,primarykey"`
-	ModernPageId int    `db:"segment_page_id"`
+	ModernPageId int    `db:"modern_page_id"`
 }
 
 func (tmp *ThemeModernPage) MarshalJSON() ([]byte, error) {
@@ -37,15 +37,12 @@ func (tmp *ThemeModernPage) Delete() error {
 
 func FindThemeModernPageByThemeAndName(themeId int, name string) (*ThemeModernPage, error) {
 	return SelectOne[ThemeModernPage](`
-SELECT
-    name,
-    theme_id,
-    segment_page_id
-FROM
-    theme_segment_page
-WHERE
-    theme_id = ?
-    AND name = ?
+select name,
+       theme_id,
+       modern_page_id
+from theme_modern_page
+where theme_id = $1
+  and name = $2
 `, themeId, name)
 }
 
@@ -59,13 +56,10 @@ func (tmp *ThemeModernPage) GetModernPage() (*ModernPage, error) {
 
 func FindThemeModernPagesByTheme(themeId int) ([]ThemeModernPage, error) {
 	return Select[ThemeModernPage](`
-SELECT
-    name,
-    theme_id,
-    segment_page_id
-FROM
-    theme_segment_page
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       modern_page_id
+from theme_moder_page
+where theme_id = $1
 `, themeId)
 }

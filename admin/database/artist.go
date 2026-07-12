@@ -9,6 +9,8 @@ import (
 	"slices"
 	"time"
 
+	"github.com/DerKnerd/gorp"
+	"github.com/pquerna/otp/totp"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,14 +18,14 @@ type TotpMode int
 
 const (
 	TotpModeEmail TotpMode = iota
-	TotpModeOtphp
+	TotpModeApp
 )
 
 func (t TotpMode) String() string {
 	switch t {
 	case TotpModeEmail:
 		return "email"
-	case TotpModeOtphp:
+	case TotpModeApp:
 		return "app"
 	default:
 		return "email"
@@ -35,7 +37,8 @@ type Artist struct {
 	Email                string     `db:"email,unique"`
 	Enabled              bool       `db:"enabled"`
 	TwoFactorToken       *string    `db:"two_factor_token"`
-	Roles                []string   `db:"roles"`
+	RolesPlain           string     `db:"roles"`
+	Roles                []string   `db:"-"`
 	ArtistName           string     `db:"artist_name"`
 	ProfilePicture       *string    `db:"profile_picture"`
 	AboutMe              *string    `db:"about_me"`
@@ -47,6 +50,32 @@ type Artist struct {
 	TotpSecret           *string    `db:"totp_secret"`
 	LoginMailEnabled     bool       `db:"login_mail_enabled"`
 	NewDeviceMailEnabled bool       `db:"new_device_mail_enabled"`
+}
+
+func (artist *Artist) PostGet(s gorp.SqlExecutor) error {
+	return json.Unmarshal([]byte(artist.RolesPlain), &artist.Roles)
+}
+
+func (artist *Artist) PreInsert(s gorp.SqlExecutor) error {
+	roles, err := json.Marshal(artist.Roles)
+	if err != nil {
+		return err
+	}
+
+	artist.RolesPlain = string(roles)
+
+	return nil
+}
+
+func (artist *Artist) PreUpdate(s gorp.SqlExecutor) error {
+	roles, err := json.Marshal(artist.Roles)
+	if err != nil {
+		return err
+	}
+
+	artist.RolesPlain = string(roles)
+
+	return nil
 }
 
 func (artist *Artist) MarshalJSON() ([]byte, error) {
@@ -104,51 +133,46 @@ func FindArtistById(id int) (*Artist, error) {
 
 func FindArtistByEmail(email string) (*Artist, error) {
 	return SelectOne[Artist](`
-SELECT
-    id,
-    email,
-    enabled,
-    two_factor_token,
-    roles,
-    artist_name,
-    profile_picture,
-    about_me,
-    failed_login_attempts,
-    login_blocked_until,
-    prefers_color_scheme,
-    password,
-    totp_mode,
-    totp_secret,
-    login_mail_enabled,
-    new_device_mail_enabled
-FROM
-    users
-WHERE
-    email = ?
+select id,
+       email,
+       enabled,
+       two_factor_token,
+       roles,
+       artist_name,
+       profile_picture,
+       about_me,
+       failed_login_attempts,
+       login_blocked_until,
+       prefers_color_scheme,
+       password,
+       totp_mode,
+       totp_secret,
+       login_mail_enabled,
+       new_device_mail_enabled
+from users
+where email = $1
 `, email)
 }
 
 func FindAllArtists() ([]Artist, error) {
 	return Select[Artist](`
-SELECT
-    id,
-    email,
-    enabled,
-    two_factor_token,
-    roles,
-    artist_name,
-    profile_picture,
-    about_me,
-    failed_login_attempts,
-    login_blocked_until,
-    prefers_color_scheme,
-    password,
-    totp_mode,
-    totp_secret,
-    login_mail_enabled,
-    new_device_mail_enabled
-FROM
-    users
+select id,
+       email,
+       enabled,
+       two_factor_token,
+       roles,
+       artist_name,
+       profile_picture,
+       about_me,
+       failed_login_attempts,
+       login_blocked_until,
+       prefers_color_scheme,
+       password,
+       totp_mode,
+       totp_secret,
+       login_mail_enabled,
+       new_device_mail_enabled
+from users
 `)
 }
 
@@ -165,38 +189,36 @@ func (artist *Artist) SetTwoFactorCode() error {
 	return nil
 }
 
-func (artist *Artist) ValidateDevice(knownDeviceCode string) (bool, error) {
-	device, err := FindKnownDeviceByKey(knownDeviceCode)
-	if err != nil {
-		return false, err
-	}
+func (artist *Artist) ValidateDevice(knownDeviceCode string) bool {
+	count, _ := dbMap.SelectInt(`
+select count(*)
+from users u
+         join known_device kd on kd.user_id = u.id
+where u.id = $1`, artist.Id)
 
-	return device != nil && device.UserId == artist.Id, nil
+	return count > 0
 }
 
-func (artist *Artist) ChangePassword(oldPassword, password string) (bool, error) {
+func (artist *Artist) ChangePassword(oldPassword, password string) error {
 	if artist.ValidatePassword(oldPassword) {
 		err := artist.SetPassword(password)
 		if err != nil {
-			return false, err
+			return err
 		}
 		err = artist.Update()
 		if err != nil {
-			return false, err
+			return err
 		}
 
-		apiKeys, err := FindApiKeyByArtist(artist.Id)
-		if err != nil {
-			return true, nil // Password changed, but failed to clear keys
-		}
-		for _, apiKey := range apiKeys {
-			_ = apiKey.Delete()
-		}
+		_, _ = dbMap.Exec(`
+delete
+from api_key
+where user_id = $1`, artist.Id)
 
-		return true, nil
+		return nil
 	}
 
-	return false, nil
+	return nil
 }
 
 func (artist *Artist) ValidatePassword(password string) bool {
@@ -240,8 +262,7 @@ func (artist *Artist) RegisterFailedLogin() error {
 	attempts++
 	artist.FailedLoginAttempts = &attempts
 	if attempts >= 5 {
-		blockedUntil := time.Now().Add(10 * time.Minute)
-		artist.LoginBlockedUntil = &blockedUntil
+		artist.LoginBlockedUntil = new(time.Now().Add(10 * time.Minute))
 	}
 	return artist.Update()
 }
@@ -253,9 +274,8 @@ func (artist *Artist) UnlockAccount() error {
 }
 
 func (artist *Artist) VerifyTotpCode(code string) bool {
-	// Note: Otphp verification is not implemented as it requires a specialized library
-	if artist.TotpSecret != nil && artist.TotpMode == TotpModeOtphp {
-		return false
+	if artist.TotpSecret != nil && artist.TotpMode == TotpModeApp {
+		return totp.Validate(code, *artist.TotpSecret)
 	}
 
 	return artist.TwoFactorToken != nil && *artist.TwoFactorToken == code

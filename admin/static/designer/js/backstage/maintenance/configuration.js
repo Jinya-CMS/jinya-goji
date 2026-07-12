@@ -4,13 +4,6 @@ import localize from '../../foundation/utils/localize.js';
 
 Alpine.data('configurationData', () => ({
   configuration: {
-    mysql: {
-      database: '',
-      host: '',
-      password: '',
-      port: 0,
-      user: '',
-    },
     mailer: {
       encryption: '',
       from: '',
@@ -22,10 +15,7 @@ Alpine.data('configurationData', () => ({
     },
     jinya: {
       api_key_expiry: 86400,
-      update_server: 'https://releases.jinya.de/cms',
       ip_database_url: 'https://download.db-ip.com/free/dbip-country-lite-{YEAR}-{MONTH}.csv.gz',
-      image_converter: 'imagick',
-      imaginary_url: '',
     },
   },
   get mailerEncryption() {
@@ -59,13 +49,6 @@ Alpine.data('configurationData', () => ({
   update: {
     open: false,
     configuration: {
-      mysql: {
-        database: '',
-        host: '',
-        password: '',
-        port: 0,
-        user: '',
-      },
       mailer: {
         encryption: '',
         from: '',
@@ -77,10 +60,7 @@ Alpine.data('configurationData', () => ({
       },
       jinya: {
         api_key_expiry: 86400,
-        update_server: 'https://releases.jinya.de/cms',
         ip_database_url: 'https://download.db-ip.com/free/dbip-country-lite-{YEAR}-{MONTH}.csv.gz',
-        image_converter: 'imagick',
-        imaginary_url: '',
       },
     },
     error: {

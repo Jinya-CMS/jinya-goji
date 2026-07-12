@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/h2non/bimg"
 	"jinya.de/goji/database"
+	"jinya.de/goji/storage"
 )
 
 func serveConvertedImage(targetPath string, targetWidth *int, targetFileType *bimg.ImageType, w http.ResponseWriter) {
@@ -89,7 +90,7 @@ func jinyaContent(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	hash := vars["hash"]
 
-	http.ServeFile(w, r, path.Join(os.Getenv("STORAGE_PATH"), hash))
+	http.ServeFile(w, r, path.Join(storage.GetStoragePath(), hash))
 }
 
 func imagePhp(w http.ResponseWriter, r *http.Request) {
@@ -134,7 +135,7 @@ func imagePhp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, targetPath := path.Split(file.Path)
-	targetPath = path.Join(os.Getenv("STORAGE_PATH"), targetPath)
+	targetPath = path.Join(storage.GetStoragePath(), targetPath)
 
 	if strings.HasPrefix(file.Type, "image/") {
 		serveConvertedImage(targetPath, targetWidth, targetType, w)

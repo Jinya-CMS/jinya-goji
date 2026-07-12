@@ -54,16 +54,13 @@ func FindApiKeyByKey(key string) (*ApiKey, error) {
 
 func FindApiKeyByArtist(artistId int) ([]ApiKey, error) {
 	return Select[ApiKey](`
-SELECT
-    api_key,
-    user_id,
-    valid_since,
-    user_agent,
-    remote_address
-FROM
-    api_key
-WHERE
-    user_id = ?
+select api_key,
+       user_id,
+       valid_since,
+       user_agent,
+       remote_address
+from api_key
+where user_id = $1
 `, artistId)
 }
 

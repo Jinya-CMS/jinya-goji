@@ -103,7 +103,7 @@ func FindFileById(id int) (*File, error) {
 
 func FindAllFiles() ([]File, error) {
 	return Select[File](`
-SELECT
+select
     id,
     creator_id,
     updated_by_id,
@@ -113,14 +113,14 @@ SELECT
     name,
     folder_id,
     type
-FROM
+from
     file
 `)
 }
 
 func FindRootFiles() ([]File, error) {
 	return Select[File](`
-SELECT
+select
     id,
     creator_id,
     updated_by_id,
@@ -130,10 +130,10 @@ SELECT
     name,
     folder_id,
     type
-FROM
+from
     file
-WHERE
-    folder_id IS NULL
+where
+    folder_id is null
 `)
 }
 
@@ -158,16 +158,16 @@ func (file *File) GetUploadChunks() ([]UploadingFileChunk, error) {
 
 func (file *File) GetTags() ([]FileTag, error) {
 	return Select[FileTag](`
-SELECT
+select
     ft.id,
     ft.name,
     ft.color,
     ft.emoji
-FROM
+from
     file_tag ft
-JOIN
-    file_tag_file ftf ON ft.id = ftf.file_tag_id
-WHERE
-    ftf.file_id = ?
+join
+    file_tag_file ftf on ft.id = ftf.file_tag_id
+where
+    ftf.file_id = $1
 `, file.Id)
 }

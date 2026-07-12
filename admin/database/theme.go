@@ -59,54 +59,49 @@ func FindThemeById(id int) (*Theme, error) {
 
 func FindThemeByName(name string) (*Theme, error) {
 	return SelectOne[Theme](`
-SELECT
-    id,
-    name,
-    display_name,
-    description,
-    scss_variables,
-    configuration,
-    has_api_theme
-FROM
-    theme
-WHERE
-    name = ?
+select id,
+       name,
+       display_name,
+       description,
+       scss_variables,
+       configuration,
+       has_api_theme
+from theme
+where name = $1
 `, name)
 }
 
 func FindAllThemes() ([]Theme, error) {
 	return Select[Theme](`
-SELECT
-    id,
-    name,
-    display_name,
-    description,
-    scss_variables,
-    configuration,
-    has_api_theme
-FROM
-    theme
+select id,
+       name,
+       display_name,
+       description,
+       scss_variables,
+       configuration,
+       has_api_theme
+from theme
 `)
 }
 
 func GetActiveTheme() (*Theme, error) {
 	return SelectOne[Theme](`
-SELECT
-    t.id,
-    t.name,
-    t.display_name,
-    t.description,
-    t.scss_variables,
-    t.configuration,
-    t.has_api_theme
-FROM
-    theme t
-    JOIN configuration c ON c.active_theme_id = t.id
+select t.id,
+       t.name,
+       t.display_name,
+       t.description,
+       t.scss_variables,
+       t.configuration,
+       t.has_api_theme
+from theme t
+         join configuration c on c.active_theme_id = t.id
 `)
 }
 
 func (theme *Theme) MakeActiveTheme() error {
-	_, err := dbMap.Exec("UPDATE configuration SET active_theme_id = ?", theme.Id)
+	_, err := dbMap.Exec(`
+update configuration
+set active_theme_id = $1`, theme.Id)
 	return err
 }
 
@@ -120,10 +115,6 @@ func (theme *Theme) GetCategories() ([]ThemeBlogCategory, error) {
 
 func (theme *Theme) GetGalleries() ([]ThemeGallery, error) {
 	return FindThemeGalleriesByTheme(theme.Id)
-}
-
-func (theme *Theme) GetForms() ([]ThemeForm, error) {
-	return FindThemeFormsByTheme(theme.Id)
 }
 
 func (theme *Theme) GetMenus() ([]ThemeMenu, error) {

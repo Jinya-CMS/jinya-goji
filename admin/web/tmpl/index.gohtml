@@ -35,12 +35,9 @@
         <link href="/static/designer/css/section-editor.css" rel="stylesheet"/>
         <link href="/static/designer/css/theme.css" rel="stylesheet"/>
         <link href="/static/designer/css/profile.css" rel="stylesheet"/>
-        <link href="/static/designer/css/update.css" rel="stylesheet"/>
-        <link href="/static/designer/css/query-tool.css" rel="stylesheet"/>
         <link href="/static/designer/css/loader.css" rel="stylesheet"/>
         <link href="/static/designer/css/file-picker.css" rel="stylesheet"/>
         <link href="/static/designer/css/login.css" rel="stylesheet"/>
-        <link href="/static/designer/css/ace.css" rel="stylesheet"/>
         <link href="/static/designer/css/forms.css" rel="stylesheet"/>
         <link href="/static/designer/css/menus.css" rel="stylesheet"/>
         <link href="/static/designer/css/blog-categories.css" rel="stylesheet"/>
@@ -75,9 +72,6 @@
                                 href="/designer/backstage/maintenance/configuration"
                                 x-localize:maintenance-menu-title
                         ></a>
-                        <a class="cosmo-menu__item" href="/designer/backstage/database/mysql-info"
-                           x-localize:database-menu-title>
-                        </a>
                         <a class="cosmo-menu__item" href="/designer/backstage/artists/index"
                            x-localize:artists-menu-title> </a>
                     </div>
@@ -307,13 +301,6 @@
                             ></a>
                             <a
                                     class="cosmo-menu__item"
-                                    href="/designer/backstage/database/mysql-info"
-                                    x-active-route.area="database"
-                                    x-localize:database-menu-title
-                            >
-                            </a>
-                            <a
-                                    class="cosmo-menu__item"
                                     href="/designer/backstage/artists/index"
                                     x-active-route.area="artists"
                                     x-localize:artists-menu-title
@@ -326,31 +313,6 @@
                                         href="/designer/backstage/maintenance/configuration"
                                         x-active-route="configuration"
                                         x-localize:maintenance-menu-app_config
-                                >
-                                </a>
-                            </div>
-                        </template>
-                        <template x-if="$store.navigation.area === 'database'">
-                            <div class="cosmo-menu__row is--sub">
-                                <a
-                                        class="cosmo-menu__item"
-                                        href="/designer/backstage/database/mysql-info"
-                                        x-active-route="mysql-info"
-                                        x-localize:database-menu-mysql_info
-                                >
-                                </a>
-                                <a
-                                        class="cosmo-menu__item"
-                                        href="/designer/backstage/database/tables"
-                                        x-active-route="tables"
-                                        x-localize:database-menu-tables
-                                >
-                                </a>
-                                <a
-                                        class="cosmo-menu__item"
-                                        href="/designer/backstage/database/query-tool"
-                                        x-active-route="query-tool"
-                                        x-localize:database-menu-query_tool
                                 >
                                 </a>
                             </div>
@@ -455,22 +417,6 @@
             ></template>
 
             <template
-                    x-route="/backstage/database/mysql-info"
-                    x-handler="[$store.authentication.needsAdmin, $store.navigation.fetchScript]"
-                    x-template="/static/designer/templates/backstage/database/mysql-info.html"
-            ></template>
-            <template
-                    x-route="/backstage/database/tables"
-                    x-handler="[$store.authentication.needsAdmin, $store.navigation.fetchScript]"
-                    x-template="/static/designer/templates/backstage/database/tables.html"
-            ></template>
-            <template
-                    x-route="/backstage/database/query-tool"
-                    x-handler="[$store.authentication.needsAdmin, $store.navigation.fetchScript]"
-                    x-template="/static/designer/templates/backstage/database/query-tool.html"
-            ></template>
-
-            <template
                     x-route="/backstage/artists/index"
                     x-handler="[$store.authentication.needsAdmin, $store.navigation.fetchScript]"
                     x-template="/static/designer/templates/backstage/artists/index.html"
@@ -494,17 +440,6 @@
                           x-text="upload.status"></span>
                 </div>
                 <div class="cosmo-bottom-bar__item is--right is--buttons">
-                    <template x-if="$store.authentication?.roles?.includes('ROLE_ADMIN')">
-                        <button @click="clearCache" class="cosmo-button is--circle is--primary"
-                                x-localize:bottom_bar-clear_cache.title>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round">
-                                <path
-                                        d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
-                            </svg>
-                        </button>
-                    </template>
                     <button @click="openFileUpload" class="cosmo-button is--circle is--large is--primary"
                             x-localize:bottom_bar-upload_files.title>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

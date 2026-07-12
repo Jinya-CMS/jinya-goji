@@ -37,15 +37,12 @@ func (tm *ThemeMenu) Delete() error {
 
 func FindThemeMenuByThemeAndName(themeId int, name string) (*ThemeMenu, error) {
 	return SelectOne[ThemeMenu](`
-SELECT
-    name,
-    theme_id,
-    menu_id
-FROM
-    theme_menu
-WHERE
-    theme_id = ?
-    AND name = ?
+SELECT name,
+       theme_id,
+       menu_id
+FROM theme_menu
+WHERE theme_id = $1
+  AND name = $2
 `, themeId, name)
 }
 
@@ -59,13 +56,10 @@ func (tm *ThemeMenu) GetMenu() (*Menu, error) {
 
 func FindThemeMenusByTheme(themeId int) ([]ThemeMenu, error) {
 	return Select[ThemeMenu](`
-SELECT
-    name,
-    theme_id,
-    menu_id
-FROM
-    theme_menu
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       menu_id
+from theme_menu
+where theme_id = $1
 `, themeId)
 }

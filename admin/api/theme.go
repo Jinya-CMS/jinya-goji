@@ -60,7 +60,6 @@ func UpdateThemeStyling(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Resource mappings
 func GetThemeBlogCategories(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
@@ -82,14 +81,6 @@ func GetThemeFiles(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateThemeFile(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func GetThemeForms(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func UpdateThemeForm(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 

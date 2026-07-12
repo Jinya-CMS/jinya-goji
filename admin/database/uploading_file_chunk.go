@@ -25,16 +25,12 @@ func FindUploadingFileChunkById(id int) (*UploadingFileChunk, error) {
 
 func FindUploadingFileChunksByFile(uploadingFileId string) ([]UploadingFileChunk, error) {
 	return Select[UploadingFileChunk](`
-SELECT
-    id,
-    uploading_file_id,
-    chunk_path,
-    chunk_position
-FROM
-    uploading_file_chunk
-WHERE
-    uploading_file_id = ?
-ORDER BY
-    chunk_position
+select id,
+       uploading_file_id,
+       chunk_path,
+       chunk_position
+from uploading_file_chunk
+where uploading_file_id = $1
+order by chunk_position
 `, uploadingFileId)
 }

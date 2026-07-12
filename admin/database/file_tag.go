@@ -41,26 +41,26 @@ func FindFileTagById(id int) (*FileTag, error) {
 
 func FindFileTagByName(name string) (*FileTag, error) {
 	return SelectOne[FileTag](`
-SELECT
+select
     id,
     name,
     color,
     emoji
-FROM
+from
     file_tag
-WHERE
-    name = ?
+where
+    name = $1
 `, name)
 }
 
 func FindAllFileTags() ([]FileTag, error) {
 	return Select[FileTag](`
-SELECT
+select
     id,
     name,
     color,
     emoji
-FROM
+from
     file_tag
 `)
 }

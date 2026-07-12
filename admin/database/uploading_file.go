@@ -23,13 +23,10 @@ func FindUploadingFileById(id string) (*UploadingFile, error) {
 
 func FindUploadingFileByFile(fileId int) (*UploadingFile, error) {
 	return SelectOne[UploadingFile](`
-SELECT
-    id,
-    file_id
-FROM
-    uploading_file
-WHERE
-    file_id = ?
+select id,
+       file_id
+from uploading_file
+where file_id = $1
 `, fileId)
 }
 

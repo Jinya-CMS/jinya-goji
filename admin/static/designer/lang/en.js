@@ -1520,40 +1520,12 @@ export default {
   maintenance: {
     menu: {
       title: 'Maintenance',
-      update: 'Update',
       app_config: 'Jinya configuration',
-      php_info: 'PHP info',
-    },
-    update: {
-      version_text:
-        'You currently have version {openB}{currentVersion}{closeB} installed, there is an update available to {openB}{mostRecentVersion}{closeB}.',
-      version_text_no_update:
-        'You currently have version {openB}{currentVersion}{closeB} installed, this is the most recent version.',
-      update_now: 'Update now',
-      perform_update: {
-        title: 'Update Jinya CMS',
-        message: 'Are you sure to update Jinya CMS? This Update cannot be cancelled once started.',
-        decline: 'Cancel update',
-        approve: 'Update now',
-        updating: 'Update is being installed',
-        failed: {
-          title: 'Error',
-          message: 'The update failed, please try again later.',
-        },
-      },
     },
     configuration: {
       title: 'Jinya configuration',
       action: {
         update: 'Update configuration',
-      },
-      mysql: {
-        title: 'Database',
-        host: 'Server',
-        database: 'Database',
-        password: 'Password',
-        port: 'Port',
-        user: 'Username',
       },
       mailer: {
         title: 'Email',
@@ -1571,10 +1543,7 @@ export default {
       jinya: {
         title: 'Jinya',
         api_key_expiry: 'Timeout of API keys',
-        update_server: 'Server for updates',
         ip_database_url: 'URL for the IP database',
-        image_converter: 'Converter for images',
-        imaginary_url: 'Server running imaginary',
       },
       update: {
         title: 'Update configuration',
@@ -1586,74 +1555,12 @@ export default {
         },
       },
     },
-    php: {
-      configuration: 'Configuration',
-      about: 'About the PHP installation',
-      system_and_server: 'System and server',
-      apache: 'Apache configuration',
-      extension: {
-        more_info: 'More informations',
-        ini_values: 'Settings',
-      },
-      ini: {
-        name: 'Name',
-        value: 'Value',
-      },
-    },
   },
   database: {
     menu: {
       title: 'Database',
-      mysql_info: 'MySQL info',
-      tables: 'Tables',
       query_tool: 'Query tool',
     },
-    mysql: {
-      system_and_server: 'Server',
-      global_variables: 'Global variables',
-      local_variables: 'Local variables',
-      session_variables: 'Session variables',
-      server_type: 'Server type',
-      server_version: 'Server version',
-      compile_machine: 'Compile machine',
-      compile_os: 'Compile operating system',
-      name: 'Variable',
-      value: 'Value',
-    },
-    tables: {
-      field: 'Column name',
-      type: 'Type',
-      null: 'Allow null',
-      key: 'Keys',
-      default: 'Default value',
-      extra: 'Extra data',
-    },
-    structure: 'Structure',
-    constraints: {
-      title: 'Constraints',
-      constraint_name: 'Name',
-      constraint_type: 'Constraint type',
-      column_name: 'Column name',
-      referenced_table_name: 'Referenced table',
-      referenced_column_name: 'Referenced column',
-      position_in_unique_constraint: 'Position in unique constraint',
-      delete_rule: 'Action on delete',
-      update_rule: 'Action on update',
-      none: 'Not applicable',
-    },
-    indexes: {
-      title: 'Indexes',
-      key_name: 'Key name',
-      column_name: 'Column name',
-      cardinality: 'Cardinality',
-      index_type: 'Index type',
-      collation: 'Collation',
-      unique: 'Unique',
-    },
-    details: 'Details',
-    entry_count: 'Entry count',
-    size: 'Table size in KB',
-    engine: 'Storage engine',
     query_tool: {
       execute: 'Execute queries',
       no_result: 'No results were returned for the query',
@@ -1756,7 +1663,6 @@ export default {
   },
   bottom_bar: {
     upload_files: 'Upload files',
-    clear_cache: 'Clear cache',
     change_theme: 'Change theme',
     status: 'Uploading file {name}',
     uploading: 'File upload pending…',

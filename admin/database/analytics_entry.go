@@ -149,27 +149,25 @@ func FindAnalyticsById(id int) (*AnalyticsEntry, error) {
 
 func FindAllAnalytics() ([]AnalyticsEntry, error) {
 	return Select[AnalyticsEntry](`
-SELECT
-    id,
-    route,
-    timestamp,
-    unique_visit,
-    operating_system,
-    operating_system_version,
-    browser,
-    browser_version,
-    device_type,
-    entity_id,
-    entity_type,
-    language,
-    country,
-    device,
-    brand,
-    user_agent,
-    referer,
-    status
-FROM
-    analytics
+select id,
+       route,
+       timestamp,
+       unique_visit,
+       operating_system,
+       operating_system_version,
+       browser,
+       browser_version,
+       device_type,
+       entity_id,
+       entity_type,
+       language,
+       country,
+       device,
+       brand,
+       user_agent,
+       referer,
+       status
+from analytics
 `)
 }
 
@@ -178,25 +176,22 @@ type AnalyticsPastIntervalResult struct {
 	Group  string `db:"group"`
 }
 
-func GetAnalyticsPastInterval(interval *string, entityType *EntityType, id *int, uniqueOnly bool) ([]AnalyticsPastIntervalResult, error) {
+func GetAnalyticsPastInterval(months *int, entityType *EntityType, id *int, uniqueOnly bool) ([]AnalyticsPastIntervalResult, error) {
 	query := `
-SELECT
-    count(*) AS visits,
-    timestamp AS 'group'
-FROM
-    analytics
-WHERE
-    status <> 404
+select count(*) as visits,
+       timestamp as 'group'
+from analytics
+where status <> 404
 `
 	args := make([]any, 0)
-	if interval != nil {
-		query += " and timestamp >= subdate(current_date, interval " + *interval + ")"
+	if months != nil {
+		query += " and timestamp >= subdate(current_date, interval " + strconv.Itoa(*months) + " month)"
 	}
 	if uniqueOnly {
 		query += " and unique_visit = true"
 	}
 	if entityType != nil && id != nil {
-		query += " and entity_type = ? and entity_id = ?"
+		query += " and entity_type = $1 and entity_id = $2"
 		args = append(args, *entityType, *id)
 	}
 	query += " group by timestamp"
@@ -204,7 +199,7 @@ WHERE
 	return Select[AnalyticsPastIntervalResult](query, args...)
 }
 
-func GetAnalyticsPastIntervalGrouped(group string, interval *string, entityType *EntityType, id *int, uniqueOnly bool) ([]AnalyticsPastIntervalResult, error) {
+func GetAnalyticsPastIntervalGrouped(group string, months *int, entityType *EntityType, id *int, uniqueOnly bool) ([]AnalyticsPastIntervalResult, error) {
 	groupColumns := make([]string, 0)
 	switch group {
 	case "os":
@@ -228,11 +223,14 @@ func GetAnalyticsPastIntervalGrouped(group string, interval *string, entityType 
 		groupColumnsForName = groupColumns[0]
 	}
 
-	query := "SELECT count(*) AS visits, " + groupColumnsForName + " AS 'group' FROM analytics WHERE status <> 404"
+	query := `
+select count(*) as visits, ` + groupColumnsForName + ` as 'group'
+from analytics
+where status <> 404`
 	args := make([]any, 0)
 
-	if interval != nil {
-		query += " and timestamp >= subdate(current_date, interval " + *interval + ")"
+	if months != nil {
+		query += " and timestamp >= subdate(current_date, interval " + strconv.Itoa(*months) + " month)"
 	}
 	if uniqueOnly {
 		query += " and unique_visit = true"
@@ -253,19 +251,16 @@ func GetAnalyticsPastIntervalGrouped(group string, interval *string, entityType 
 	return Select[AnalyticsPastIntervalResult](query, args...)
 }
 
-func GetTotalAnalyticsPastInterval(interval *string) (int, error) {
+func GetTotalAnalyticsPastInterval(months *int) (int, error) {
 	query := `
-SELECT
-    count(*) AS visits
-FROM
-    analytics
-WHERE
-    status <> 404
-    AND unique_visit = true
+select count(*) as visits
+from analytics
+where status <> 404
+  and unique_visit = true
 `
 	args := make([]any, 0)
-	if interval != nil {
-		query += " and timestamp >= subdate(current_date, interval " + *interval + ")"
+	if months != nil {
+		query += " and timestamp >= subdate(current_date, interval " + strconv.Itoa(*months) + " month)"
 	}
 
 	var result struct {
@@ -276,9 +271,11 @@ WHERE
 }
 
 func GetAnalyticsPastNMonthsForEntity(months int, entityType EntityType, id int) ([]AnalyticsPastIntervalResult, error) {
-	interval := new(string)
-	*interval = strconv.Itoa(months) + " month"
-	return GetAnalyticsPastInterval(interval, &entityType, &id, false)
+	return GetAnalyticsPastInterval(&months, &entityType, &id, false)
+}
+
+func GetAnalyticsPastNMonthsForEntityGrouped(group string, months int, entityType EntityType, id int) ([]AnalyticsPastIntervalResult, error) {
+	return GetAnalyticsPastIntervalGrouped(group, &months, &entityType, &id, false)
 }
 
 func (entry *AnalyticsEntry) GetRelatedMenuItem() (*MenuItem, error) {

@@ -7,13 +7,7 @@ import (
 	"os"
 )
 
-const (
-	WebPath    = "/jinya-content/"
-	PublicPath = "./public/"
-	SavePath   = PublicPath + WebPath
-)
-
-func GetFileHash(reader io.Reader) (string, error) {
+func getFileHash(reader io.Reader) (string, error) {
 	hash := sha256.New()
 	if _, err := io.Copy(hash, reader); err != nil {
 		return "", err
@@ -21,6 +15,15 @@ func GetFileHash(reader io.Reader) (string, error) {
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
-func EnsureSavePathExists() error {
-	return os.MkdirAll(SavePath, 0775)
+func ensureSavePathExists() error {
+	return os.MkdirAll(GetStoragePath(), 0775)
+}
+
+func GetStoragePath() string {
+	path := os.Getenv("STORAGE_PATH")
+	if path == "" {
+		path = "jinya-content"
+	}
+
+	return path
 }

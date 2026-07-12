@@ -88,7 +88,7 @@ func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 	if err != nil {
 		ip = r.RemoteAddr
 	}
-	location, _ := locate.LocateIp(ip)
+	location, _ := locate.LocalizeIp(ip)
 
 	data := struct {
 		ArtistName    string
@@ -125,7 +125,7 @@ func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
 	if err != nil {
 		ip = r.RemoteAddr
 	}
-	location, _ := locate.LocateIp(ip)
+	location, _ := locate.LocalizeIp(ip)
 
 	data := struct {
 		ArtistName    string

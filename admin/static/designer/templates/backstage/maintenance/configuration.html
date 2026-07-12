@@ -9,17 +9,6 @@
       ></button>
     </div>
   </div>
-  <h3 x-localize:maintenance-configuration-mysql-title></h3>
-  <dl class="cosmo-list is--key-value">
-    <dt x-localize:maintenance-configuration-mysql-host></dt>
-    <dd x-text="configuration.mysql.host"></dd>
-    <dt x-localize:maintenance-configuration-mysql-port></dt>
-    <dd x-text="configuration.mysql.port"></dd>
-    <dt x-localize:maintenance-configuration-mysql-database></dt>
-    <dd x-text="configuration.mysql.database"></dd>
-    <dt x-localize:maintenance-configuration-mysql-user></dt>
-    <dd x-text="configuration.mysql.user"></dd>
-  </dl>
   <h3 x-localize:maintenance-configuration-mailer-title></h3>
   <dl class="cosmo-list is--key-value">
     <dt x-localize:maintenance-configuration-mailer-host></dt>
@@ -47,18 +36,8 @@
       <span x-text="(configuration.jinya.api_key_expiry / 60 / 60)"></span>
       <span>h</span>
     </dd>
-    <dt x-localize:maintenance-configuration-jinya-update_server></dt>
-    <dd x-text="configuration.jinya.update_server"></dd>
     <dt x-localize:maintenance-configuration-jinya-ip_database_url></dt>
     <dd x-text="configuration.jinya.ip_database_url"></dd>
-    <dt x-localize:maintenance-configuration-jinya-image_converter></dt>
-    <dd x-text="configuration.jinya.image_converter"></dd>
-    <template x-if="configuration.jinya.image_converter === 'imaginary'">
-      <div style="display: contents">
-        <dt x-localize:maintenance-configuration-jinya-imaginary_url></dt>
-        <dd x-text="configuration.jinya.imaginary_url"></dd>
-      </div>
-    </template>
   </dl>
   <template x-if="update.open">
     <form class="cosmo-modal__container" @submit.prevent="updateConfiguration">
@@ -69,14 +48,8 @@
             <span class="cosmo-message__header" x-text="update.error.title"></span>
             <p class="cosmo-message__message" x-text="update.error.message"></p>
           </div>
-          <div class="cosmo-tab" x-data="{ selectedTab: 'mysql' }">
+          <div class="cosmo-tab" x-data="{ selectedTab: 'mailer' }">
             <div class="cosmo-tab__links">
-              <a
-                class="cosmo-tab__link"
-                :class="{ 'is--active': selectedTab === 'mysql' }"
-                @click="selectedTab = 'mysql'"
-                x-localize:maintenance-configuration-mysql-title
-              ></a>
               <a
                 class="cosmo-tab__link"
                 :class="{ 'is--active': selectedTab === 'mailer' }"
@@ -92,59 +65,6 @@
             </div>
             <div class="cosmo-tab__content">
               <div class="cosmo-input__group">
-                <template x-if="selectedTab === 'mysql'">
-                  <div style="display: contents">
-                    <label class="cosmo-label" for="mysql_host" x-localize:maintenance-configuration-mysql-host></label>
-                    <input
-                      x-model="update.configuration.mysql.host"
-                      class="cosmo-input"
-                      type="text"
-                      id="mysql_host"
-                      required
-                    />
-                    <label class="cosmo-label" for="mysql_port" x-localize:maintenance-configuration-mysql-port></label>
-                    <input
-                      x-model.number="update.configuration.mysql.port"
-                      class="cosmo-input"
-                      type="number"
-                      min="1"
-                      max="65535"
-                      id="mysql_port"
-                      required
-                    />
-                    <label
-                      class="cosmo-label"
-                      for="mysql_database"
-                      x-localize:maintenance-configuration-mysql-database
-                    ></label>
-                    <input
-                      x-model="update.configuration.mysql.database"
-                      class="cosmo-input"
-                      type="text"
-                      required
-                      id="mysql_database"
-                    />
-                    <label class="cosmo-label" for="mysql_user" x-localize:maintenance-configuration-mysql-user></label>
-                    <input
-                      x-model="update.configuration.mysql.user"
-                      class="cosmo-input"
-                      type="text"
-                      id="mysql_user"
-                      required
-                    />
-                    <label
-                      class="cosmo-label"
-                      for="mysql_password"
-                      x-localize:maintenance-configuration-mysql-password
-                    ></label>
-                    <input
-                      x-model="update.configuration.mysql.password"
-                      class="cosmo-input"
-                      type="password"
-                      id="mysql_password"
-                    />
-                  </div>
-                </template>
                 <template x-if="selectedTab === 'mailer'">
                   <div style="display: contents">
                     <label
@@ -252,18 +172,6 @@
                     />
                     <label
                       class="cosmo-label"
-                      for="jinya_update_server"
-                      x-localize:maintenance-configuration-jinya-update_server
-                    ></label>
-                    <input
-                      x-model="update.configuration.jinya.update_server"
-                      class="cosmo-input"
-                      type="text"
-                      id="jinya_update_server"
-                      required
-                    />
-                    <label
-                      class="cosmo-label"
                       for="jinya_ip_database_url"
                       x-localize:maintenance-configuration-jinya-ip_database_url
                     ></label>
@@ -274,39 +182,6 @@
                       id="jinya_ip_database_url"
                       required
                     />
-                    <label
-                      class="cosmo-label"
-                      for="jinya_image_converter"
-                      x-localize:maintenance-configuration-jinya-image_converter
-                    ></label>
-                    <select
-                      class="cosmo-select"
-                      id="jinya_image_converter"
-                      x-model="update.configuration.jinya.image_converter"
-                    >
-                      <option :selected="update.configuration.jinya.image_converter === 'imagick'" value="imagick">
-                        Imagick
-                      </option>
-                      <option :selected="update.configuration.jinya.image_converter === 'imaginary'" value="imaginary">
-                        Imaginary
-                      </option>
-                    </select>
-                    <template x-if="update.configuration.jinya.image_converter === 'imaginary'">
-                      <div style="display: contents">
-                        <label
-                          class="cosmo-label"
-                          for="jinya_imaginary_url"
-                          x-localize:maintenance-configuration-jinya-imaginary_url
-                        ></label>
-                        <input
-                          x-model="update.configuration.jinya.imaginary_url"
-                          class="cosmo-input"
-                          type="text"
-                          id="jinya_imaginary_url"
-                          required
-                        />
-                      </div>
-                    </template>
                   </div>
                 </template>
               </div>

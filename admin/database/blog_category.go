@@ -51,15 +51,13 @@ func FindBlogCategoryById(id int) (*BlogCategory, error) {
 
 func FindAllBlogCategories() ([]BlogCategory, error) {
 	return Select[BlogCategory](`
-SELECT
-    id,
-    name,
-    description,
-    parent_id,
-    webhook_enabled,
-    webhook_url
-FROM
-    blog_category
+select id,
+       name,
+       description,
+       parent_id,
+       webhook_enabled,
+       webhook_url
+from blog_category
 `)
 }
 
@@ -74,53 +72,44 @@ func (category *BlogCategory) GetBlogPosts(includeChildCategories bool, onlyPubl
 	var query string
 	if includeChildCategories {
 		query = `
-WITH RECURSIVE category_cte AS (
-    SELECT bc.*
-    FROM blog_category AS bc
-    WHERE bc.id = ?
-    UNION
-    SELECT bc2.*
-    FROM category_cte
-    INNER JOIN blog_category AS bc2 ON category_cte.id = bc2.parent_id
-)
-SELECT
-    id,
-    title,
-    slug,
-    header_image_id,
-    public,
-    created_at,
-    creator_id,
-    updated_by_id,
-    last_updated_at,
-    category_id
-FROM
-    blog_post
-WHERE
-    category_id IN (SELECT id FROM category_cte)
-`
+with recursive category_cte as (select bc.*
+                                from blog_category as bc
+                                where bc.id = $1
+                                union
+                                select bc2.*
+                                from category_cte
+                                         inner join blog_category as bc2 on category_cte.id = bc2.parent_id)
+select id,
+       title,
+       slug,
+       header_image_id,
+       public,
+       created_at,
+       creator_id,
+       updated_by_id,
+       last_updated_at,
+       category_id
+from blog_post
+where category_id in (select id from category_cte)`
 	} else {
 		query = `
-SELECT
-    id,
-    title,
-    slug,
-    header_image_id,
-    public,
-    created_at,
-    creator_id,
-    updated_by_id,
-    last_updated_at,
-    category_id
-FROM
-    blog_post
-WHERE
-    category_id = ?
+select id,
+       title,
+       slug,
+       header_image_id,
+       public,
+       created_at,
+       creator_id,
+       updated_by_id,
+       last_updated_at,
+       category_id
+from blog_post
+where category_id = $1
 `
 	}
 
 	if onlyPublic {
-		query += " AND public = true"
+		query += " and public = true"
 	}
 
 	return Select[BlogPost](query, category.Id)

@@ -1,13 +1,6 @@
 import { Alpine } from '../lib/alpine.js';
 
 Alpine.data('data', () => ({
-  mysql: {
-    host: '',
-    port: 3306,
-    database: 'jinya',
-    username: 'jinya',
-    password: '',
-  },
   mailing: {
     host: '',
     port: 587,
@@ -46,19 +39,6 @@ Alpine.data('data', () => ({
       this.error.message = await result.text();
     } else {
       this.state = 'database';
-    }
-    this.loading = false;
-  },
-  async createDatabase() {
-    this.loading = true;
-    const result = await fetch('/api/install/database', {
-      method: 'POST',
-    });
-    if (!result.ok || result.status !== 204) {
-      this.error.hasError = true;
-      this.error.message = await result.text();
-    } else {
-      this.state = 'first-admin';
     }
     this.loading = false;
   },

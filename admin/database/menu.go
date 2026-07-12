@@ -53,26 +53,11 @@ func FindMenuById(id int) (*Menu, error) {
 
 func FindAllMenus() ([]Menu, error) {
 	return Select[Menu](`
-SELECT
-    id,
-    name,
-    logo
-FROM
-    menu
+select id,
+       name,
+       logo
+from menu
 `)
-}
-
-func FindMenuByLogo(logoId int) (*Menu, error) {
-	return SelectOne[Menu](`
-SELECT
-    id,
-    name,
-    logo
-FROM
-    menu
-WHERE
-    logo = ?
-`, logoId)
 }
 
 func (menu *Menu) GetItems() ([]MenuItem, error) {

@@ -1,13 +1,13 @@
 services:
-  jinya-mariadb-database:
-    image: library/mariadb:11
+  jinya-postgres-database:
+    image: library/postgres:18
     environment:
-      MYSQL_DATABASE: jinya
-      MYSQL_PASSWORD: jinya
-      MYSQL_ROOT_PASSWORD: jinya
-      MYSQL_USER: jinya
+      POSTGRES_DB: jinya
+      POSTGRES_PASSWORD: jinya
+      POSTGRES_ROOT_PASSWORD: jinya
+      POSTGRES_USER: jinya
     ports:
-      - 3309:3306
+      - 5439:5432
   jinya-mailer:
     image: axllent/mailpit:latest
     environment:

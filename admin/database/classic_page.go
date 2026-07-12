@@ -89,7 +89,7 @@ func FindClassicPageById(id int) (*ClassicPage, error) {
 
 func FindAllClassicPages() ([]ClassicPage, error) {
 	return Select[ClassicPage](`
-SELECT
+select
     id,
     creator_id,
     updated_by_id,
@@ -97,7 +97,7 @@ SELECT
     last_updated_at,
     content,
     title
-FROM
+from
     classic_page
 `)
 }

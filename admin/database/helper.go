@@ -1,8 +1,6 @@
 package database
 
 import (
-	"reflect"
-
 	"github.com/DerKnerd/gorp"
 )
 
@@ -54,16 +52,6 @@ func Update(value any) error {
 func Delete(value any) error {
 	_, err := dbMap.Delete(value)
 	return err
-}
-
-func toPtr[R any](value any) any {
-	val := reflect.ValueOf(value)
-	if val.Kind() == reflect.Ptr {
-		return value
-	} else {
-		elem := value.(R)
-		return &elem
-	}
 }
 
 func AddTableWithName[R any](name string) *gorp.TableMap {

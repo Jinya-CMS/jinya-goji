@@ -1536,40 +1536,12 @@ export default {
   maintenance: {
     menu: {
       title: 'Wartung',
-      update: 'Update',
       app_config: 'Jinya Konfiguration',
-      php_info: 'PHP Info',
-    },
-    update: {
-      version_text:
-        'Aktuell ist Version {openB}{currentVersion}{closeB} installiert. Es gibt ein Update auf Version {openB}{mostRecentVersion}{closeB}.',
-      version_text_no_update:
-        'Aktuell ist Version {openB}{currentVersion}{closeB} installiert, dies ist die aktuellste Version.',
-      update_now: 'Jetzt updaten',
-      perform_update: {
-        title: 'Update durchführen',
-        message: 'Soll das Update für Jinya CMS jetzt installiert werden? Ein Abbruch ist nicht möglich.',
-        decline: 'Update abbrechen',
-        approve: 'Jetzt updaten',
-        updating: 'Jinya CMS wird aktualisiert',
-        failed: {
-          title: 'Fehler',
-          message: 'Das Update ist fehlgeschlagen, bitte versuch es später erneut.',
-        },
-      },
     },
     configuration: {
       title: 'Jinya Konfiguration',
       action: {
         update: 'Konfiguration ändern',
-      },
-      mysql: {
-        title: 'Datenbank',
-        host: 'Server',
-        database: 'Datenbank',
-        password: 'Passwort',
-        port: 'Port',
-        user: 'Benutzer',
       },
       mailer: {
         title: 'Email',
@@ -1587,10 +1559,7 @@ export default {
       jinya: {
         title: 'Jinya',
         api_key_expiry: 'Zeit bis die API Keys ablaufen',
-        update_server: 'Server für Updates',
         ip_database_url: 'URL für die IP Datenbank',
-        image_converter: 'Bildconverter',
-        imaginary_url: 'Imaginary Server',
       },
       update: {
         title: 'Konfiguration bearbeiten',
@@ -1602,74 +1571,12 @@ export default {
         },
       },
     },
-    php: {
-      configuration: 'Konfiguration',
-      about: 'Über die PHP Installation',
-      system_and_server: 'System und Server',
-      apache: 'Apache Konfiguration',
-      extension: {
-        more_info: 'Mehr Informationen',
-        ini_values: 'Einstellungen',
-      },
-      ini: {
-        name: 'Name',
-        value: 'Wert',
-      },
-    },
   },
   database: {
     menu: {
       title: 'Datenbank',
-      mysql_info: 'MySQL info',
-      tables: 'Tabellen',
       query_tool: 'Query tool',
     },
-    mysql: {
-      system_and_server: 'Server',
-      global_variables: 'Globale Variablen',
-      local_variables: 'Lokale Variablen',
-      session_variables: 'Session Variablen',
-      server_type: 'Servertyp',
-      server_version: 'Server Version',
-      compile_machine: 'Compile machine',
-      compile_os: 'Compile operating system',
-      name: 'Variable',
-      value: 'Wert',
-    },
-    tables: {
-      field: 'Spaltenname',
-      type: 'Typ',
-      null: 'Erlaubt null',
-      key: 'Schlüssel',
-      default: 'Standardwert',
-      extra: 'Extradaten',
-    },
-    constraints: {
-      title: 'Constraints',
-      constraint_name: 'Name',
-      constraint_type: 'Constrainttyp',
-      column_name: 'Spalten Name',
-      referenced_table_name: 'Referenzierte Tabelle',
-      referenced_column_name: 'Referenzierte Spalte',
-      position_in_unique_constraint: 'Position in Unique Constraint',
-      delete_rule: 'Aktion bei Löschen',
-      update_rule: 'Aktion bei Update',
-      none: 'Nicht anwendbar',
-    },
-    indexes: {
-      title: 'Indexes',
-      key_name: 'Schlüsselname',
-      column_name: 'Spalten Name',
-      cardinality: 'Kardinalität',
-      index_type: 'Indextyp',
-      collation: 'Collation',
-      unique: 'Einzigartig',
-    },
-    structure: 'Struktur',
-    details: 'Details',
-    entry_count: 'Anzahl Einträge',
-    size: 'Tabellengröße in KB',
-    engine: 'Speicher Engine',
     query_tool: {
       execute: 'Queries ausführen',
       no_result: 'Für diese Query gibt es keine Ergebnisse',
@@ -1773,7 +1680,6 @@ export default {
   },
   bottom_bar: {
     upload_files: 'Dateien hochladen',
-    clear_cache: 'Cache leeren',
     change_theme: 'Theme ändern',
     status: 'Datei {name} wird hochgeladen',
     uploading: 'Dateien werden hochgeladen…',

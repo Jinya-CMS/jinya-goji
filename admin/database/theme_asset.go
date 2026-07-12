@@ -32,15 +32,12 @@ func (asset *ThemeAsset) Delete() error {
 
 func FindThemeAssetByThemeAndName(themeId int, name string) (*ThemeAsset, error) {
 	return SelectOne[ThemeAsset](`
-SELECT
-    name,
-    theme_id,
-    public_path
-FROM
-    theme_asset
-WHERE
-    theme_id = ?
-    AND name = ?
+select name,
+       theme_id,
+       public_path
+from theme_asset
+where theme_id = $1
+  and name = $2
 `, themeId, name)
 }
 
@@ -50,13 +47,10 @@ func (asset *ThemeAsset) GetTheme() (*Theme, error) {
 
 func FindThemeAssetsByTheme(themeId int) ([]ThemeAsset, error) {
 	return Select[ThemeAsset](`
-SELECT
-    name,
-    theme_id,
-    public_path
-FROM
-    theme_asset
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       public_path
+from theme_asset
+where theme_id = $1
 `, themeId)
 }

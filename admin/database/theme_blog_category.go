@@ -34,15 +34,12 @@ func (tbc *ThemeBlogCategory) Delete() error {
 
 func FindThemeBlogCategoryByThemeAndName(themeId int, name string) (*ThemeBlogCategory, error) {
 	return SelectOne[ThemeBlogCategory](`
-SELECT
-    name,
-    theme_id,
-    blog_category_id
-FROM
-    theme_blog_category
-WHERE
-    theme_id = ?
-    AND name = ?
+select name,
+       theme_id,
+       blog_category_id
+from theme_blog_category
+where theme_id = $1
+  and name = $2
 `, themeId, name)
 }
 
@@ -56,13 +53,10 @@ func (tbc *ThemeBlogCategory) GetBlogCategory() (*BlogCategory, error) {
 
 func FindThemeBlogCategoriesByTheme(themeId int) ([]ThemeBlogCategory, error) {
 	return Select[ThemeBlogCategory](`
-SELECT
-    name,
-    theme_id,
-    blog_category_id
-FROM
-    theme_blog_category
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       blog_category_id
+from theme_blog_category
+where theme_id = $1
 `, themeId)
 }

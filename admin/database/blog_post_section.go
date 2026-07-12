@@ -28,7 +28,7 @@ func FindBlogPostSectionById(id int) (*BlogPostSection, error) {
 
 func FindBlogPostSectionsByPost(postId int) ([]BlogPostSection, error) {
 	return Select[BlogPostSection](`
-SELECT
+select
     id,
     gallery_id,
     file_id,
@@ -36,11 +36,11 @@ SELECT
     link,
     blog_post_id,
     position
-FROM
+from
     blog_post_section
-WHERE
-    blog_post_id = ?
-ORDER BY
+where
+    blog_post_id = $1
+order by
     position
 `, postId)
 }

@@ -37,15 +37,12 @@ func (tg *ThemeGallery) Delete() error {
 
 func FindThemeGalleryByThemeAndName(themeId int, name string) (*ThemeGallery, error) {
 	return SelectOne[ThemeGallery](`
-SELECT
-    name,
-    theme_id,
-    gallery_id
-FROM
-    theme_gallery
-WHERE
-    theme_id = ?
-    AND name = ?
+select name,
+       theme_id,
+       gallery_id
+from theme_gallery
+where theme_id = $1
+  and name = $2
 `, themeId, name)
 }
 
@@ -59,13 +56,10 @@ func (tg *ThemeGallery) GetGallery() (*Gallery, error) {
 
 func FindThemeGalleriesByTheme(themeId int) ([]ThemeGallery, error) {
 	return Select[ThemeGallery](`
-SELECT
-    name,
-    theme_id,
-    gallery_id
-FROM
-    theme_gallery
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       gallery_id
+from theme_gallery
+where theme_id = $1
 `, themeId)
 }

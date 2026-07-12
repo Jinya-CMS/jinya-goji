@@ -1,24 +1,19 @@
 package storage
 
 import (
-	"crypto/rand"
-	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"jinya.de/goji/database"
 )
 
 func SaveFileChunk(fileId int, position int, data []byte) (*database.UploadingFileChunk, error) {
-	uuidBytes := make([]byte, 16)
-	_, _ = rand.Read(uuidBytes)
-	uuidStr := fmt.Sprintf("%x-%x-%x-%x-%x", uuidBytes[0:4], uuidBytes[4:6], uuidBytes[6:8], uuidBytes[8:10], uuidBytes[10:])
-
-	tempPath := filepath.Join(os.TempDir(), uuidStr)
+	tempPath := filepath.Join(os.TempDir(), uuid.New().String())
 	err := os.WriteFile(tempPath, data, 0644)
 	if err != nil {
 		return nil, err
@@ -59,7 +54,7 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 		return nil, err
 	}
 
-	err = EnsureSavePathExists()
+	err = ensureSavePathExists()
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +63,7 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer os.Remove(outTempFile.Name())
 	defer outTempFile.Close()
 
@@ -76,6 +72,7 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		_, err = outTempFile.Write(chunkData)
 		if err != nil {
 			return nil, err
@@ -87,13 +84,13 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 		return nil, err
 	}
 
-	hash, err := GetFileHash(outTempFile)
+	hash, err := getFileHash(outTempFile)
 	if err != nil {
 		return nil, err
 	}
 
 	fileName := hash
-	finalPath := filepath.Join(SavePath, fileName)
+	finalPath := filepath.Join(GetStoragePath(), fileName)
 
 	// Copy temp file to final destination
 	_, err = outTempFile.Seek(0, 0)
@@ -101,10 +98,12 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 		return nil, err
 	}
 	finalFile, err := os.Create(finalPath)
+
 	if err != nil {
 		return nil, err
 	}
 	defer finalFile.Close()
+
 	_, err = io.Copy(finalFile, outTempFile)
 	if err != nil {
 		return nil, err
@@ -128,7 +127,7 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 	}
 
 	file.Type = contentType
-	file.Path = WebPath + fileName
+	file.Path = fileName
 	err = file.Update()
 	if err != nil {
 		return nil, err
@@ -136,12 +135,12 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 
 	err = ClearFileChunks(fileId)
 	if err != nil {
-		log.Printf("Failed to clear chunks: %v", err)
+		slog.Error("Failed to clear chunks", "error", err)
 	}
 
 	err = uploadingFile.Delete()
 	if err != nil {
-		log.Printf("Failed to delete uploading file record: %v", err)
+		slog.Error("Failed to delete uploading file record", "error", err)
 	}
 
 	return file, nil

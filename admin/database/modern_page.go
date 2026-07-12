@@ -92,15 +92,13 @@ func FindModernPageById(id int) (*ModernPage, error) {
 
 func FindAllModernPages() ([]ModernPage, error) {
 	return Select[ModernPage](`
-SELECT
-    id,
-    creator_id,
-    updated_by_id,
-    created_at,
-    last_updated_at,
-    name
-FROM
-    segment_page
+select id,
+       creator_id,
+       updated_by_id,
+       created_at,
+       last_updated_at,
+       name
+from modern_page
 `)
 }
 
@@ -124,7 +122,10 @@ func (page *ModernPage) ReplaceSections(sections []ModernPageSection) error {
 
 	defer tx.Rollback()
 
-	_, err = tx.Exec("DELETE FROM segment_page_section WHERE page_id = ?", page.Id)
+	_, err = tx.Exec(`
+delete
+from modern_page_section
+where page_id = ?`, page.Id)
 	if err != nil {
 		return err
 	}

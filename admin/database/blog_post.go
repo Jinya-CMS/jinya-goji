@@ -130,59 +130,51 @@ func FindBlogPostById(id int) (*BlogPost, error) {
 
 func FindBlogPostBySlug(slug string) (*BlogPost, error) {
 	return SelectOne[BlogPost](`
-SELECT
-    id,
-    title,
-    slug,
-    header_image_id,
-    public,
-    created_at,
-    creator_id,
-    updated_by_id,
-    last_updated_at,
-    category_id
-FROM
-    blog_post
-WHERE
-    slug = ?
+select id,
+       title,
+       slug,
+       header_image_id,
+       public,
+       created_at,
+       creator_id,
+       updated_by_id,
+       last_updated_at,
+       category_id
+from blog_post
+where slug = $1
 `, slug)
 }
 
 func FindAllBlogPosts() ([]BlogPost, error) {
 	return Select[BlogPost](`
-SELECT
-    id,
-    title,
-    slug,
-    header_image_id,
-    public,
-    created_at,
-    creator_id,
-    updated_by_id,
-    last_updated_at,
-    category_id
-FROM
-    blog_post
+select id,
+       title,
+       slug,
+       header_image_id,
+       public,
+       created_at,
+       creator_id,
+       updated_by_id,
+       last_updated_at,
+       category_id
+from blog_post
 `)
 }
 
 func FindPublicBlogPosts() ([]BlogPost, error) {
 	return Select[BlogPost](`
-SELECT
-    id,
-    title,
-    slug,
-    header_image_id,
-    public,
-    created_at,
-    creator_id,
-    updated_by_id,
-    last_updated_at,
-    category_id
-FROM
-    blog_post
-WHERE
-    public = true
+select id,
+       title,
+       slug,
+       header_image_id,
+       public,
+       created_at,
+       creator_id,
+       updated_by_id,
+       last_updated_at,
+       category_id
+from blog_post
+where public is true
 `)
 }
 
@@ -220,7 +212,10 @@ func (post *BlogPost) ReplaceSections(sections []BlogPostSection) error {
 
 	defer tx.Rollback()
 
-	_, err = tx.Exec("DELETE FROM blog_post_section WHERE blog_post_id = ?", post.Id)
+	_, err = tx.Exec(`
+delete
+from blog_post_section
+where blog_post_id = $1`, post.Id)
 	if err != nil {
 		return err
 	}

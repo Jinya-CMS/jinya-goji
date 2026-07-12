@@ -3,7 +3,7 @@ package storage
 import (
 	"bytes"
 	"os"
-	"path/filepath"
+	"path"
 
 	"jinya.de/goji/database"
 )
@@ -14,25 +14,25 @@ func SaveProfilePicture(artistId int, data []byte) error {
 		return err
 	}
 
-	err = EnsureSavePathExists()
+	err = ensureSavePathExists()
 	if err != nil {
 		return err
 	}
 
-	hash, err := GetFileHash(bytes.NewReader(data))
+	hash, err := getFileHash(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
 
 	fileName := hash
-	finalPath := filepath.Join(SavePath, fileName)
+	finalPath := path.Join(GetStoragePath(), fileName)
 
 	err = os.WriteFile(finalPath, data, 0644)
 	if err != nil {
 		return err
 	}
 
-	artist.ProfilePicture = new(WebPath + fileName)
+	artist.ProfilePicture = new("/jinya-content/" + fileName)
 	return artist.Update()
 }
 
@@ -43,10 +43,8 @@ func DeleteProfilePicture(artistId int) error {
 	}
 
 	if artist.ProfilePicture != nil && *artist.ProfilePicture != "" {
-		// PublicPath is ./public/, artist.ProfilePicture is /jinya-content/hash
-		// filepath.Join will handle the / at the start of ProfilePicture correctly if we are careful.
-		// In Go, Join("a", "/b") results in "a/b" on Unix.
-		fullPath := filepath.Join(PublicPath, *artist.ProfilePicture)
+		_, file := path.Split(*artist.ProfilePicture)
+		fullPath := path.Join(GetStoragePath(), file)
 		_ = os.Remove(fullPath)
 
 		artist.ProfilePicture = nil

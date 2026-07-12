@@ -3,12 +3,10 @@ package database
 import "encoding/json"
 
 type GalleryFilePosition struct {
-	Id        int      `db:"id,primarykey,autoincrement"`
-	Position  int      `db:"position"`
-	GalleryId int      `db:"gallery_id"`
-	FileId    int      `db:"file_id"`
-	Gallery   *Gallery `db:"-"`
-	File      *File    `db:"-"`
+	Id        int `db:"id,primarykey,autoincrement"`
+	Position  int `db:"position"`
+	GalleryId int `db:"gallery_id"`
+	FileId    int `db:"file_id"`
 }
 
 func (position *GalleryFilePosition) MarshalJSON() ([]byte, error) {
@@ -109,17 +107,14 @@ func (position *GalleryFilePosition) internalRearrange(parentId int, newPosition
 	}
 
 	data, err := Select[GalleryFilePosition](`
-SELECT
-    id,
-    position,
-    gallery_id,
-    file_id
-FROM
-    gallery_file_position
-WHERE
-    position >= ? AND gallery_id = ?
-ORDER BY
-    position
+select id,
+       position,
+       gallery_id,
+       file_id
+from gallery_file_position
+where position >= $1
+  and gallery_id = $2
+order by position
 `, target, parentId)
 	if err != nil {
 		return err
@@ -128,7 +123,10 @@ ORDER BY
 	previousPosition := target
 	for _, item := range data {
 		previousPosition++
-		_, err = dbMap.Exec(`UPDATE gallery_file_position SET position = ? WHERE id = ?`, previousPosition, item.Id)
+		_, err = dbMap.Exec(`
+update gallery_file_position
+set position = $1
+where id = $2`, previousPosition, item.Id)
 		if err != nil {
 			return err
 		}
@@ -140,24 +138,23 @@ ORDER BY
 
 func (position *GalleryFilePosition) resetOrder(parentId int) error {
 	data, err := Select[GalleryFilePosition](`
-SELECT
-    id,
-    position,
-    gallery_id,
-    file_id
-FROM
-    gallery_file_position
-WHERE
-    gallery_id = ?
-ORDER BY
-    position
+select id,
+       position,
+       gallery_id,
+       file_id
+from gallery_file_position
+where gallery_id = $1
+order by position
 `, parentId)
 	if err != nil {
 		return err
 	}
 
 	for idx, item := range data {
-		_, err = dbMap.Exec(`UPDATE gallery_file_position SET position = ? WHERE id = ?`, idx, item.Id)
+		_, err = dbMap.Exec(`
+update gallery_file_position
+set position = $1
+where id = $2`, idx, item.Id)
 		if err != nil {
 			return err
 		}
@@ -172,31 +169,25 @@ func FindGalleryFilePositionById(id int) (*GalleryFilePosition, error) {
 
 func FindGalleryFilePositionByPosition(galleryId int, position int) (*GalleryFilePosition, error) {
 	return SelectOne[GalleryFilePosition](`
-SELECT
-    id,
-    position,
-    gallery_id,
-    file_id
-FROM
-    gallery_file_position
-WHERE
-    gallery_id = ? AND position = ?
+select id,
+       position,
+       gallery_id,
+       file_id
+from gallery_file_position
+where gallery_id = $1
+  and position = $2
 `, galleryId, position)
 }
 
 func FindGalleryFilePositionsByGallery(galleryId int) ([]GalleryFilePosition, error) {
 	return Select[GalleryFilePosition](`
-SELECT
-    id,
-    position,
-    gallery_id,
-    file_id
-FROM
-    gallery_file_position
-WHERE
-    gallery_id = ?
-ORDER BY
-    position
+select id,
+       position,
+       gallery_id,
+       file_id
+from gallery_file_position
+where gallery_id = $1
+order by position
 `, galleryId)
 }
 

@@ -37,15 +37,12 @@ func (tcp *ThemeClassicPage) Delete() error {
 
 func FindThemeClassicPageByThemeAndName(themeId int, name string) (*ThemeClassicPage, error) {
 	return SelectOne[ThemeClassicPage](`
-SELECT
-    name,
-    theme_id,
-    page_id
-FROM
-    theme_classic_page
-WHERE
-    theme_id = ?
-    AND name = ?
+select name,
+       theme_id,
+       page_id
+from theme_classic_page
+where theme_id = $1
+  and name = $2
 `, themeId, name)
 }
 
@@ -59,13 +56,10 @@ func (tcp *ThemeClassicPage) GetClassicPage() (*ClassicPage, error) {
 
 func FindThemeClassicPagesByTheme(themeId int) ([]ThemeClassicPage, error) {
 	return Select[ThemeClassicPage](`
-SELECT
-    name,
-    theme_id,
-    page_id
-FROM
-    theme_classic_page
-WHERE
-    theme_id = ?
+select name,
+       theme_id,
+       page_id
+from theme_classic_page
+where theme_id = $1
 `, themeId)
 }

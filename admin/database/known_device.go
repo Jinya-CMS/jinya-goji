@@ -40,30 +40,24 @@ func FindKnownDeviceById(id int) (*KnownDevice, error) {
 
 func FindKnownDevicesByUser(userId int) ([]KnownDevice, error) {
 	return Select[KnownDevice](`
-SELECT
-    id,
-    user_id,
-    device_key,
-    user_agent,
-    remote_address
-FROM
-    known_device
-WHERE
-    user_id = ?
+select id,
+       user_id,
+       device_key,
+       user_agent,
+       remote_address
+from known_device
+where user_id = $1
 `, userId)
 }
 
 func FindKnownDeviceByKey(key string) (*KnownDevice, error) {
 	return SelectOne[KnownDevice](`
-SELECT
-    id,
-    user_id,
-    device_key,
-    user_agent,
-    remote_address
-FROM
-    known_device
-WHERE
-    device_key = ?
+select id,
+       user_id,
+       device_key,
+       user_agent,
+       remote_address
+from known_device
+where device_key = $1
 `, key)
 }

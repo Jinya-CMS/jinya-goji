@@ -56,56 +56,45 @@ func FindFolderById(id int) (*Folder, error) {
 
 func FindAllFolders() ([]Folder, error) {
 	return Select[Folder](`
-SELECT
-    id,
-    name,
-    parent_id
-FROM
-    folder
+select id,
+       name,
+       parent_id
+from folder
 `)
 }
 
 func FindRootFolders() ([]Folder, error) {
 	return Select[Folder](`
-SELECT
-    id,
-    name,
-    parent_id
-FROM
-    folder
-WHERE
-    parent_id IS NULL
+select id,
+       name,
+       parent_id
+from folder
+where parent_id is null
 `)
 }
 
 func (folder *Folder) GetFiles() ([]File, error) {
 	return Select[File](`
-SELECT
-    id,
-    creator_id,
-    updated_by_id,
-    created_at,
-    last_updated_at,
-    path,
-    name,
-    folder_id,
-    type
-FROM
-    file
-WHERE
-    folder_id = ?
+select id,
+       creator_id,
+       updated_by_id,
+       created_at,
+       last_updated_at,
+       path,
+       name,
+       folder_id,
+       type
+from file
+where folder_id = $1
 `, folder.Id)
 }
 
 func (folder *Folder) GetFolders() ([]Folder, error) {
 	return Select[Folder](`
-SELECT
-    id,
-    name,
-    parent_id
-FROM
-    folder
-WHERE
-    parent_id = ?
+select id,
+       name,
+       parent_id
+from folder
+where parent_id = $1
 `, folder.Id)
 }

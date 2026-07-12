@@ -9,8 +9,9 @@ type JinyaConfiguration struct {
 
 func FindJinyaConfiguration(key string, group string) (*JinyaConfiguration, error) {
 	return SelectOne[JinyaConfiguration](`
-SELECT "group", "key", value, type
-FROM jinya_configuration
-WHERE "group" = ? AND "key" = ?
+select "group", key, value, type
+from jinya_configuration
+where "group" = $1
+  and key = $2
 `, group, key)
 }

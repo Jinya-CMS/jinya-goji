@@ -10,7 +10,6 @@ type MenuItem struct {
 	Title         string  `db:"title"`
 	Route         *string `db:"route"`
 	Highlighted   bool    `db:"highlighted"`
-	FormId        *int    `db:"form_id"`
 	ArtistId      *int    `db:"artist_id"`
 	GalleryId     *int    `db:"gallery_id"`
 	ModernPageId  *int    `db:"segment_page_id"`
@@ -38,18 +37,7 @@ func (item *MenuItem) MarshalJSON() ([]byte, error) {
 		"items":        childItems,
 	}
 
-	if item.FormId != nil {
-		form, err := item.GetForm()
-		if err != nil {
-			return nil, err
-		}
-		if form != nil {
-			data["form"] = map[string]any{
-				"id":    form.Id,
-				"title": form.Title,
-			}
-		}
-	} else if item.ArtistId != nil {
+	if item.ArtistId != nil {
 		artist, err := item.GetArtist()
 		if err != nil {
 			return nil, err
@@ -128,77 +116,64 @@ func FindMenuItemById(id int) (*MenuItem, error) {
 
 func FindMenuItemsByMenu(menuId int) ([]MenuItem, error) {
 	return Select[MenuItem](`
-SELECT
-    id,
-    position,
-    menu_id,
-    parent_id,
-    title,
-    route,
-    highlighted,
-    form_id,
-    artist_id,
-    gallery_id,
-    segment_page_id,
-    page_id,
-    category_id,
-    blog_home_page
-FROM
-    menu_item
-WHERE
-    menu_id = ?
-ORDER BY
-    position
+select id,
+       position,
+       menu_id,
+       parent_id,
+       title,
+       route,
+       highlighted,
+       artist_id,
+       gallery_id,
+       segment_page_id,
+       page_id,
+       category_id,
+       blog_home_page
+from menu_item
+where menu_id = $1
+order by position
 `, menuId)
 }
 
 func FindMenuItemsByParent(parentId int) ([]MenuItem, error) {
 	return Select[MenuItem](`
-SELECT
-    id,
-    position,
-    menu_id,
-    parent_id,
-    title,
-    route,
-    highlighted,
-    form_id,
-    artist_id,
-    gallery_id,
-    segment_page_id,
-    page_id,
-    category_id,
-    blog_home_page
-FROM
-    menu_item
-WHERE
-    parent_id = ?
-ORDER BY
-    position
+select id,
+       position,
+       menu_id,
+       parent_id,
+       title,
+       route,
+       highlighted,
+       artist_id,
+       gallery_id,
+       segment_page_id,
+       page_id,
+       category_id,
+       blog_home_page
+from menu_item
+where parent_id = $1
+order by position
 `, parentId)
 }
 
 func FindMenuItemByRoute(route string) (*MenuItem, error) {
 	return SelectOne[MenuItem](`
-SELECT
-    id,
-    position,
-    menu_id,
-    parent_id,
-    title,
-    route,
-    highlighted,
-    form_id,
-    artist_id,
-    gallery_id,
-    segment_page_id,
-    page_id,
-    category_id,
-    blog_home_page
-FROM
-    menu_item
-WHERE
-    route = ? OR route = ?
+select id,
+       position,
+       menu_id,
+       parent_id,
+       title,
+       route,
+       highlighted,
+       artist_id,
+       gallery_id,
+       segment_page_id,
+       page_id,
+       category_id,
+       blog_home_page
+from menu_item
+where route = $1
+   or route = $2
 `, route, "/"+route)
 }
 
@@ -212,7 +187,6 @@ SELECT
     title,
     route,
     highlighted,
-    form_id,
     artist_id,
     gallery_id,
     segment_page_id,
@@ -228,25 +202,22 @@ WHERE
 
 func FindMenuItemByMenuItemAndPosition(parentId int, position int) (*MenuItem, error) {
 	return SelectOne[MenuItem](`
-SELECT
-    id,
-    position,
-    menu_id,
-    parent_id,
-    title,
-    route,
-    highlighted,
-    form_id,
-    artist_id,
-    gallery_id,
-    segment_page_id,
-    page_id,
-    category_id,
-    blog_home_page
-FROM
-    menu_item
-WHERE
-    parent_id = ? AND position = ?
+select id,
+       position,
+       menu_id,
+       parent_id,
+       title,
+       route,
+       highlighted,
+       artist_id,
+       gallery_id,
+       segment_page_id,
+       page_id,
+       category_id,
+       blog_home_page
+from menu_item
+where parent_id = $1
+  and position = $2
 `, parentId, position)
 }
 
@@ -262,13 +233,6 @@ func (item *MenuItem) GetMenu() (*Menu, error) {
 		return nil, nil
 	}
 	return FindMenuById(*item.MenuId)
-}
-
-func (item *MenuItem) GetForm() (*Form, error) {
-	if item.FormId == nil {
-		return nil, nil
-	}
-	return FindFormById(*item.FormId)
 }
 
 func (item *MenuItem) GetArtist() (*Artist, error) {
