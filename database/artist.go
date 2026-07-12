@@ -1,7 +1,15 @@
 package database
 
 import (
+	"crypto/rand"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math/big"
+	"slices"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type TotpMode int
@@ -23,20 +31,232 @@ func (t TotpMode) String() string {
 }
 
 type Artist struct {
-	Id                   int        `db:"id,primarykey,autoincrement" json:"id"`
-	Email                string     `db:"email" json:"email"`
-	Enabled              bool       `db:"enabled" json:"enabled"`
-	TwoFactorToken       *string    `db:"two_factor_token" json:"-"`
-	Roles                []string   `db:"roles" json:"roles"`
-	ArtistName           string     `db:"artist_name" json:"artistName"`
-	ProfilePicture       *string    `db:"profile_picture" json:"profilePicture"`
-	AboutMe              *string    `db:"about_me" json:"aboutMe"`
-	FailedLoginAttempts  *int       `db:"failed_login_attempts" json:"-"`
-	LoginBlockedUntil    *time.Time `db:"login_blocked_until" json:"-"`
-	PrefersColorScheme   *bool      `db:"prefers_color_scheme" json:"-"`
-	Password             string     `db:"password" json:"-"`
-	TotpMode             TotpMode   `db:"totp_mode" json:"totpMode"`
-	TotpSecret           *string    `db:"totp_secret" json:"-"`
-	LoginMailEnabled     bool       `db:"login_mail_enabled" json:"loginMailEnabled"`
-	NewDeviceMailEnabled bool       `db:"new_device_mail_enabled" json:"newDeviceMailEnabled"`
+	Id                   int        `db:"id,primarykey,autoincrement"`
+	Email                string     `db:"email,unique"`
+	Enabled              bool       `db:"enabled"`
+	TwoFactorToken       *string    `db:"two_factor_token"`
+	Roles                []string   `db:"roles"`
+	ArtistName           string     `db:"artist_name"`
+	ProfilePicture       *string    `db:"profile_picture"`
+	AboutMe              *string    `db:"about_me"`
+	FailedLoginAttempts  *int       `db:"failed_login_attempts"`
+	LoginBlockedUntil    *time.Time `db:"login_blocked_until"`
+	PrefersColorScheme   *bool      `db:"prefers_color_scheme"`
+	Password             string     `db:"password"`
+	TotpMode             TotpMode   `db:"totp_mode"`
+	TotpSecret           *string    `db:"totp_secret"`
+	LoginMailEnabled     bool       `db:"login_mail_enabled"`
+	NewDeviceMailEnabled bool       `db:"new_device_mail_enabled"`
+}
+
+func (artist *Artist) MarshalJSON() ([]byte, error) {
+	colorScheme := "auto"
+	if artist.PrefersColorScheme != nil {
+		if *artist.PrefersColorScheme {
+			colorScheme = "dark"
+		} else {
+			colorScheme = "light"
+		}
+	}
+
+	return json.Marshal(struct {
+		Id                   int      `json:"id"`
+		Email                string   `json:"email"`
+		Enabled              bool     `json:"enabled"`
+		Roles                []string `json:"roles"`
+		ArtistName           string   `json:"artistName"`
+		ProfilePicture       *string  `json:"profilePicture"`
+		AboutMe              *string  `json:"aboutMe"`
+		TotpMode             string   `json:"totpMode"`
+		ColorScheme          string   `json:"colorScheme"`
+		LoginMailEnabled     bool     `json:"loginMailEnabled"`
+		NewDeviceMailEnabled bool     `json:"newDeviceMailEnabled"`
+	}{
+		Id:                   artist.Id,
+		Email:                artist.Email,
+		Enabled:              artist.Enabled,
+		Roles:                artist.Roles,
+		ArtistName:           artist.ArtistName,
+		ProfilePicture:       artist.ProfilePicture,
+		AboutMe:              artist.AboutMe,
+		TotpMode:             artist.TotpMode.String(),
+		ColorScheme:          colorScheme,
+		LoginMailEnabled:     artist.LoginMailEnabled,
+		NewDeviceMailEnabled: artist.NewDeviceMailEnabled,
+	})
+}
+
+func (artist *Artist) Create() error {
+	return Insert(artist)
+}
+
+func (artist *Artist) Update() error {
+	return Update(artist)
+}
+
+func (artist *Artist) Delete() error {
+	return Delete(artist)
+}
+
+func FindArtistById(id int) (*Artist, error) {
+	return Get[Artist](id)
+}
+
+func FindArtistByEmail(email string) (*Artist, error) {
+	return SelectOne[Artist](`
+SELECT
+    id,
+    email,
+    enabled,
+    two_factor_token,
+    roles,
+    artist_name,
+    profile_picture,
+    about_me,
+    failed_login_attempts,
+    login_blocked_until,
+    prefers_color_scheme,
+    password,
+    totp_mode,
+    totp_secret,
+    login_mail_enabled,
+    new_device_mail_enabled
+FROM
+    users
+WHERE
+    email = ?
+`, email)
+}
+
+func FindAllArtists() ([]Artist, error) {
+	return Select[Artist](`
+SELECT
+    id,
+    email,
+    enabled,
+    two_factor_token,
+    roles,
+    artist_name,
+    profile_picture,
+    about_me,
+    failed_login_attempts,
+    login_blocked_until,
+    prefers_color_scheme,
+    password,
+    totp_mode,
+    totp_secret,
+    login_mail_enabled,
+    new_device_mail_enabled
+FROM
+    users
+`)
+}
+
+func (artist *Artist) SetTwoFactorCode() error {
+	token := ""
+	for i := 0; i < 6; i++ {
+		val, err := rand.Int(rand.Reader, big.NewInt(10))
+		if err != nil {
+			return err
+		}
+		token += fmt.Sprintf("%d", val.Int64())
+	}
+	artist.TwoFactorToken = &token
+	return nil
+}
+
+func (artist *Artist) ValidateDevice(knownDeviceCode string) (bool, error) {
+	device, err := FindKnownDeviceByKey(knownDeviceCode)
+	if err != nil {
+		return false, err
+	}
+
+	return device != nil && device.UserId == artist.Id, nil
+}
+
+func (artist *Artist) ChangePassword(oldPassword, password string) (bool, error) {
+	if artist.ValidatePassword(oldPassword) {
+		err := artist.SetPassword(password)
+		if err != nil {
+			return false, err
+		}
+		err = artist.Update()
+		if err != nil {
+			return false, err
+		}
+
+		apiKeys, err := FindApiKeyByArtist(artist.Id)
+		if err != nil {
+			return true, nil // Password changed, but failed to clear keys
+		}
+		for _, apiKey := range apiKeys {
+			_ = apiKey.Delete()
+		}
+
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (artist *Artist) ValidatePassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(artist.Password), []byte(password))
+	return err == nil && artist.Enabled
+}
+
+func (artist *Artist) SetPassword(password string) error {
+	if password == "" {
+		return errors.New("password cannot be empty")
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	artist.Password = string(hash)
+	return nil
+}
+
+func CountAdmins() (int, error) {
+	artists, err := FindAllArtists()
+	if err != nil {
+		return 0, err
+	}
+
+	admins := 0
+	for _, artist := range artists {
+		if artist.Enabled && slices.Contains(artist.Roles, "ROLE_ADMIN") {
+			admins++
+		}
+	}
+
+	return admins, nil
+}
+
+func (artist *Artist) RegisterFailedLogin() error {
+	attempts := 0
+	if artist.FailedLoginAttempts != nil {
+		attempts = *artist.FailedLoginAttempts
+	}
+	attempts++
+	artist.FailedLoginAttempts = &attempts
+	if attempts >= 5 {
+		blockedUntil := time.Now().Add(10 * time.Minute)
+		artist.LoginBlockedUntil = &blockedUntil
+	}
+	return artist.Update()
+}
+
+func (artist *Artist) UnlockAccount() error {
+	artist.FailedLoginAttempts = nil
+	artist.LoginBlockedUntil = nil
+	return artist.Update()
+}
+
+func (artist *Artist) VerifyTotpCode(code string) bool {
+	// Note: Otphp verification is not implemented as it requires a specialized library
+	if artist.TotpSecret != nil && artist.TotpMode == TotpModeOtphp {
+		return false
+	}
+
+	return artist.TwoFactorToken != nil && *artist.TwoFactorToken == code
 }

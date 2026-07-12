@@ -1,8 +1,40 @@
 package database
 
 type UploadingFileChunk struct {
-	Id              int    `db:"id,primarykey,autoincrement" json:"id"`
-	UploadingFileId string `db:"uploading_file_id" json:"uploadingFileId"`
-	ChunkPath       string `db:"chunk_path" json:"chunkPath"`
-	ChunkPosition   int    `db:"chunk_position" json:"chunkPosition"`
+	Id              int    `db:"id,primarykey,autoincrement"`
+	UploadingFileId string `db:"uploading_file_id"`
+	ChunkPath       string `db:"chunk_path"`
+	ChunkPosition   int    `db:"chunk_position"`
+}
+
+func (chunk *UploadingFileChunk) Create() error {
+	return Insert(chunk)
+}
+
+func (chunk *UploadingFileChunk) Update() error {
+	return Update(chunk)
+}
+
+func (chunk *UploadingFileChunk) Delete() error {
+	return Delete(chunk)
+}
+
+func FindUploadingFileChunkById(id int) (*UploadingFileChunk, error) {
+	return Get[UploadingFileChunk](id)
+}
+
+func FindUploadingFileChunksByFile(uploadingFileId string) ([]UploadingFileChunk, error) {
+	return Select[UploadingFileChunk](`
+SELECT
+    id,
+    uploading_file_id,
+    chunk_path,
+    chunk_position
+FROM
+    uploading_file_chunk
+WHERE
+    uploading_file_id = ?
+ORDER BY
+    chunk_position
+`, uploadingFileId)
 }

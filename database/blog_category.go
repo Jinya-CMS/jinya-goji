@@ -1,10 +1,127 @@
 package database
 
+import "encoding/json"
+
 type BlogCategory struct {
-	Id             int     `db:"id,primarykey,autoincrement" json:"id"`
-	Name           string  `db:"name" json:"name"`
-	Description    *string `db:"description" json:"description"`
-	ParentId       *int    `db:"parent_id" json:"-"`
-	WebhookEnabled bool    `db:"webhook_enabled" json:"webhookEnabled"`
-	WebhookUrl     *string `db:"webhook_url" json:"webhookUrl"`
+	Id             int     `db:"id,primarykey,autoincrement"`
+	Name           string  `db:"name"`
+	Description    *string `db:"description"`
+	ParentId       *int    `db:"parent_id"`
+	WebhookEnabled bool    `db:"webhook_enabled"`
+	WebhookUrl     *string `db:"webhook_url"`
+}
+
+func (category *BlogCategory) MarshalJSON() ([]byte, error) {
+	parent, err := category.GetParent()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(struct {
+		Id             int           `json:"id"`
+		Name           string        `json:"name"`
+		Description    *string       `json:"description"`
+		Parent         *BlogCategory `json:"parent"`
+		WebhookEnabled bool          `json:"webhookEnabled"`
+		WebhookUrl     *string       `json:"webhookUrl"`
+	}{
+		Id:             category.Id,
+		Name:           category.Name,
+		Description:    category.Description,
+		Parent:         parent,
+		WebhookEnabled: category.WebhookEnabled,
+		WebhookUrl:     category.WebhookUrl,
+	})
+}
+
+func (category *BlogCategory) Create() error {
+	return Insert(category)
+}
+
+func (category *BlogCategory) Update() error {
+	return Update(category)
+}
+
+func (category *BlogCategory) Delete() error {
+	return Delete(category)
+}
+
+func FindBlogCategoryById(id int) (*BlogCategory, error) {
+	return Get[BlogCategory](id)
+}
+
+func FindAllBlogCategories() ([]BlogCategory, error) {
+	return Select[BlogCategory](`
+SELECT
+    id,
+    name,
+    description,
+    parent_id,
+    webhook_enabled,
+    webhook_url
+FROM
+    blog_category
+`)
+}
+
+func (category *BlogCategory) GetParent() (*BlogCategory, error) {
+	if category.ParentId == nil {
+		return nil, nil
+	}
+	return FindBlogCategoryById(*category.ParentId)
+}
+
+func (category *BlogCategory) GetBlogPosts(includeChildCategories bool, onlyPublic bool) ([]BlogPost, error) {
+	var query string
+	if includeChildCategories {
+		query = `
+WITH RECURSIVE category_cte AS (
+    SELECT bc.*
+    FROM blog_category AS bc
+    WHERE bc.id = ?
+    UNION
+    SELECT bc2.*
+    FROM category_cte
+    INNER JOIN blog_category AS bc2 ON category_cte.id = bc2.parent_id
+)
+SELECT
+    id,
+    title,
+    slug,
+    header_image_id,
+    public,
+    created_at,
+    creator_id,
+    updated_by_id,
+    last_updated_at,
+    category_id
+FROM
+    blog_post
+WHERE
+    category_id IN (SELECT id FROM category_cte)
+`
+	} else {
+		query = `
+SELECT
+    id,
+    title,
+    slug,
+    header_image_id,
+    public,
+    created_at,
+    creator_id,
+    updated_by_id,
+    last_updated_at,
+    category_id
+FROM
+    blog_post
+WHERE
+    category_id = ?
+`
+	}
+
+	if onlyPublic {
+		query += " AND public = true"
+	}
+
+	return Select[BlogPost](query, category.Id)
 }

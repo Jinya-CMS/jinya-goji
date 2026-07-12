@@ -16,11 +16,14 @@ func Get[R any](keys ...any) (*R, error) {
 	return nil, err
 }
 
-func SelectOne[R any](query string, keys ...any) (R, error) {
+func SelectOne[R any](query string, keys ...any) (*R, error) {
 	var r R
 	err := dbMap.SelectOne(&r, query, keys...)
+	if err != nil {
+		return nil, err
+	}
 
-	return r, err
+	return &r, nil
 }
 
 func Select[R any](query string, keys ...any) ([]R, error) {
@@ -37,6 +40,20 @@ func Select[R any](query string, keys ...any) ([]R, error) {
 	}
 
 	return result, nil
+}
+
+func Insert(value any) error {
+	return dbMap.Insert(value)
+}
+
+func Update(value any) error {
+	_, err := dbMap.Update(value)
+	return err
+}
+
+func Delete(value any) error {
+	_, err := dbMap.Delete(value)
+	return err
 }
 
 func toPtr[R any](value any) any {

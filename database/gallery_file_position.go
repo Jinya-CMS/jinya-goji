@@ -1,8 +1,209 @@
 package database
 
+import "encoding/json"
+
 type GalleryFilePosition struct {
-	Id        int `db:"id,primarykey,autoincrement" json:"id"`
-	Position  int `db:"position" json:"position"`
-	GalleryId int `db:"gallery_id" json:"-"`
-	FileId    int `db:"file_id" json:"-"`
+	Id        int      `db:"id,primarykey,autoincrement"`
+	Position  int      `db:"position"`
+	GalleryId int      `db:"gallery_id"`
+	FileId    int      `db:"file_id"`
+	Gallery   *Gallery `db:"-"`
+	File      *File    `db:"-"`
+}
+
+func (position *GalleryFilePosition) MarshalJSON() ([]byte, error) {
+	gallery, err := position.GetGallery()
+	if err != nil {
+		return nil, err
+	}
+	file, err := position.GetFile()
+	if err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(struct {
+		Gallery  any `json:"gallery"`
+		File     any `json:"file"`
+		Id       int `json:"id"`
+		Position int `json:"position"`
+	}{
+		Id:       position.Id,
+		Position: position.Position,
+		Gallery: struct {
+			Id          int    `json:"id"`
+			Name        string `json:"name"`
+			Description string `json:"description"`
+		}{
+			Id:          position.GalleryId,
+			Name:        gallery.Name,
+			Description: gallery.Description,
+		},
+		File: struct {
+			Path string `json:"path"`
+			Id   int    `json:"id"`
+			Name string `json:"name"`
+			Type string `json:"type"`
+		}{
+			Path: file.Path,
+			Id:   file.Id,
+			Name: file.Name,
+			Type: file.Type,
+		},
+	})
+}
+
+func (position *GalleryFilePosition) Create() error {
+	err := position.internalRearrange(position.GalleryId, position.Position)
+	if err != nil {
+		return err
+	}
+
+	err = Insert(position)
+	if err != nil {
+		return err
+	}
+
+	return position.resetOrder(position.GalleryId)
+}
+
+func (position *GalleryFilePosition) Update() error {
+	return Update(position)
+}
+
+func (position *GalleryFilePosition) Delete() error {
+	err := Delete(position)
+	if err != nil {
+		return err
+	}
+
+	err = position.internalRearrange(position.GalleryId, -1)
+	if err != nil {
+		return err
+	}
+
+	return position.resetOrder(position.GalleryId)
+}
+
+func (position *GalleryFilePosition) Move(newPosition int) error {
+	if newPosition == position.Position {
+		return nil
+	}
+
+	err := position.internalRearrange(position.GalleryId, newPosition)
+	if err != nil {
+		return err
+	}
+
+	err = position.Update()
+	if err != nil {
+		return err
+	}
+
+	return position.resetOrder(position.GalleryId)
+}
+
+func (position *GalleryFilePosition) internalRearrange(parentId int, newPosition int) error {
+	target := newPosition
+	if newPosition > position.Position {
+		target++
+	}
+
+	data, err := Select[GalleryFilePosition](`
+SELECT
+    id,
+    position,
+    gallery_id,
+    file_id
+FROM
+    gallery_file_position
+WHERE
+    position >= ? AND gallery_id = ?
+ORDER BY
+    position
+`, target, parentId)
+	if err != nil {
+		return err
+	}
+
+	previousPosition := target
+	for _, item := range data {
+		previousPosition++
+		_, err = dbMap.Exec(`UPDATE gallery_file_position SET position = ? WHERE id = ?`, previousPosition, item.Id)
+		if err != nil {
+			return err
+		}
+	}
+
+	position.Position = target
+	return nil
+}
+
+func (position *GalleryFilePosition) resetOrder(parentId int) error {
+	data, err := Select[GalleryFilePosition](`
+SELECT
+    id,
+    position,
+    gallery_id,
+    file_id
+FROM
+    gallery_file_position
+WHERE
+    gallery_id = ?
+ORDER BY
+    position
+`, parentId)
+	if err != nil {
+		return err
+	}
+
+	for idx, item := range data {
+		_, err = dbMap.Exec(`UPDATE gallery_file_position SET position = ? WHERE id = ?`, idx, item.Id)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func FindGalleryFilePositionById(id int) (*GalleryFilePosition, error) {
+	return Get[GalleryFilePosition](id)
+}
+
+func FindGalleryFilePositionByPosition(galleryId int, position int) (*GalleryFilePosition, error) {
+	return SelectOne[GalleryFilePosition](`
+SELECT
+    id,
+    position,
+    gallery_id,
+    file_id
+FROM
+    gallery_file_position
+WHERE
+    gallery_id = ? AND position = ?
+`, galleryId, position)
+}
+
+func FindGalleryFilePositionsByGallery(galleryId int) ([]GalleryFilePosition, error) {
+	return Select[GalleryFilePosition](`
+SELECT
+    id,
+    position,
+    gallery_id,
+    file_id
+FROM
+    gallery_file_position
+WHERE
+    gallery_id = ?
+ORDER BY
+    position
+`, galleryId)
+}
+
+func (position *GalleryFilePosition) GetGallery() (*Gallery, error) {
+	return FindGalleryById(position.GalleryId)
+}
+
+func (position *GalleryFilePosition) GetFile() (*File, error) {
+	return FindFileById(position.FileId)
 }
