@@ -1,6 +1,10 @@
 package database
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"log/slog"
+	"strconv"
+)
 
 type Theme struct {
 	Id            int               `db:"id,primarykey,autoincrement"`
@@ -94,14 +98,14 @@ select t.id,
        t.configuration,
        t.has_api_theme
 from theme t
-         join configuration c on c.active_theme_id = t.id
+         join configuration c on c.current_frontend_theme_id = t.id
 `)
 }
 
 func (theme *Theme) MakeActiveTheme() error {
 	_, err := dbMap.Exec(`
 update configuration
-set active_theme_id = $1`, theme.Id)
+set current_frontend_theme_id = $1`, theme.Id)
 	return err
 }
 
@@ -131,4 +135,13 @@ func (theme *Theme) GetClassicPages() ([]ThemeClassicPage, error) {
 
 func (theme *Theme) GetAssets() ([]ThemeAsset, error) {
 	return FindThemeAssetsByTheme(theme.Id)
+}
+
+func (theme *Theme) TriggerCompile() error {
+	_, err := dbMap.Exec("select pg_notify($1, $2)", "compile_theme_"+strconv.Itoa(theme.Id), theme.Id)
+	if err != nil {
+		slog.Error("Failed to notify about registration")
+	}
+
+	return err
 }

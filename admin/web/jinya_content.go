@@ -143,3 +143,22 @@ func imagePhp(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, targetPath)
 	}
 }
+
+func themeAsset(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	themeId, err := strconv.Atoi(vars["themeName"])
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	assetName := vars["assetName"]
+
+	asset, err := database.FindThemeAssetByThemeAndName(themeId, assetName)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	http.ServeFile(w, r, asset.Path)
+}

@@ -12,6 +12,9 @@ func SetupWebRouter(router *mux.Router) {
 		Path("/image.php").
 		HandlerFunc(imagePhp)
 	router.
+		Path("/jinya-content/themes/{themeName}/asset/{assetName}").
+		HandlerFunc(themeAsset)
+	router.
 		Path("/jinya-content/{hash}").
 		HandlerFunc(jinyaContent)
 	router.
