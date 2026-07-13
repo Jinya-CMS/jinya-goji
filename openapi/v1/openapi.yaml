@@ -146,18 +146,6 @@ tags:
   - name: configuration
     description: Configuration
     x-displayName: Configuration
-  - name: php-info
-    description: PHP info
-    x-displayName: PHP info
-  - name: cache
-    description: Cache
-    x-displayName: Cache
-  - name: mysql
-    description: MySQL info
-    x-displayName: MySQL info
-  - name: query-tool
-    description: Query tool
-    x-displayName: Query tool
   - name: artists
     description: Artist management
     x-displayName: Artist management
@@ -199,10 +187,6 @@ paths:
     $ref: paths/api_blog-post_{id}.yaml
   /api/blog-post/{id}/section:
     $ref: paths/api_blog-post_{id}_section.yaml
-  /api/maintenance/database/analyze:
-    $ref: paths/api_maintenance_database_analyze.yaml
-  /api/maintenance/database/query:
-    $ref: paths/api_maintenance_database_query.yaml
   /api/configuration:
     $ref: paths/api_configuration.yaml
   /api/media:
