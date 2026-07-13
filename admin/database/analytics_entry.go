@@ -131,18 +131,6 @@ func (entry *AnalyticsEntry) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (entry *AnalyticsEntry) Create() error {
-	return Insert(entry)
-}
-
-func (entry *AnalyticsEntry) Update() error {
-	return Update(entry)
-}
-
-func (entry *AnalyticsEntry) Delete() error {
-	return Delete(entry)
-}
-
 func FindAnalyticsById(id int) (*AnalyticsEntry, error) {
 	return Get[AnalyticsEntry](id)
 }

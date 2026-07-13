@@ -52,7 +52,7 @@ func FindApiKeyByKey(key string) (*ApiKey, error) {
 	return FindApiKeyByHashedKey(hex.EncodeToString(hash[:]))
 }
 
-func FindApiKeyByArtist(artistId int) ([]ApiKey, error) {
+func FindApiKeysByArtist(artistId int) ([]ApiKey, error) {
 	return Select[ApiKey](`
 select api_key,
        user_id,

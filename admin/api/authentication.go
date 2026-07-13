@@ -19,3 +19,7 @@ func VerifyOtp(w http.ResponseWriter, r *http.Request) {
 func CheckApiKey(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}

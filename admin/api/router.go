@@ -97,16 +97,20 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(ActivateUser))).
 		Methods(http.MethodPost)
 	userRouter.
-		Path("/{id}/totp").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateUserTotp))).
-		Methods(http.MethodPut)
+		Path("/{id}/activation").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(DeactivateUser))).
+		Methods(http.MethodDelete)
 	userRouter.
 		Path("/{id}/profilepicture").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateUserProfilePicture))).
 		Methods(http.MethodPut)
 	userRouter.
-		Path("/{id}/password").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(UpdateUserPassword))).
+		Path("/{id}/profilepicture").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(DeleteUserProfilePicture))).
+		Methods(http.MethodDelete)
+	userRouter.
+		Path("/{id}/totp").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(ResetTotp))).
 		Methods(http.MethodPut)
 
 	// File
