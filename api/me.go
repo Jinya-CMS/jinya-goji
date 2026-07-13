@@ -1,18 +1,19 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
+
+	"jinya.de/goji/api/middleware"
 )
 
 func getMe(w http.ResponseWriter, r *http.Request) {
-	//w.WriteHeader(http.StatusNotImplemented)
+	artist := middleware.GetUserFromRequest(r)
+	encoder := json.NewEncoder(w)
+	encoder.Encode(artist)
 }
 
 func updateMe(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func getMeColorScheme(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -20,15 +21,7 @@ func updateMeColorScheme(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func getMePreferences(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
 func updateMePreferences(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func getMeProfilePicture(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 

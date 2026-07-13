@@ -489,24 +489,12 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Methods(http.MethodPut)
 	meRouter.
 		Path("/colorscheme").
-		Handler(middleware.CheckAuthentication(http.HandlerFunc(getMeColorScheme))).
-		Methods(http.MethodGet)
-	meRouter.
-		Path("/colorscheme").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(updateMeColorScheme))).
 		Methods(http.MethodPut)
 	meRouter.
 		Path("/preferences").
-		Handler(middleware.CheckAuthentication(http.HandlerFunc(getMePreferences))).
-		Methods(http.MethodGet)
-	meRouter.
-		Path("/preferences").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(updateMePreferences))).
 		Methods(http.MethodPut)
-	meRouter.
-		Path("/profilepicture").
-		Handler(middleware.CheckAuthentication(http.HandlerFunc(getMeProfilePicture))).
-		Methods(http.MethodGet)
 	meRouter.
 		Path("/profilepicture").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(updateMeProfilePicture))).
@@ -530,32 +518,28 @@ func SetupAdminApiRouter(router *mux.Router) {
 	// Statistics
 	statisticsRouter := apiRouter.PathPrefix("/statistics").Subrouter()
 	statisticsRouter.
-		Path("/{group}/{months}/month").
+		Path("/{group:country|os|browser|os-version|browser-version|referer|brand|type|language|date}/{months:[1-9]\\d*}/month").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getGroupStatisticsByMonth))).
 		Methods(http.MethodGet)
 	statisticsRouter.
-		Path("/{group}/{years}/year").
+		Path("/{group:country|os|browser|os-version|browser-version|referer|brand|type|language|date}/{years:[1-9]\\d*}/year").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getGroupStatisticsByYear))).
 		Methods(http.MethodGet)
 	statisticsRouter.
-		Path("/visits/{interval}/month/{entityType}/{entityId}").
+		Path("/visits/{months:[1-9]\\d*}/month/{entityType:blog-post|blog-category|gallery|modern-page|classic-page|artist}/{entityId:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getEntityStatisticsByMonth))).
 		Methods(http.MethodGet)
 	statisticsRouter.
-		Path("/visits/{interval}/year/{entityType}/{entityId}").
+		Path("/visits/{years:[1-9]\\d*}/year/{entityType:blog-post|blog-category|gallery|modern-page|classic-page|artist}/{entityId:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getEntityStatisticsByYear))).
 		Methods(http.MethodGet)
 	statisticsRouter.
-		Path("/visits/{months}/month").
+		Path("/visits/{months:[1-9]\\d*}/month").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getVisitStatisticsByMonth))).
 		Methods(http.MethodGet)
 	statisticsRouter.
-		Path("/visits/{years}/year").
+		Path("/visits/{years:[1-9]\\d*}/year").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getVisitStatisticsByYear))).
-		Methods(http.MethodGet)
-	statisticsRouter.
-		Path("/{years}/year").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getStatisticsByYear))).
 		Methods(http.MethodGet)
 
 	// Account

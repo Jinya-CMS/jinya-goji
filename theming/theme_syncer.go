@@ -4,13 +4,26 @@ import (
 	"encoding/json"
 	"log/slog"
 	"os"
+	"path"
 	"path/filepath"
 	"slices"
 
 	"jinya.de/goji/database"
 )
 
-const ThemeBasePath = "./themes/"
+func getThemeBasePath() string {
+	themePath := os.Getenv("THEME_PATH")
+	if themePath != "" {
+		return themePath
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		return "themes"
+	}
+
+	return path.Join(wd, themePath)
+}
 
 type ThemeSyncer struct{}
 
@@ -31,10 +44,10 @@ func (s *ThemeSyncer) SyncThemes() error {
 		return err
 	}
 
-	entries, err := os.ReadDir(ThemeBasePath)
+	entries, err := os.ReadDir(getThemeBasePath())
 	if err != nil {
 		if os.IsNotExist(err) {
-			slog.Warn("Theme base path does not exist", "path", ThemeBasePath)
+			slog.Warn("Theme base path does not exist", "path", getThemeBasePath())
 			return nil
 		}
 		return err
@@ -43,7 +56,7 @@ func (s *ThemeSyncer) SyncThemes() error {
 	var themes []string
 	for _, entry := range entries {
 		if entry.IsDir() {
-			themePath := filepath.Join(ThemeBasePath, entry.Name())
+			themePath := filepath.Join(getThemeBasePath(), entry.Name())
 			if _, err := os.Stat(filepath.Join(themePath, "theme.yaml")); err == nil {
 				themes = append(themes, entry.Name())
 			}
@@ -52,7 +65,7 @@ func (s *ThemeSyncer) SyncThemes() error {
 
 	slog.Debug("Iterate of themes and add to database")
 	for _, name := range themes {
-		themePath := filepath.Join(ThemeBasePath, name)
+		themePath := filepath.Join(getThemeBasePath(), name)
 		configFile, err := os.ReadFile(filepath.Join(themePath, "theme.yaml"))
 		if err != nil {
 			continue

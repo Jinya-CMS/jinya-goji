@@ -442,7 +442,7 @@ class WorldMapElement extends HTMLElement {
 
   async #renderMap(stats) {
     if (!echarts.getMap('world')) {
-      const worldmap = await get('/designer/js/foundation/ui/components/diagrams/world.json');
+      const worldmap = await get('/static/designer/js/foundation/ui/components/diagrams/world.json');
       echarts.registerMap('world', worldmap);
     }
 

@@ -11,10 +11,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"jinya.de/goji/database"
+	"jinya.de/goji/frontend"
 )
-
-const BasePublicPath = "/themes/"
-const BaseCachePath = "./public" + BasePublicPath
 
 type Theme struct {
 	dbTheme       database.Theme
@@ -36,7 +34,7 @@ func NewTheme(dbTheme database.Theme) (*Theme, error) {
 
 func (t *Theme) parseThemeYaml() error {
 	slog.Debug("Parse the theme.yaml file")
-	themeYamlFile := filepath.Join(ThemeBasePath, t.dbTheme.Name, "theme.json")
+	themeYamlFile := filepath.Join(getThemeBasePath(), t.dbTheme.Name, "theme.json")
 	if _, err := os.Stat(themeYamlFile); os.IsNotExist(err) {
 		slog.Error("Could not find theme.yaml", "path", themeYamlFile)
 		return fmt.Errorf("theme.yaml is not found, expecting it here: %s", themeYamlFile)
@@ -83,7 +81,7 @@ func (t *Theme) GetStyleVariables() (map[string]string, error) {
 		return nil, nil
 	}
 
-	absVariablesPath := filepath.Join(ThemeBasePath, t.dbTheme.Name, variablesPath)
+	absVariablesPath := filepath.Join(getThemeBasePath(), t.dbTheme.Name, variablesPath)
 	if _, err := os.Stat(absVariablesPath); os.IsNotExist(err) {
 		return nil, nil
 	}
@@ -117,11 +115,6 @@ func (t *Theme) GetStyleVariables() (map[string]string, error) {
 
 func (t *Theme) CompileAssetCache() error {
 	slog.Debug("Compile theme asset cache", "name", t.dbTheme.Name)
-	assetCachePath := filepath.Join(BaseCachePath, t.dbTheme.Name, "assets")
-	if err := os.MkdirAll(assetCachePath, 0777); err != nil {
-		slog.Error("Could not create asset cache directory", "path", assetCachePath, "name", t.dbTheme.Name)
-		return err
-	}
 
 	assets, ok := t.configuration["assets"].(map[string]any)
 	if !ok {
@@ -135,7 +128,7 @@ func (t *Theme) CompileAssetCache() error {
 			continue
 		}
 
-		absAssetPath := filepath.Join(ThemeBasePath, t.dbTheme.Name, assetPath)
+		absAssetPath := filepath.Join(getThemeBasePath(), t.dbTheme.Name, assetPath)
 		assetFromDb, err := database.FindThemeAssetByThemeAndName(t.dbTheme.Id, key)
 
 		if _, errStat := os.Stat(absAssetPath); os.IsNotExist(errStat) {
@@ -159,5 +152,5 @@ func (t *Theme) CompileAssetCache() error {
 		}
 	}
 
-	return nil
+	return frontend.CompileTheme(t.dbTheme.Id)
 }

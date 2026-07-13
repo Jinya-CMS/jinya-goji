@@ -2,8 +2,6 @@ package database
 
 import (
 	"encoding/json"
-	"log/slog"
-	"strconv"
 )
 
 type Theme struct {
@@ -135,13 +133,4 @@ func (theme *Theme) GetClassicPages() ([]ThemeClassicPage, error) {
 
 func (theme *Theme) GetAssets() ([]ThemeAsset, error) {
 	return FindThemeAssetsByTheme(theme.Id)
-}
-
-func (theme *Theme) TriggerCompile() error {
-	_, err := dbMap.Exec("select pg_notify($1, $2)", "compile_theme_"+strconv.Itoa(theme.Id), theme.Id)
-	if err != nil {
-		slog.Error("Failed to notify about registration")
-	}
-
-	return err
 }

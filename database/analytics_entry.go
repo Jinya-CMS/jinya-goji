@@ -160,20 +160,21 @@ from analytics
 }
 
 type AnalyticsPastIntervalResult struct {
-	Visits int    `db:"visits"`
-	Group  string `db:"group"`
+	Visits int    `db:"visits" json:"visits"`
+	Group  string `db:"group" json:"group"`
 }
 
 func GetAnalyticsPastInterval(months *int, entityType *EntityType, id *int, uniqueOnly bool) ([]AnalyticsPastIntervalResult, error) {
 	query := `
 select count(*) as visits,
-       timestamp as 'group'
+       timestamp as "group"
 from analytics
 where status <> 404
+  and timestamp is not null
 `
 	args := make([]any, 0)
 	if months != nil {
-		query += " and timestamp >= subdate(current_date, interval " + strconv.Itoa(*months) + " month)"
+		query += " and timestamp >= date_subtract(current_date, interval '" + strconv.Itoa(*months) + " months')"
 	}
 	if uniqueOnly {
 		query += " and unique_visit = true"
@@ -212,20 +213,24 @@ func GetAnalyticsPastIntervalGrouped(group string, months *int, entityType *Enti
 	}
 
 	query := `
-select count(*) as visits, ` + groupColumnsForName + ` as 'group'
+select count(*) as visits, ` + groupColumnsForName + ` as "group"
 from analytics
 where status <> 404`
 	args := make([]any, 0)
 
 	if months != nil {
-		query += " and timestamp >= subdate(current_date, interval " + strconv.Itoa(*months) + " month)"
+		query += " and timestamp >= date_subtract(current_date, interval '" + strconv.Itoa(*months) + " months')"
 	}
 	if uniqueOnly {
 		query += " and unique_visit = true"
 	}
 	if entityType != nil && id != nil {
-		query += " and entity_type = ? and entity_id = ?"
+		query += " and entity_type = $1 and entity_id = $2"
 		args = append(args, *entityType, *id)
+	}
+
+	for _, col := range groupColumns {
+		query += " and " + col + " is not null"
 	}
 
 	query += " group by "
@@ -248,7 +253,7 @@ where status <> 404
 `
 	args := make([]any, 0)
 	if months != nil {
-		query += " and timestamp >= subdate(current_date, interval " + strconv.Itoa(*months) + " month)"
+		query += " and timestamp >= date_subtract(current_date, interval '" + strconv.Itoa(*months) + " months')"
 	}
 
 	var result struct {
@@ -256,14 +261,6 @@ where status <> 404
 	}
 	err := dbMap.SelectOne(&result, query, args...)
 	return result.Visits, err
-}
-
-func GetAnalyticsPastNMonthsForEntity(months int, entityType EntityType, id int) ([]AnalyticsPastIntervalResult, error) {
-	return GetAnalyticsPastInterval(&months, &entityType, &id, false)
-}
-
-func GetAnalyticsPastNMonthsForEntityGrouped(group string, months int, entityType EntityType, id int) ([]AnalyticsPastIntervalResult, error) {
-	return GetAnalyticsPastIntervalGrouped(group, &months, &entityType, &id, false)
 }
 
 func (entry *AnalyticsEntry) GetRelatedMenuItem() (*MenuItem, error) {
