@@ -11,7 +11,10 @@ import (
 	"jinya.de/goji/database"
 )
 
-const AuthenticationCookieName = "JinyaApiKey"
+const (
+	AuthenticationCookieName = "JinyaApiKey"
+	KnownDeviceCookieName    = "JinyaDeviceCode"
+)
 
 type ApiKeyInvalidError struct {
 	Message string `json:"message"`
@@ -46,6 +49,29 @@ func getPlainApiKeyFromRequest(r *http.Request) string {
 	}
 
 	cookie, err := r.Cookie(AuthenticationCookieName)
+	if err == nil {
+		return cookie.Value
+	}
+
+	return ""
+}
+
+func GetDeviceCodeFromRequest(r *http.Request) (*database.KnownDevice, error) {
+	key := GetPlainDeviceCodeFromRequest(r)
+	if key == "" {
+		return nil, nil
+	}
+
+	return database.FindKnownDeviceByKey(key)
+}
+
+func GetPlainDeviceCodeFromRequest(r *http.Request) string {
+	deviceCode := r.Header.Get(KnownDeviceCookieName)
+	if deviceCode != "" {
+		return deviceCode
+	}
+
+	cookie, err := r.Cookie(KnownDeviceCookieName)
 	if err == nil {
 		return cookie.Value
 	}

@@ -1,4 +1,3 @@
-{{-define "email"-}}
 {{localize "greeting" .ArtistName}}
 
 {{localize "two_factor_code_text_line"}}
@@ -6,4 +5,3 @@
 {{ .TwoFactorCode }}
 
 -- Jinny - Jinya CMS bot
-{{-end-}}

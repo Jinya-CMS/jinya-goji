@@ -4,34 +4,34 @@ import (
 	"net/http"
 )
 
-func GetAllFiles(w http.ResponseWriter, r *http.Request) {
+func getAllFiles(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetFileById(w http.ResponseWriter, r *http.Request) {
+func getFileById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func CreateFile(w http.ResponseWriter, r *http.Request) {
+func createFile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateFile(w http.ResponseWriter, r *http.Request) {
+func updateFile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func DeleteFile(w http.ResponseWriter, r *http.Request) {
+func deleteFile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func StartUpload(w http.ResponseWriter, r *http.Request) {
+func startUpload(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UploadChunk(w http.ResponseWriter, r *http.Request) {
+func uploadChunk(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func FinishUpload(w http.ResponseWriter, r *http.Request) {
+func finishUpload(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

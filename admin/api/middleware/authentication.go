@@ -22,8 +22,18 @@ func CheckAuthentication(next http.Handler) http.Handler {
 		if err != nil {
 			if _, ok := errors.AsType[*auth.MissingPermissionsError](err); ok {
 				w.WriteHeader(http.StatusForbidden)
+			} else {
+				w.WriteHeader(http.StatusUnauthorized)
 			}
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(
+				map[string]any{
+					"success": false,
+					"error": map[string]any{
+						"message": err.Error(),
+						"type":    "invalid-api-key",
+					},
+				},
+			)
 			return
 		}
 

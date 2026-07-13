@@ -1,6 +1,13 @@
 package database
 
-import "encoding/json"
+import (
+	"crypto/rand"
+	"crypto/sha512"
+	"encoding/hex"
+	"encoding/json"
+	"net"
+	"net/http"
+)
 
 type KnownDevice struct {
 	Id            int    `db:"id,primarykey,autoincrement"`
@@ -8,6 +15,24 @@ type KnownDevice struct {
 	DeviceKey     string `db:"device_key"`
 	UserAgent     string `db:"user_agent"`
 	RemoteAddress string `db:"remote_address"`
+}
+
+func NewKnownDevice(artist *Artist, r *http.Request) (string, *KnownDevice, error) {
+	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+
+	device := KnownDevice{
+		Id:            0,
+		UserId:        artist.Id,
+		UserAgent:     r.UserAgent(),
+		RemoteAddress: ip,
+	}
+
+	code, err := device.SetDeviceCode()
+	if err != nil {
+		return "", nil, err
+	}
+
+	return code, &device, err
 }
 
 func (device *KnownDevice) MarshalJSON() ([]byte, error) {
@@ -20,6 +45,17 @@ func (device *KnownDevice) MarshalJSON() ([]byte, error) {
 		UserAgent:     device.UserAgent,
 		Key:           device.DeviceKey,
 	})
+}
+
+func (device *KnownDevice) SetDeviceCode() (string, error) {
+	bytes := make([]byte, 20)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	plainKey := hex.EncodeToString(bytes)
+	hash := sha512.Sum512([]byte(plainKey))
+	device.DeviceKey = hex.EncodeToString(hash[:])
+	return plainKey, nil
 }
 
 func (device *KnownDevice) Create() error {
@@ -51,6 +87,9 @@ where user_id = $1
 }
 
 func FindKnownDeviceByKey(key string) (*KnownDevice, error) {
+	hash := sha512.Sum512([]byte(key))
+	hashedKey := hex.EncodeToString(hash[:])
+
 	return SelectOne[KnownDevice](`
 select id,
        user_id,
@@ -59,5 +98,5 @@ select id,
        remote_address
 from known_device
 where device_key = $1
-`, key)
+`, hashedKey)
 }

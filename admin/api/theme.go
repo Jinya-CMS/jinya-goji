@@ -4,47 +4,47 @@ import (
 	"net/http"
 )
 
-func GetAllThemes(w http.ResponseWriter, r *http.Request) {
+func getAllThemes(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeById(w http.ResponseWriter, r *http.Request) {
+func getThemeById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func CreateTheme(w http.ResponseWriter, r *http.Request) {
+func createTheme(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateTheme(w http.ResponseWriter, r *http.Request) {
+func updateTheme(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func DeleteTheme(w http.ResponseWriter, r *http.Request) {
+func deleteTheme(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func ActivateTheme(w http.ResponseWriter, r *http.Request) {
+func activateTheme(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeAssets(w http.ResponseWriter, r *http.Request) {
+func getThemeAssets(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeConfiguration(w http.ResponseWriter, r *http.Request) {
+func getThemeConfiguration(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeConfiguration(w http.ResponseWriter, r *http.Request) {
+func updateThemeConfiguration(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeDefaultConfiguration(w http.ResponseWriter, r *http.Request) {
+func getThemeDefaultConfiguration(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeConfigurationStructure(w http.ResponseWriter, r *http.Request) {
+func getThemeConfigurationStructure(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -52,58 +52,58 @@ func GetThemePreview(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeStyling(w http.ResponseWriter, r *http.Request) {
+func getThemeStyling(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeStyling(w http.ResponseWriter, r *http.Request) {
+func updateThemeStyling(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeBlogCategories(w http.ResponseWriter, r *http.Request) {
+func getThemeBlogCategories(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeBlogCategory(w http.ResponseWriter, r *http.Request) {
+func updateThemeBlogCategory(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeClassicPages(w http.ResponseWriter, r *http.Request) {
+func getThemeClassicPages(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeClassicPage(w http.ResponseWriter, r *http.Request) {
+func updateThemeClassicPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeFiles(w http.ResponseWriter, r *http.Request) {
+func getThemeFiles(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeFile(w http.ResponseWriter, r *http.Request) {
+func updateThemeFile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeGalleries(w http.ResponseWriter, r *http.Request) {
+func getThemeGalleries(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeGallery(w http.ResponseWriter, r *http.Request) {
+func updateThemeGallery(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeMenus(w http.ResponseWriter, r *http.Request) {
+func getThemeMenus(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeMenu(w http.ResponseWriter, r *http.Request) {
+func updateThemeMenu(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetThemeModernPages(w http.ResponseWriter, r *http.Request) {
+func getThemeModernPages(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateThemeModernPage(w http.ResponseWriter, r *http.Request) {
+func updateThemeModernPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

@@ -19,7 +19,7 @@ func SetupWebRouter(router *mux.Router) {
 		HandlerFunc(jinyaContent)
 	router.
 		MatcherFunc(func(r *http.Request, match *mux.RouteMatch) bool {
-			return !strings.HasPrefix(r.URL.Path, "/api") && !strings.HasPrefix(r.URL.Path, "/static")
+			return !strings.HasPrefix(r.URL.Path, "/api") && !strings.HasPrefix(r.URL.Path, "/static") && strings.HasPrefix(r.URL.Path, "/designer")
 		}).
 		HandlerFunc(indexPage)
 }

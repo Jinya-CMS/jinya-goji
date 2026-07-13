@@ -4,22 +4,22 @@ import (
 	"net/http"
 )
 
-func GetAllClassicPages(w http.ResponseWriter, r *http.Request) {
+func getAllClassicPages(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetClassicPageById(w http.ResponseWriter, r *http.Request) {
+func getClassicPageById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func CreateClassicPage(w http.ResponseWriter, r *http.Request) {
+func createClassicPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateClassicPage(w http.ResponseWriter, r *http.Request) {
+func updateClassicPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func DeleteClassicPage(w http.ResponseWriter, r *http.Request) {
+func deleteClassicPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

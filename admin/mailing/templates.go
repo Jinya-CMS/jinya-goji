@@ -29,13 +29,13 @@ func renderTemplate(r *http.Request, name string, data any) (string, error) {
 
 func renderPlainByLanguage(lang, name string, data any) (string, error) {
 	tmpl, err := textTmpl.
-		New("mail").
+		New(fmt.Sprintf("%s.gotext", name)).
 		Funcs(map[string]any{
 			"localize": func(key string, parameters ...any) string {
-				return localization.LocalizeByLanguage(lang, key, parameters)
+				return localization.LocalizeByLanguage(lang, key, parameters...)
 			},
 		}).
-		ParseFS(templatesFs, fmt.Sprintf("templates/layout.gomjml"), fmt.Sprintf("templates/%s.gotext", name))
+		ParseFS(templatesFs, fmt.Sprintf("templates/%s.gotext", name))
 
 	if err != nil {
 		return "", err
@@ -55,8 +55,8 @@ func renderTemplateByLanguage(lang, name string, data any) (string, error) {
 	t, err := template.
 		New("email").
 		Funcs(map[string]any{
-			"localize": func(key string, parameters ...any) string {
-				return localization.LocalizeByLanguage(lang, key, parameters)
+			"localize": func(key string, parameters ...any) template.HTML {
+				return template.HTML(localization.LocalizeByLanguage(lang, key, parameters...))
 			},
 		}).
 		ParseFS(templatesFs, fmt.Sprintf("templates/layout.gomjml"), fmt.Sprintf("templates/%s.gomjml", name))

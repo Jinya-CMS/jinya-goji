@@ -4,10 +4,10 @@ import (
 	"net/http"
 )
 
-func GetConfiguration(w http.ResponseWriter, r *http.Request) {
+func getConfiguration(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateConfiguration(w http.ResponseWriter, r *http.Request) {
+func updateConfiguration(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

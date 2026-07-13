@@ -5,7 +5,6 @@ import { getRandomEmoji } from './foundation/utils/text.js';
 import localize from './foundation/utils/localize.js';
 import { createTag } from './foundation/api/files.js';
 import alert from './foundation/ui/alert.js';
-import { clearCache } from './foundation/api/cache.js';
 import { getMediaDatabase } from './foundation/database/media.js';
 import { getFileDatabase } from './foundation/database/file.js';
 import folderPicker from './foundation/ui/folderPicker.js';

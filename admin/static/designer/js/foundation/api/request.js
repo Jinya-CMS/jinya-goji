@@ -45,7 +45,7 @@ export async function send(
       throw new BadRequestError(httpError);
     case 401:
       const { default: UnauthorizedError } = await import('./Error/UnauthorizedError.js');
-      if (httpError.type === 'invalid-api-key') {
+      if (httpError.type === 'unauthorized') {
         if (window.document) {
           const Alpine = await import('../../../../lib/alpine.js');
           Alpine.store('authentication').logout();

@@ -4,6 +4,6 @@ import (
 	"net/http"
 )
 
-func GetIpLocation(w http.ResponseWriter, r *http.Request) {
+func getIpLocation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

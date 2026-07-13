@@ -4,30 +4,30 @@ import (
 	"net/http"
 )
 
-func GetAllBlogPosts(w http.ResponseWriter, r *http.Request) {
+func getAllBlogPosts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetBlogPostById(w http.ResponseWriter, r *http.Request) {
+func getBlogPostById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func CreateBlogPost(w http.ResponseWriter, r *http.Request) {
+func createBlogPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateBlogPost(w http.ResponseWriter, r *http.Request) {
+func updateBlogPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func DeleteBlogPost(w http.ResponseWriter, r *http.Request) {
+func deleteBlogPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetBlogPostSections(w http.ResponseWriter, r *http.Request) {
+func getBlogPostSections(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateBlogPostSections(w http.ResponseWriter, r *http.Request) {
+func updateBlogPostSections(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

@@ -28,8 +28,8 @@ func sendEmail(message *mail.Msg, subject string, plainBody string, htmlBody str
 	message.SetBodyString(mail.TypeTextPlain, plainBody)
 	message.SetBodyString(mail.TypeTextHTML, htmlBody)
 
-	senderHost := configuration.GetString("mailer", "server", "")
-	senderUser := configuration.GetString("mailer", "user", "")
+	senderHost := configuration.GetString("mailer", "host", "")
+	senderUser := configuration.GetString("mailer", "username", "")
 	senderPass := configuration.GetString("mailer", "password", "")
 	useSsl := configuration.GetString("mailer", "encryption", "") == "ssl"
 	useStartTls := configuration.GetString("mailer", "encryption", "") == "tls"
@@ -98,7 +98,7 @@ func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 		Location      locate.Location
 	}{
 		ArtistName:    artistName,
-		RemoteAddress: r.RemoteAddr,
+		RemoteAddress: ip,
 		Browser:       ua.Browser().String(),
 		Subject:       localization.Localize(r, "new_login_subject"),
 		Location:      location,
@@ -135,7 +135,7 @@ func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
 		Location      locate.Location
 	}{
 		ArtistName:    artistName,
-		RemoteAddress: r.RemoteAddr,
+		RemoteAddress: ip,
 		Browser:       ua.Browser().String(),
 		Subject:       localization.Localize(r, "new_device_subject"),
 		Location:      location,

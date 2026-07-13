@@ -4,22 +4,22 @@ import (
 	"net/http"
 )
 
-func GetAllFileTags(w http.ResponseWriter, r *http.Request) {
+func getAllFileTags(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetFileTagById(w http.ResponseWriter, r *http.Request) {
+func getFileTagById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func CreateFileTag(w http.ResponseWriter, r *http.Request) {
+func createFileTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateFileTag(w http.ResponseWriter, r *http.Request) {
+func updateFileTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func DeleteFileTag(w http.ResponseWriter, r *http.Request) {
+func deleteFileTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

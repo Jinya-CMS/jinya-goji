@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"net"
+	"net/http"
 	"time"
 )
 
@@ -15,6 +17,24 @@ type ApiKey struct {
 	ValidSince    time.Time `db:"valid_since"`
 	UserAgent     string    `db:"user_agent"`
 	RemoteAddress string    `db:"remote_address"`
+}
+
+func NewApiKey(artist *Artist, r *http.Request) (string, *ApiKey, error) {
+	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+
+	apiKey := ApiKey{
+		UserId:        artist.Id,
+		ValidSince:    time.Now(),
+		UserAgent:     r.UserAgent(),
+		RemoteAddress: ip,
+	}
+
+	key, err := apiKey.SetApiKey()
+	if err != nil {
+		return "", nil, err
+	}
+
+	return key, &apiKey, nil
 }
 
 func (apiKey *ApiKey) MarshalJSON() ([]byte, error) {

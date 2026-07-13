@@ -14,7 +14,7 @@ export class DiagramBase extends HTMLElement {
   connectedCallback() {
     this.root.innerHTML = `
       <style>
-          @import "/lib/cosmo/typography.css";
+          @import "/static/lib/cosmo/typography.css";
       
           .content {
             display: grid;

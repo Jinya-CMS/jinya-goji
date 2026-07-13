@@ -4,30 +4,30 @@ import (
 	"net/http"
 )
 
-func GetAllModernPages(w http.ResponseWriter, r *http.Request) {
+func getAllModernPages(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetModernPageById(w http.ResponseWriter, r *http.Request) {
+func getModernPageById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func CreateModernPage(w http.ResponseWriter, r *http.Request) {
+func createModernPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateModernPage(w http.ResponseWriter, r *http.Request) {
+func updateModernPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func DeleteModernPage(w http.ResponseWriter, r *http.Request) {
+func deleteModernPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func GetModernPageSections(w http.ResponseWriter, r *http.Request) {
+func getModernPageSections(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func UpdateModernPageSections(w http.ResponseWriter, r *http.Request) {
+func updateModernPageSections(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

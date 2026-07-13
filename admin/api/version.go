@@ -4,6 +4,6 @@ import (
 	"net/http"
 )
 
-func GetVersion(w http.ResponseWriter, r *http.Request) {
+func getVersion(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
