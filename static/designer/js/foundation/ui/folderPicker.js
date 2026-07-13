@@ -156,9 +156,9 @@ class FolderPickerElement extends HTMLElement {
     this.classList.add('cosmo-modal__container', 'is--folder-picker');
     this.root.innerHTML = `
       <style>
-        @import "/lib/cosmo/modal.css";
-        @import "/lib/cosmo/buttons.css";
-        @import "/designer/css/media.css";
+        @import "/static/lib/cosmo/modal.css";
+        @import "/static/lib/cosmo/buttons.css";
+        @import "/static/designer/css/media.css";
         
         .cosmo-modal__content.is--loading {
           display: flex;

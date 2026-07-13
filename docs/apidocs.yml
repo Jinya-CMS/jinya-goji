@@ -1309,34 +1309,6 @@ paths:
         - header-auth: []
         - cookie-auth: []
   /api/folder:
-    get:
-      summary: List folders
-      tags:
-        - folders
-      responses:
-        '200':
-          description: Successfully returned all folders
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/folder-list'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_all_folders
-      description: Gets a list of all folders
-      security:
-        - header-auth: []
-        - cookie-auth: []
     post:
       summary: Create folder
       tags:
@@ -1483,34 +1455,6 @@ paths:
         - header-auth: []
         - cookie-auth: []
   /api/file:
-    get:
-      summary: List files
-      tags:
-        - files
-      responses:
-        '200':
-          description: Successfully returned all files
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/file-list'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_all_files
-      description: Gets a list of all uploaded files
-      security:
-        - header-auth: []
-        - cookie-auth: []
     post:
       summary: Create file
       tags:
@@ -1981,278 +1925,6 @@ paths:
       security:
         - header-auth: []
         - cookie-auth: []
-  /api/form:
-    get:
-      summary: List forms
-      tags:
-        - forms
-      responses:
-        '200':
-          description: Successfully listed forms
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/form-list'
-        '401':
-          description: Api token missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_all_forms
-      security:
-        - header-auth: []
-        - cookie-auth: []
-      description: Gets all forms
-    post:
-      summary: Create form
-      tags:
-        - forms
-      responses:
-        '201':
-          description: Successfully created the form
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/form'
-        '400':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '401':
-          description: Api token missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '409':
-          description: Title is not unique
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: create_form
-      description: Creates a new form with the given parameters
-      security:
-        - header-auth: []
-        - cookie-auth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/create-form-request'
-  /api/form/{id}:
-    parameters:
-      - name: id
-        schema:
-          type: integer
-        in: path
-        required: true
-    get:
-      summary: Get form by id
-      tags:
-        - forms
-      responses:
-        '200':
-          description: Successfully got the form
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/form'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_form_by_id
-      description: Gets the specified form
-      security:
-        - header-auth: []
-        - cookie-auth: []
-    delete:
-      summary: Deletes form by id
-      tags:
-        - forms
-      responses:
-        '204':
-          description: No Content
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: delete_form
-      description: Deletes the given form
-      security:
-        - header-auth: []
-        - cookie-auth: []
-    put:
-      summary: Update form by id
-      tags:
-        - forms
-      responses:
-        '204':
-          description: Successfully updated the form
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Form not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '409':
-          description: Title is not unique
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: update_form
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/update-form-request'
-      description: Updates the given form with the specified values
-      security:
-        - header-auth: []
-        - cookie-auth: []
-  /api/form/{id}/item:
-    parameters:
-      - name: id
-        schema:
-          type: integer
-        in: path
-        required: true
-    get:
-      summary: List form items
-      tags:
-        - forms
-      responses:
-        '200':
-          description: Successfully got all items of the given form
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/form-item'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Form not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_form_items
-      security:
-        - header-auth: []
-        - cookie-auth: []
-      description: Gets the items of the given form
-    put:
-      summary: Update form items
-      responses:
-        '204':
-          description: Updated form items
-        '400':
-          description: Missing fields
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Form not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: update_form_items
-      description: Replaces all form items
-      security:
-        - header-auth: []
-        - cookie-auth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/update-form-item'
-      tags:
-        - forms
   /api/gallery:
     get:
       summary: List galleries
@@ -5736,28 +5408,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/folder'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/file-tag'
       required:
         - files
         - folders
-    folder-list:
-      title: A list of folders
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/folder'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
+        - tags
     create-folder-request:
       title: Create folder request
       type: object
@@ -5778,25 +5436,6 @@ components:
           type: string
         parentId:
           type: integer
-    file-list:
-      title: A list of files
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/file'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-file-request:
       title: Create file request
       type: object
@@ -5869,165 +5508,6 @@ components:
           type: string
         emoji:
           type: string
-    form-item:
-      title: Form item
-      description: A form item is a field in a form
-      type: object
-      required:
-        - id
-        - type
-        - label
-        - position
-        - isRequired
-        - isFromAddress
-        - isSubject
-      properties:
-        id:
-          type: integer
-        type:
-          type: string
-          enum:
-            - text
-            - email
-            - textarea
-            - select
-            - checkbox
-        options:
-          type: array
-          items:
-            type: string
-        spamFilter:
-          type: array
-          items:
-            type: string
-        label:
-          type: string
-        placeholder:
-          type: string
-        helpText:
-          type: string
-        position:
-          type: string
-        isRequired:
-          type: boolean
-        isFromAddress:
-          type: boolean
-        isSubject:
-          type: boolean
-    form:
-      title: Form
-      type: object
-      description: A form is a content element that allows end users to send requests and feedback to the artist
-      properties:
-        id:
-          type: integer
-        created:
-          $ref: '#/components/schemas/modification'
-        description:
-          type: string
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/form-item'
-        title:
-          type: string
-        toAddress:
-          type: string
-          format: email
-        updated:
-          $ref: '#/components/schemas/modification'
-      required:
-        - id
-        - created
-        - items
-        - updated
-        - title
-        - toAddress
-    form-list:
-      title: A list of forms
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/form'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
-    create-form-request:
-      title: Create form request
-      type: object
-      description: A form is a content element that allows end users to send requests and feedback to the artist
-      properties:
-        description:
-          type: string
-        title:
-          type: string
-        toAddress:
-          type: string
-          format: email
-      required:
-        - title
-        - toAddress
-    update-form-request:
-      title: Update form request
-      type: object
-      description: A form is a content element that allows end users to send requests and feedback to the artist
-      properties:
-        description:
-          type: string
-        title:
-          type: string
-        toAddress:
-          type: string
-          format: email
-    update-form-item:
-      title: Update form item
-      description: A form item is a field in a form
-      type: object
-      required:
-        - type
-        - label
-        - position
-      properties:
-        type:
-          type: string
-          enum:
-            - text
-            - email
-            - textarea
-            - select
-            - checkbox
-        options:
-          type: array
-          items:
-            type: string
-        spamFilter:
-          type: array
-          items:
-            type: string
-        label:
-          type: string
-        placeholder:
-          type: string
-        helpText:
-          type: string
-        position:
-          type: string
-        isRequired:
-          type: boolean
-        isFromAddress:
-          type: boolean
-        isSubject:
-          type: boolean
     gallery-list:
       title: A list of galleries
       type: object
@@ -6666,6 +6146,80 @@ components:
           type: integer
       required:
         - file
+    form-item:
+      title: Form item
+      description: A form item is a field in a form
+      type: object
+      required:
+        - id
+        - type
+        - label
+        - position
+        - isRequired
+        - isFromAddress
+        - isSubject
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum:
+            - text
+            - email
+            - textarea
+            - select
+            - checkbox
+        options:
+          type: array
+          items:
+            type: string
+        spamFilter:
+          type: array
+          items:
+            type: string
+        label:
+          type: string
+        placeholder:
+          type: string
+        helpText:
+          type: string
+        position:
+          type: string
+        isRequired:
+          type: boolean
+        isFromAddress:
+          type: boolean
+        isSubject:
+          type: boolean
+    form:
+      title: Form
+      type: object
+      description: A form is a content element that allows end users to send requests and feedback to the artist
+      properties:
+        id:
+          type: integer
+        created:
+          $ref: '#/components/schemas/modification'
+        description:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/form-item'
+        title:
+          type: string
+        toAddress:
+          type: string
+          format: email
+        updated:
+          $ref: '#/components/schemas/modification'
+      required:
+        - id
+        - created
+        - items
+        - updated
+        - title
+        - toAddress
     update-theme-form-request:
       type: object
       description: A form assigned to a theme

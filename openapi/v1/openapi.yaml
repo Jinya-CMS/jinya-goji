@@ -209,12 +209,6 @@ paths:
     $ref: paths/api_file-tag.yaml
   /api/file-tag/{id}:
     $ref: paths/api_file-tag_{id}.yaml
-  /api/form:
-    $ref: paths/api_form.yaml
-  /api/form/{id}:
-    $ref: paths/api_form_{id}.yaml
-  /api/form/{id}/item:
-    $ref: paths/api_form_{id}_item.yaml
   /api/gallery:
     $ref: paths/api_gallery.yaml
   /api/gallery/{id}:

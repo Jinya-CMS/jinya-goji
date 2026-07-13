@@ -1,31 +1,3 @@
-get:
-  summary: List files
-  tags:
-    - files
-  responses:
-    '200':
-      description: Successfully returned all files
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/file-list.yaml
-    '401':
-      description: Api key missing
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/exception.yaml
-    '403':
-      description: Invalid api key
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/exception.yaml
-  operationId: get_all_files
-  description: Gets a list of all uploaded files
-  security:
-    - header-auth: []
-    - cookie-auth: []
 post:
   summary: Create file
   tags:

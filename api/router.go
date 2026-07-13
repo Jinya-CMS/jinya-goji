@@ -117,16 +117,8 @@ func SetupAdminApiRouter(router *mux.Router) {
 	fileRouter := apiRouter.PathPrefix("/file").Subrouter()
 	fileRouter.
 		Path("").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getAllFiles))).
-		Methods(http.MethodGet)
-	fileRouter.
-		Path("").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createFile))).
 		Methods(http.MethodPost)
-	fileRouter.
-		Path("/{id}").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getFileById))).
-		Methods(http.MethodGet)
 	fileRouter.
 		Path("/{id}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateFile))).
@@ -413,16 +405,8 @@ func SetupAdminApiRouter(router *mux.Router) {
 	fileTagRouter := apiRouter.PathPrefix("/file-tag").Subrouter()
 	fileTagRouter.
 		Path("").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getAllFileTags))).
-		Methods(http.MethodGet)
-	fileTagRouter.
-		Path("").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createFileTag))).
 		Methods(http.MethodPost)
-	fileTagRouter.
-		Path("/{id}").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getFileTagById))).
-		Methods(http.MethodGet)
 	fileTagRouter.
 		Path("/{id}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateFileTag))).
@@ -436,16 +420,8 @@ func SetupAdminApiRouter(router *mux.Router) {
 	folderRouter := apiRouter.PathPrefix("/folder").Subrouter()
 	folderRouter.
 		Path("").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getAllFolders))).
-		Methods(http.MethodGet)
-	folderRouter.
-		Path("").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createFolder))).
 		Methods(http.MethodPost)
-	folderRouter.
-		Path("/{id}").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getFolderById))).
-		Methods(http.MethodGet)
 	folderRouter.
 		Path("/{id}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateFolder))).

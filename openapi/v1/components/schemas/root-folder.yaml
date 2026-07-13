@@ -9,6 +9,11 @@ properties:
     type: array
     items:
       $ref: ./folder.yaml
+  tags:
+    type: array
+    items:
+      $ref: ./file-tag.yaml
 required:
   - files
   - folders
+  - tags

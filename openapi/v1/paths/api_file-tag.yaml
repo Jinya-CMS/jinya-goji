@@ -1,31 +1,3 @@
-get:
-  summary: List file tags
-  tags:
-    - files
-  responses:
-    '200':
-      description: Successfully returned all file tags
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/file-tag-list.yaml
-    '401':
-      description: Api key missing
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/exception.yaml
-    '403':
-      description: Invalid api key
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/exception.yaml
-  operationId: get_all_file_tags
-  description: Gets a list of all file tags
-  security:
-    - header-auth: []
-    - cookie-auth: []
 post:
   summary: Create file tag
   tags:

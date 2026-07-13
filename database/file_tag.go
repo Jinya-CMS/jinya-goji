@@ -1,26 +1,10 @@
 package database
 
-import "encoding/json"
-
 type FileTag struct {
-	Id    int     `db:"id,primarykey,autoincrement"`
-	Name  string  `db:"name,unique"`
-	Color *string `db:"color"`
-	Emoji *string `db:"emoji"`
-}
-
-func (tag *FileTag) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Id    int     `json:"id"`
-		Name  string  `json:"name"`
-		Color *string `json:"color"`
-		Emoji *string `json:"emoji"`
-	}{
-		Id:    tag.Id,
-		Name:  tag.Name,
-		Color: tag.Color,
-		Emoji: tag.Emoji,
-	})
+	Id    int    `db:"id,primarykey,autoincrement" json:"id"`
+	Name  string `db:"name,notnull,unique" json:"name"`
+	Color string `db:"color,notnull" json:"color"`
+	Emoji string `db:"emoji,notnull" json:"emoji"`
 }
 
 func (tag *FileTag) Create() error {

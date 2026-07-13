@@ -134,8 +134,8 @@ class TagPopupElement extends HTMLElement {
     this.root.innerHTML = `
       <style id="target-position"></style>
       <style>
-        @import "/lib/cosmo/form.css";
-        @import "/lib/cosmo/buttons.css";
+        @import "/static/lib/cosmo/form.css";
+        @import "/static/lib/cosmo/buttons.css";
 
         :host *::selection {
           background: var(--primary-color);
