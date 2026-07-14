@@ -39,34 +39,39 @@ func getFile(w http.ResponseWriter, r *http.Request) {
 
 func createFile(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
-	body, err := ParseBody[fileBody](r)
+	body, err := BodyFromRequest(r, "name")
 	if err != nil {
 		sendError("Invalid body", http.StatusBadRequest, encoder, w)
 		return
 	}
 
-	if body.FolderId != nil {
-		_, err = database.FindFolderById(*body.FolderId)
+	name, _ := GetFromBody[string](body, "name")
+	file := database.File{
+		Name: *name,
+	}
+
+	if folderId, ok := GetIntFromBody(body, "folderId"); ok {
+		_, err = database.FindFolderById(folderId)
 		if err != nil {
 			sendError("Parent folder not found", http.StatusConflict, encoder, w)
 			return
 		}
+
+		file.FolderId = &folderId
 	}
 
-	file := database.File{
-		Name:     body.Name,
-		FolderId: body.FolderId,
-	}
+	tags := make([]database.FileTag, 0)
+	if bodyTags, ok := GetArrayFromBody[string](body, "tags"); ok {
+		tags = make([]database.FileTag, len(bodyTags))
+		for i, tag := range bodyTags {
+			t, err := database.FindFileTagByName(tag)
+			if err != nil {
+				sendError(fmt.Sprintf("Tag %s not found", tag), http.StatusConflict, encoder, w)
+				return
+			}
 
-	tags := make([]database.FileTag, len(body.Tags))
-	for i, tag := range body.Tags {
-		t, err := database.FindFileTagByName(tag)
-		if err != nil {
-			sendError(fmt.Sprintf("Tag %s not found", tag), http.StatusConflict, encoder, w)
-			return
+			tags[i] = *t
 		}
-
-		tags[i] = *t
 	}
 
 	artist := middleware.GetUserFromRequest(r)

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -17,12 +18,18 @@ type Body struct {
 	data map[string]any
 }
 
-func BodyFromRequest(r *http.Request) (*Body, error) {
+func BodyFromRequest(r *http.Request, requiredFields ...string) (*Body, error) {
 	decoder := json.NewDecoder(r.Body)
 	var body map[string]any
 	err := decoder.Decode(&body)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, field := range requiredFields {
+		if _, ok := body[field]; !ok {
+			return nil, fmt.Errorf("missing fields")
+		}
 	}
 
 	return new(Body{data: body}), nil
