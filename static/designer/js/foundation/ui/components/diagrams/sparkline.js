@@ -14,7 +14,7 @@ class SparklineElement extends HTMLElement {
   connectedCallback() {
     this.root.innerHTML = `
       <style>
-          @import "/designer/css/statistics.css";
+          @import "/static/designer/css/statistics.css";
           
           #diagram {
             width: 250px;

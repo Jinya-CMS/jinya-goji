@@ -176,10 +176,6 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Methods(http.MethodPost)
 	galleryRouter.
 		Path("/{id:\\d+}/file/{position:\\d+}").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getGalleryFileByPosition))).
-		Methods(http.MethodGet)
-	galleryRouter.
-		Path("/{id:\\d+}/file/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateGalleryFile))).
 		Methods(http.MethodPut)
 	galleryRouter.

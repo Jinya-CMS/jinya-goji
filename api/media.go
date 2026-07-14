@@ -12,19 +12,19 @@ func getMedia(w http.ResponseWriter, r *http.Request) {
 
 	files, err := database.FindRootFiles()
 	if err != nil {
-		sendError("Failed to collect root files", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to collect root files", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
 	folders, err := database.FindRootFolders()
 	if err != nil {
-		sendError("Failed to collect root folders", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to collect root folders", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
 	tags, err := database.FindAllFileTags()
 	if err != nil {
-		sendError("Failed to fetch tags", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to fetch tags", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

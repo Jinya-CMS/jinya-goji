@@ -19,8 +19,7 @@ Alpine.data('artistsData', () => ({
     return this.selectedArtist?.email === Alpine.store('artist').email;
   },
   async init() {
-    const artists = await getArtists();
-    this.artists = artists.items;
+    this.artists = await getArtists();
     this.selectArtist(this.artists[0]);
   },
   selectArtist(artist) {

@@ -24,13 +24,13 @@ func getFile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	file, err := database.FindFileById(id)
 	if err != nil {
-		sendError("File not found", http.StatusNotFound, encoder, w)
+		sendError("File not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
@@ -41,7 +41,7 @@ func createFile(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	body, err := BodyFromRequest(r, "name")
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
@@ -53,7 +53,7 @@ func createFile(w http.ResponseWriter, r *http.Request) {
 	if folderId, ok := GetIntFromBody(body, "folderId"); ok {
 		_, err = database.FindFolderById(folderId)
 		if err != nil {
-			sendError("Parent folder not found", http.StatusConflict, encoder, w)
+			sendError("Parent folder not found", http.StatusConflict, encoder, w, err)
 			return
 		}
 
@@ -66,7 +66,7 @@ func createFile(w http.ResponseWriter, r *http.Request) {
 		for i, tag := range bodyTags {
 			t, err := database.FindFileTagByName(tag)
 			if err != nil {
-				sendError(fmt.Sprintf("Tag %s not found", tag), http.StatusConflict, encoder, w)
+				sendError(fmt.Sprintf("Tag %s not found", tag), http.StatusConflict, encoder, w, err)
 				return
 			}
 
@@ -83,10 +83,10 @@ func createFile(w http.ResponseWriter, r *http.Request) {
 		errType := detectErrorType(err)
 		switch errType {
 		case errorTypeUnique:
-			sendError("The name is not unique", http.StatusConflict, encoder, w)
+			sendError("The name is not unique", http.StatusConflict, encoder, w, err)
 			return
 		default:
-			sendError("Failed to create file", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to create file", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -100,26 +100,26 @@ func updateFile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	body, err := BodyFromRequest(r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	file, err := database.FindFileById(id)
 	if err != nil {
-		sendError("File not found", http.StatusNotFound, encoder, w)
+		sendError("File not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	if folderId, ok := GetIntFromBody(body, "folderId"); ok {
 		_, err = database.FindFolderById(folderId)
 		if err != nil {
-			sendError("Parent folder not found", http.StatusConflict, encoder, w)
+			sendError("Parent folder not found", http.StatusConflict, encoder, w, err)
 			return
 		}
 		file.FolderId = &folderId
@@ -136,10 +136,10 @@ func updateFile(w http.ResponseWriter, r *http.Request) {
 		errType := detectErrorType(err)
 		switch errType {
 		case errorTypeUnique:
-			sendError("The name is not unique", http.StatusConflict, encoder, w)
+			sendError("The name is not unique", http.StatusConflict, encoder, w, err)
 			return
 		default:
-			sendError("Failed to update file", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to update file", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -149,7 +149,7 @@ func updateFile(w http.ResponseWriter, r *http.Request) {
 		for i, tag := range newTags {
 			t, err := database.FindFileTagByName(tag)
 			if err != nil {
-				sendError(fmt.Sprintf("Tag %s not found", tag), http.StatusConflict, encoder, w)
+				sendError(fmt.Sprintf("Tag %s not found", tag), http.StatusConflict, encoder, w, err)
 				return
 			}
 
@@ -158,7 +158,7 @@ func updateFile(w http.ResponseWriter, r *http.Request) {
 
 		err = file.Tag(tags)
 		if err != nil {
-			sendError("Failed to tag file", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to tag file", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -171,19 +171,19 @@ func deleteFile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	file, err := database.FindFileById(id)
 	if err != nil {
-		sendError("File not found", http.StatusNotFound, encoder, w)
+		sendError("File not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = file.Delete()
 	if err != nil {
-		sendError("Failed to delete file", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to delete file", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -200,19 +200,19 @@ func startUpload(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	file, err := database.FindFileById(id)
 	if err != nil {
-		sendError("File not found", http.StatusNotFound, encoder, w)
+		sendError("File not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = storage.StartFileUpload(file.Id)
 	if err != nil {
-		sendError("Failed to start upload", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to start upload", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -224,31 +224,31 @@ func uploadChunk(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	position, err := strconv.Atoi(vars["position"])
 	if err != nil {
-		sendError("Invalid position", http.StatusBadRequest, encoder, w)
+		sendError("Invalid position", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	file, err := database.FindFileById(id)
 	if err != nil {
-		sendError("File not found", http.StatusNotFound, encoder, w)
+		sendError("File not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
-		sendError("Invalid chunk data", http.StatusBadRequest, encoder, w)
+		sendError("Invalid chunk data", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	err = storage.SaveFileChunk(file.Id, position, data)
 	if err != nil {
-		sendError("Failed to start upload", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to start upload", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -260,19 +260,19 @@ func finishUpload(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	file, err := database.FindFileById(id)
 	if err != nil {
-		sendError("File not found", http.StatusNotFound, encoder, w)
+		sendError("File not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = storage.FinishFileUpload(file.Id)
 	if err != nil {
-		sendError("Failed to start upload", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to start upload", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

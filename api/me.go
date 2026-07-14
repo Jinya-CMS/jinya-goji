@@ -27,7 +27,7 @@ func updateMeColorScheme(w http.ResponseWriter, r *http.Request) {
 	}
 	err := decoder.Decode(&body)
 	if err != nil || !slices.Contains([]string{"auto", "light", "dark"}, body.ColorScheme) {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
@@ -46,7 +46,7 @@ func updateMeColorScheme(w http.ResponseWriter, r *http.Request) {
 
 	err = artist.Update()
 	if err != nil {
-		sendError("Failed to update color scheme", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to update color scheme", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

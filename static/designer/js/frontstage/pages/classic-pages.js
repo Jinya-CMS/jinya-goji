@@ -57,10 +57,10 @@ Alpine.data('classicPagesData', () => ({
       await this.deleteSavedPage(page.id);
     } else if (savedPage && savedPage.content !== page.content && savedPage.content) {
       const confirmed = await confirm({
-        title: localize({ key: 'pages_and_forms.classic.load.title' }),
-        message: localize({ key: 'pages_and_forms.classic.load.message' }),
-        declineLabel: localize({ key: 'pages_and_forms.classic.load.decline' }),
-        approveLabel: localize({ key: 'pages_and_forms.classic.load.approve' }),
+        title: localize({ key: 'pages.classic.load.title' }),
+        message: localize({ key: 'pages.classic.load.message' }),
+        declineLabel: localize({ key: 'pages.classic.load.decline' }),
+        approveLabel: localize({ key: 'pages.classic.load.approve' }),
       });
       if (confirmed) {
         this.content = savedPage.content;
@@ -85,15 +85,15 @@ Alpine.data('classicPagesData', () => ({
     try {
       await updateClassicPage(this.selectedPage.id, this.selectedPage.title, this.content);
       this.hasMessage = true;
-      this.messageTitle = localize({ key: 'pages_and_forms.classic.edit.saved.title' });
+      this.messageTitle = localize({ key: 'pages.classic.edit.saved.title' });
       this.messageError = false;
-      this.messageContent = localize({ key: 'pages_and_forms.classic.edit.saved.content' });
+      this.messageContent = localize({ key: 'pages.classic.edit.saved.content' });
       setTimeout(() => (this.hasMessage = false), 5_000);
     } catch (e) {
       this.hasMessage = true;
-      this.messageTitle = localize({ key: 'pages_and_forms.classic.edit.error.title' });
+      this.messageTitle = localize({ key: 'pages.classic.edit.error.title' });
       this.messageError = true;
-      this.messageContent = localize({ key: 'pages_and_forms.classic.edit.error.generic' });
+      this.messageContent = localize({ key: 'pages.classic.edit.error.generic' });
       setTimeout(() => (this.hasMessage = false), 15_000);
     }
   },
@@ -108,11 +108,11 @@ Alpine.data('classicPagesData', () => ({
       await this.selectPage(savedPage);
     } catch (e) {
       this.edit.error.hasError = true;
-      this.edit.error.title = localize({ key: 'pages_and_forms.classic.edit.error.title' });
+      this.edit.error.title = localize({ key: 'pages.classic.edit.error.title' });
       if (e.status === 409) {
-        this.edit.error.message = localize({ key: 'pages_and_forms.classic.edit.error.conflict' });
+        this.edit.error.message = localize({ key: 'pages.classic.edit.error.conflict' });
       } else {
-        this.edit.error.message = localize({ key: 'pages_and_forms.classic.edit.error.generic' });
+        this.edit.error.message = localize({ key: 'pages.classic.edit.error.generic' });
       }
     }
   },
@@ -124,23 +124,23 @@ Alpine.data('classicPagesData', () => ({
       await this.selectPage(savedPage);
     } catch (e) {
       this.create.error.hasError = true;
-      this.create.error.title = localize({ key: 'pages_and_forms.classic.create.error.title' });
+      this.create.error.title = localize({ key: 'pages.classic.create.error.title' });
       if (e.status === 409) {
-        this.create.error.message = localize({ key: 'pages_and_forms.classic.create.error.conflict' });
+        this.create.error.message = localize({ key: 'pages.classic.create.error.conflict' });
       } else {
-        this.create.error.message = localize({ key: 'pages_and_forms.classic.create.error.generic' });
+        this.create.error.message = localize({ key: 'pages.classic.create.error.generic' });
       }
     }
   },
   async deletePage() {
     const confirmation = await confirm({
-      title: localize({ key: 'pages_and_forms.classic.delete.title' }),
+      title: localize({ key: 'pages.classic.delete.title' }),
       message: localize({
-        key: 'pages_and_forms.classic.delete.message',
+        key: 'pages.classic.delete.message',
         values: this.selectedPage,
       }),
-      declineLabel: localize({ key: 'pages_and_forms.classic.delete.keep' }),
-      approveLabel: localize({ key: 'pages_and_forms.classic.delete.delete' }),
+      declineLabel: localize({ key: 'pages.classic.delete.keep' }),
+      approveLabel: localize({ key: 'pages.classic.delete.delete' }),
       negative: true,
     });
     if (confirmation) {
@@ -155,12 +155,12 @@ Alpine.data('classicPagesData', () => ({
       } catch (e) {
         let message = '';
         if (e.status === 409) {
-          message = localize({ key: 'pages_and_forms.classic.delete.error.conflict' });
+          message = localize({ key: 'pages.classic.delete.error.conflict' });
         } else {
-          message = localize({ key: 'pages_and_forms.classic.delete.error.generic' });
+          message = localize({ key: 'pages.classic.delete.error.generic' });
         }
         await alert({
-          title: localize({ key: 'pages_and_forms.classic.delete.error.title' }),
+          title: localize({ key: 'pages.classic.delete.error.title' }),
           message,
           negative: true,
         });

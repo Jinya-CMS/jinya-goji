@@ -15,7 +15,7 @@ func getAllArtists(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	artists, err := database.FindAllArtists()
 	if err != nil {
-		sendError("Artists not found", http.StatusInternalServerError, encoder, w)
+		sendError("Artists not found", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -28,13 +28,13 @@ func getArtistById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistById(id)
 	if err != nil {
-		sendError("Artist not found", http.StatusNotFound, encoder, w)
+		sendError("Artist not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
@@ -53,7 +53,7 @@ func createArtist(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	body, err := ParseBody[artistBody](r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
@@ -67,13 +67,13 @@ func createArtist(w http.ResponseWriter, r *http.Request) {
 	}
 	err = artist.SetPassword(body.Password)
 	if err != nil {
-		sendError("Failed to hash password", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to hash password", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
 	err = artist.Create()
 	if err != nil {
-		sendError("Failed to save artist", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to save artist", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -86,19 +86,19 @@ func updateArtist(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistById(id)
 	if err != nil {
-		sendError("Artist not found", http.StatusNotFound, encoder, w)
+		sendError("Artist not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	body, err := ParseBody[artistBody](r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
@@ -108,14 +108,14 @@ func updateArtist(w http.ResponseWriter, r *http.Request) {
 	if body.Password != "" {
 		err = artist.SetPassword(body.Password)
 		if err != nil {
-			sendError("Failed to hash password", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to hash password", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
 
 	err = artist.Update()
 	if err != nil {
-		sendError("Failed to save artist", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to save artist", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -128,19 +128,19 @@ func deleteArtist(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistById(id)
 	if err != nil {
-		sendError("Artist not found", http.StatusNotFound, encoder, w)
+		sendError("Artist not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = artist.Delete()
 	if err != nil {
-		sendError("Failed to delete artist", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to delete artist", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -153,20 +153,20 @@ func activateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistById(id)
 	if err != nil {
-		sendError("Artist not found", http.StatusNotFound, encoder, w)
+		sendError("Artist not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	artist.Enabled = true
 	err = artist.Update()
 	if err != nil {
-		sendError("Failed to activate artist", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to activate artist", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -179,20 +179,20 @@ func deactivateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistById(id)
 	if err != nil {
-		sendError("Artist not found", http.StatusNotFound, encoder, w)
+		sendError("Artist not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	artist.Enabled = false
 	err = artist.Update()
 	if err != nil {
-		sendError("Failed to deactivate artist", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to deactivate artist", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -205,19 +205,19 @@ func updateUserProfilePicture(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
-		sendError("Invalid profile picture data", http.StatusBadRequest, encoder, w)
+		sendError("Invalid profile picture data", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	err = storage.SaveProfilePicture(id, data)
 	if err != nil {
-		sendError("Failed to delete profile picture", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to delete profile picture", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -230,13 +230,13 @@ func deleteUserProfilePicture(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	err = storage.DeleteProfilePicture(id)
 	if err != nil {
-		sendError("Failed to delete profile picture", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to delete profile picture", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -249,13 +249,13 @@ func resetTotp(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistById(id)
 	if err != nil {
-		sendError("Artists not found", http.StatusNotFound, encoder, w)
+		sendError("Artists not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
@@ -263,7 +263,7 @@ func resetTotp(w http.ResponseWriter, r *http.Request) {
 	artist.TotpMode = database.TotpModeEmail
 	err = artist.Update()
 	if err != nil {
-		sendError("Failed to reset totp for artist", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to reset totp for artist", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

@@ -10,7 +10,7 @@
     </template>
     <button
       class="cosmo-button is--full-width"
-      x-localize:pages_and_forms-modern-action-new
+      x-localize:pages-modern-action-new
       @click="openCreateDialog"
     ></button>
   </nav>
@@ -24,13 +24,13 @@
       <cms-sparkline class="jinya-designer__sparkline" type="modern-page" :entity-id="selectedPage.id"></cms-sparkline>
       <div class="cosmo-toolbar is--modern-page">
         <div class="cosmo-toolbar__group">
-          <button class="cosmo-button" x-localize:pages_and_forms-modern-action-edit @click="openEditDialog"></button>
-          <button class="cosmo-button" x-localize:pages_and_forms-modern-action-delete @click="deletePage"></button>
+          <button class="cosmo-button" x-localize:pages-modern-action-edit @click="openEditDialog"></button>
+          <button class="cosmo-button" x-localize:pages-modern-action-delete @click="deletePage"></button>
         </div>
         <div class="cosmo-toolbar__group">
           <button
             class="cosmo-button is--primary"
-            x-localize:pages_and_forms-modern-action-save
+            x-localize:pages-modern-action-save
             @click="savePage"
           ></button>
         </div>
@@ -125,7 +125,7 @@
                       <label
                         :for="id"
                         class="cosmo-label is--link"
-                        x-localize:pages_and_forms-modern-designer-link
+                        x-localize:pages-modern-designer-link
                       ></label>
                       <input :id="id" type="text" class="cosmo-input is--link" x-model="section.link" />
                     </figcaption>
@@ -249,14 +249,14 @@
   </template>
   <form class="cosmo-modal__container" @submit.prevent="createPage" x-show="create.open">
     <div class="cosmo-modal">
-      <h1 class="cosmo-modal__title" x-localize:pages_and_forms-modern-create-title></h1>
+      <h1 class="cosmo-modal__title" x-localize:pages-modern-create-title></h1>
       <div class="cosmo-modal__content">
         <div class="cosmo-message is--negative" x-show="create.error.hasError">
           <span class="cosmo-message__header" x-text="create.error.title"></span>
           <p class="cosmo-message__message" x-text="create.error.message"></p>
         </div>
         <div class="cosmo-input__group">
-          <label for="createPageTitle" class="cosmo-label" x-localize:pages_and_forms-modern-create-name></label>
+          <label for="createPageTitle" class="cosmo-label" x-localize:pages-modern-create-name></label>
           <input required type="text" id="createPageTitle" class="cosmo-input" x-model="create.name" />
         </div>
       </div>
@@ -264,23 +264,23 @@
         <button
           type="button"
           class="cosmo-button"
-          x-localize:pages_and_forms-modern-create-cancel
+          x-localize:pages-modern-create-cancel
           @click="create.open = false"
         ></button>
-        <button type="submit" class="cosmo-button" x-localize:pages_and_forms-modern-create-create></button>
+        <button type="submit" class="cosmo-button" x-localize:pages-modern-create-create></button>
       </div>
     </div>
   </form>
   <form class="cosmo-modal__container" @submit.prevent="updatePage" x-show="edit.open">
     <div class="cosmo-modal">
-      <h1 class="cosmo-modal__title" x-localize:pages_and_forms-modern-edit-title></h1>
+      <h1 class="cosmo-modal__title" x-localize:pages-modern-edit-title></h1>
       <div class="cosmo-modal__content">
         <div class="cosmo-message is--negative" x-show="edit.error.hasError">
           <span class="cosmo-message__header" x-text="edit.error.title"></span>
           <p class="cosmo-message__message" x-text="edit.error.message"></p>
         </div>
         <div class="cosmo-input__group">
-          <label for="editPageTitle" class="cosmo-label" x-localize:pages_and_forms-modern-edit-name></label>
+          <label for="editPageTitle" class="cosmo-label" x-localize:pages-modern-edit-name></label>
           <input required type="text" id="editPageTitle" class="cosmo-input" x-model="edit.name" />
         </div>
       </div>
@@ -288,10 +288,10 @@
         <button
           type="button"
           class="cosmo-button"
-          x-localize:pages_and_forms-modern-edit-cancel
+          x-localize:pages-modern-edit-cancel
           @click="edit.open = false"
         ></button>
-        <button type="submit" class="cosmo-button" x-localize:pages_and_forms-modern-edit-update></button>
+        <button type="submit" class="cosmo-button" x-localize:pages-modern-edit-update></button>
       </div>
     </div>
   </form>

@@ -182,6 +182,7 @@ select id,
        folder_id,
        type
 from file
+order by name
 `)
 }
 
@@ -198,6 +199,7 @@ select id,
        type
 from file
 where folder_id is null
+order by name
 `)
 }
 
@@ -230,5 +232,6 @@ from file_tag ft
          join
      file_tag_file ftf on ft.id = ftf.file_tag_id
 where ftf.file_id = $1
+order by name
 `, file.Id)
 }

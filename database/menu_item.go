@@ -179,24 +179,22 @@ where route = $1
 
 func FindMenuItemByMenuAndPosition(menuId int, position int) (*MenuItem, error) {
 	return SelectOne[MenuItem](`
-SELECT
-    id,
-    position,
-    menu_id,
-    parent_id,
-    title,
-    route,
-    highlighted,
-    artist_id,
-    gallery_id,
-    segment_page_id,
-    page_id,
-    category_id,
-    blog_home_page
-FROM
-    menu_item
-WHERE
-    menu_id = ? AND position = ?
+select id,
+       position,
+       menu_id,
+       parent_id,
+       title,
+       route,
+       highlighted,
+       artist_id,
+       gallery_id,
+       segment_page_id,
+       page_id,
+       category_id,
+       blog_home_page
+from menu_item
+where menu_id = $1
+  and position = $2
 `, menuId, position)
 }
 

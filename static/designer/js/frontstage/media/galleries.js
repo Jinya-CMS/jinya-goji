@@ -109,8 +109,8 @@ Alpine.data('galleriesData', () => ({
       },
     });
 
-    const galleries = await getGalleries();
-    this.galleries = galleries.items;
+
+    this.galleries = await getGalleries();
     this.loading = false;
 
     mediaDatabase.cacheMedia().then(() => {});

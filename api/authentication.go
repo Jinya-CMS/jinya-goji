@@ -22,37 +22,37 @@ func login(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	body, err := ParseBody[loginBody](r)
 	if err != nil {
-		sendError("Failed to parse body", http.StatusBadRequest, encoder, w)
+		sendError("Failed to parse body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	deviceCode, _ := auth.GetDeviceCodeFromRequest(r)
 	if deviceCode == nil && body.TwoFactorCode == "" {
-		sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistByEmail(body.Username)
 	if err != nil {
-		sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
 
 	if !artist.ValidatePassword(body.Password) {
-		sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
 
 	sendApiKey := func() {
 		key, apiKey, err := database.NewApiKey(artist, r)
 		if err != nil {
-			sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+			sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 			return
 		}
 
 		err = apiKey.Create()
 		if err != nil {
-			sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+			sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 			return
 		}
 
@@ -61,13 +61,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 		if deviceCode == nil {
 			code, knownDevice, err = database.NewKnownDevice(artist, r)
 			if err != nil {
-				sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+				sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 				return
 			}
 
 			err = knownDevice.Create()
 			if err != nil {
-				sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+				sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 				return
 			}
 
@@ -116,7 +116,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+	sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 }
 
 func request2fa(w http.ResponseWriter, r *http.Request) {
@@ -129,13 +129,13 @@ func request2fa(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ParseBody[loginBody](r)
 	if err != nil {
-		sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
 
 	artist, err := database.FindArtistByEmail(body.Username)
 	if err != nil {
-		sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
 
@@ -147,7 +147,7 @@ func request2fa(w http.ResponseWriter, r *http.Request) {
 	if artist.Enabled {
 		err = artist.SetTwoFactorCode()
 		if err != nil {
-			sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+			sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 			return
 		}
 
@@ -156,7 +156,7 @@ func request2fa(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendError("Bad Credentials", http.StatusForbidden, encoder, w)
+	sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -216,13 +216,13 @@ func updatePassword(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ParseBody[passwordBody](r)
 	if err != nil {
-		sendError("Failed to parse body", http.StatusBadRequest, encoder, w)
+		sendError("Failed to parse body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	err = artist.ChangePassword(body.OldPassword, body.Password)
 	if err != nil {
-		sendError("Failed to change password", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to change password", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

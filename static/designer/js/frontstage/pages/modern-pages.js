@@ -77,10 +77,10 @@ Alpine.data('modernPagesData', () => ({
       await this.savePageSections();
     } else if (savedSections.length !== this.sections.length || !isEqual(savedSections, Alpine.raw(this.sections))) {
       const confirmed = await confirm({
-        title: localize({ key: 'pages_and_forms.modern.designer.load.title' }),
-        message: localize({ key: 'pages_and_forms.modern.designer.load.message' }),
-        declineLabel: localize({ key: 'pages_and_forms.modern.designer.load.decline' }),
-        approveLabel: localize({ key: 'pages_and_forms.modern.designer.load.approve' }),
+        title: localize({ key: 'pages.modern.designer.load.title' }),
+        message: localize({ key: 'pages.modern.designer.load.message' }),
+        declineLabel: localize({ key: 'pages.modern.designer.load.decline' }),
+        approveLabel: localize({ key: 'pages.modern.designer.load.approve' }),
       });
       if (confirmed) {
         this.sections = savedSections;
@@ -94,7 +94,7 @@ Alpine.data('modernPagesData', () => ({
   },
   async selectFile(section, index) {
     const file = await filePicker({
-      title: localize({ key: 'pages_and_forms.modern.designer.pick_file' }),
+      title: localize({ key: 'pages.modern.designer.pick_file' }),
       selectedFileId: section.file.id,
     });
     if (file) {
@@ -146,7 +146,7 @@ Alpine.data('modernPagesData', () => ({
   },
   async insertImageSection(index) {
     const file = await filePicker({
-      title: localize({ key: 'pages_and_forms.modern.designer.pick_file' }),
+      title: localize({ key: 'pages.modern.designer.pick_file' }),
     });
     if (file) {
       this.sections.splice(index, 0, {
@@ -166,13 +166,13 @@ Alpine.data('modernPagesData', () => ({
   },
   async deleteSection(section, index) {
     const confirmed = await confirm({
-      title: localize({ key: 'pages_and_forms.modern.delete_section.title' }),
+      title: localize({ key: 'pages.modern.delete_section.title' }),
       message: localize({
-        key: 'pages_and_forms.modern.delete_section.message',
+        key: 'pages.modern.delete_section.message',
         values: section,
       }),
-      approveLabel: localize({ key: 'pages_and_forms.modern.delete_section.delete' }),
-      declineLabel: localize({ key: 'pages_and_forms.modern.delete_section.keep' }),
+      approveLabel: localize({ key: 'pages.modern.delete_section.delete' }),
+      declineLabel: localize({ key: 'pages.modern.delete_section.keep' }),
       negative: true,
     });
     if (confirmed) {
@@ -191,17 +191,17 @@ Alpine.data('modernPagesData', () => ({
         })),
       );
       this.message.hasMessage = true;
-      this.message.title = localize({ key: 'pages_and_forms.modern.designer.success.title' });
+      this.message.title = localize({ key: 'pages.modern.designer.success.title' });
       this.message.isNegative = false;
-      this.message.content = localize({ key: 'pages_and_forms.modern.designer.success.message' });
+      this.message.content = localize({ key: 'pages.modern.designer.success.message' });
       setTimeout(() => {
         this.message.hasMessage = false;
       }, 30000);
     } catch (e) {
       this.message.hasMessage = true;
-      this.message.title = localize({ key: 'pages_and_forms.modern.designer.error.title' });
+      this.message.title = localize({ key: 'pages.modern.designer.error.title' });
       this.message.isNegative = true;
-      this.message.content = localize({ key: 'pages_and_forms.modern.designer.error.message' });
+      this.message.content = localize({ key: 'pages.modern.designer.error.message' });
     }
   },
   async createPage() {
@@ -213,11 +213,11 @@ Alpine.data('modernPagesData', () => ({
       await this.selectPage(newPage);
     } catch (e) {
       this.create.error.hasError = true;
-      this.create.error.title = localize({ key: 'pages_and_forms.modern.create.error.title' });
+      this.create.error.title = localize({ key: 'pages.modern.create.error.title' });
       if (e.status === 409) {
-        this.create.error.message = localize({ key: 'pages_and_forms.modern.create.error.conflict' });
+        this.create.error.message = localize({ key: 'pages.modern.create.error.conflict' });
       } else {
-        this.create.error.message = localize({ key: 'pages_and_forms.modern.create.error.generic' });
+        this.create.error.message = localize({ key: 'pages.modern.create.error.generic' });
       }
     }
   },
@@ -231,23 +231,23 @@ Alpine.data('modernPagesData', () => ({
       this.pages[this.pages.indexOf(this.selectedPage)].updated = savedPage.updated;
     } catch (e) {
       this.create.error.hasError = true;
-      this.create.error.title = localize({ key: 'pages_and_forms.modern.create.error.title' });
+      this.create.error.title = localize({ key: 'pages.modern.create.error.title' });
       if (e.status === 409) {
-        this.create.error.message = localize({ key: 'pages_and_forms.modern.create.error.conflict' });
+        this.create.error.message = localize({ key: 'pages.modern.create.error.conflict' });
       } else {
-        this.create.error.message = localize({ key: 'pages_and_forms.modern.create.error.generic' });
+        this.create.error.message = localize({ key: 'pages.modern.create.error.generic' });
       }
     }
   },
   async deletePage() {
     const confirmation = await confirm({
-      title: localize({ key: 'pages_and_forms.modern.delete.title' }),
+      title: localize({ key: 'pages.modern.delete.title' }),
       message: localize({
-        key: 'pages_and_forms.modern.delete.message',
+        key: 'pages.modern.delete.message',
         values: this.selectedPage,
       }),
-      declineLabel: localize({ key: 'pages_and_forms.modern.delete.keep' }),
-      approveLabel: localize({ key: 'pages_and_forms.modern.delete.delete' }),
+      declineLabel: localize({ key: 'pages.modern.delete.keep' }),
+      approveLabel: localize({ key: 'pages.modern.delete.delete' }),
       negative: true,
     });
     if (confirmation) {
@@ -262,12 +262,12 @@ Alpine.data('modernPagesData', () => ({
       } catch (e) {
         let message = '';
         if (e.status === 409) {
-          message = localize({ key: 'pages_and_forms.modern.delete.error.conflict' });
+          message = localize({ key: 'pages.modern.delete.error.conflict' });
         } else {
-          message = localize({ key: 'pages_and_forms.modern.delete.error.generic' });
+          message = localize({ key: 'pages.modern.delete.error.generic' });
         }
         await alert({
-          title: localize({ key: 'pages_and_forms.modern.delete.error.title' }),
+          title: localize({ key: 'pages.modern.delete.error.title' }),
           message,
           negative: true,
         });

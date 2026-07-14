@@ -99,6 +99,7 @@ select id,
        last_updated_at,
        name
 from modern_page
+order by id
 `)
 }
 

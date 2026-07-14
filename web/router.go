@@ -21,5 +21,5 @@ func SetupWebRouter(router *mux.Router) {
 		MatcherFunc(func(r *http.Request, match *mux.RouteMatch) bool {
 			return !strings.HasPrefix(r.URL.Path, "/api") && !strings.HasPrefix(r.URL.Path, "/static") && strings.HasPrefix(r.URL.Path, "/designer")
 		}).
-		HandlerFunc(indexPage)
+		HandlerFunc(designerPage)
 }

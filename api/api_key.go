@@ -14,7 +14,7 @@ func getAllApiKeys(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	apiKeys, err := database.FindApiKeysByArtist(artist.Id)
 	if err != nil {
-		sendError("Failed to fetch api keys", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to fetch api keys", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -25,15 +25,16 @@ func deleteApiKey(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["key"]
 
+	encoder := json.NewEncoder(w)
 	apiKey, err := database.FindApiKeyByHashedKey(key)
 	if err != nil {
-		sendError("Api key not found", http.StatusNotFound, json.NewEncoder(w), w)
+		sendError("Api key not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = apiKey.Delete()
 	if err != nil {
-		sendError("Api key not found", http.StatusNotFound, json.NewEncoder(w), w)
+		sendError("Api key not found", http.StatusNotFound, encoder, w, err)
 	}
 
 	w.WriteHeader(http.StatusNoContent)

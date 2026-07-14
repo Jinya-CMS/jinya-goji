@@ -18,7 +18,7 @@ func createFolder(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	body, err := ParseBody[folderBody](r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
@@ -31,13 +31,13 @@ func createFolder(w http.ResponseWriter, r *http.Request) {
 		errType := detectErrorType(err)
 		switch errType {
 		case errorTypeUnique:
-			sendError("The name is not unique", http.StatusConflict, encoder, w)
+			sendError("The name is not unique", http.StatusConflict, encoder, w, err)
 			return
 		case errorTypeReference:
-			sendError("The parent folder does not exist", http.StatusConflict, encoder, w)
+			sendError("The parent folder does not exist", http.StatusConflict, encoder, w, err)
 			return
 		default:
-			sendError("Failed to create folder", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to create folder", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -51,19 +51,19 @@ func updateFolder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	body, err := BodyFromRequest(r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	folder, err := database.FindFolderById(id)
 	if err != nil {
-		sendError("Folder not found", http.StatusNotFound, encoder, w)
+		sendError("Folder not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
@@ -79,13 +79,13 @@ func updateFolder(w http.ResponseWriter, r *http.Request) {
 		errType := detectErrorType(err)
 		switch errType {
 		case errorTypeUnique:
-			sendError("The name is not unique", http.StatusConflict, encoder, w)
+			sendError("The name is not unique", http.StatusConflict, encoder, w, err)
 			return
 		case errorTypeReference:
-			sendError("The parent folder does not exist", http.StatusConflict, encoder, w)
+			sendError("The parent folder does not exist", http.StatusConflict, encoder, w, err)
 			return
 		default:
-			sendError("Failed to update folder", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to update folder", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -98,19 +98,19 @@ func deleteFolder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	folder, err := database.FindFolderById(id)
 	if err != nil {
-		sendError("Folder not found", http.StatusNotFound, encoder, w)
+		sendError("Folder not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = folder.Delete()
 	if err != nil {
-		sendError("Failed to delete folder", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to delete folder", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,13 +17,13 @@ func getGroupStatisticsByMonth(w http.ResponseWriter, r *http.Request) {
 	group := vars["group"]
 	months, err := strconv.Atoi(vars["months"])
 	if err != nil {
-		sendError("Invalid months format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid months format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	statistics, err := database.GetAnalyticsPastIntervalGrouped(group, &months, nil, nil, true)
 	if err != nil {
-		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -36,13 +37,13 @@ func getGroupStatisticsByYear(w http.ResponseWriter, r *http.Request) {
 	group := vars["group"]
 	years, err := strconv.Atoi(vars["years"])
 	if err != nil {
-		sendError("Invalid years format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid years format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	statistics, err := database.GetAnalyticsPastIntervalGrouped(group, new(years*12), nil, nil, true)
 	if err != nil {
-		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -76,25 +77,25 @@ func getEntityStatisticsByMonth(w http.ResponseWriter, r *http.Request) {
 
 	entityType := entityTypeStringToEntityType(vars["entityType"])
 	if entityType == -1 {
-		sendError("Invalid entity type", http.StatusBadRequest, encoder, w)
+		sendError("Invalid entity type", http.StatusBadRequest, encoder, w, fmt.Errorf("the entity type is invalid"))
 		return
 	}
 
 	entityId, err := strconv.Atoi(vars["entityId"])
 	if err != nil {
-		sendError("Invalid entity id format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid entity id format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	months, err := strconv.Atoi(vars["months"])
 	if err != nil {
-		sendError("Invalid months format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid months format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	statistics, err := database.GetAnalyticsPastInterval(&months, &entityType, &entityId, true)
 	if err != nil {
-		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -107,25 +108,25 @@ func getEntityStatisticsByYear(w http.ResponseWriter, r *http.Request) {
 
 	entityType := entityTypeStringToEntityType(vars["entityType"])
 	if entityType == -1 {
-		sendError("Invalid entity type", http.StatusBadRequest, encoder, w)
+		sendError("Invalid entity type", http.StatusBadRequest, encoder, w, fmt.Errorf("the entity type is invalid"))
 		return
 	}
 
 	entityId, err := strconv.Atoi(vars["entityId"])
 	if err != nil {
-		sendError("Invalid entity id format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid entity id format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	years, err := strconv.Atoi(vars["years"])
 	if err != nil {
-		sendError("Invalid years format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid years format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	statistics, err := database.GetAnalyticsPastInterval(new(years*12), &entityType, &entityId, true)
 	if err != nil {
-		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -138,13 +139,13 @@ func getVisitStatisticsByMonth(w http.ResponseWriter, r *http.Request) {
 
 	months, err := strconv.Atoi(vars["months"])
 	if err != nil {
-		sendError("Invalid months format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid months format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	statistics, err := database.GetTotalAnalyticsPastInterval(&months)
 	if err != nil {
-		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
@@ -157,13 +158,13 @@ func getVisitStatisticsByYear(w http.ResponseWriter, r *http.Request) {
 
 	years, err := strconv.Atoi(vars["years"])
 	if err != nil {
-		sendError("Invalid years format", http.StatusBadRequest, encoder, w)
+		sendError("Invalid years format", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	statistics, err := database.GetTotalAnalyticsPastInterval(new(years * 12))
 	if err != nil {
-		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to get analytics", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

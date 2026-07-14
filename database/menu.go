@@ -57,6 +57,7 @@ select id,
        name,
        logo
 from menu
+order by id
 `)
 }
 

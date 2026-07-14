@@ -19,7 +19,7 @@ func createFileTag(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	body, err := ParseBody[fileTagBody](r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
@@ -33,10 +33,10 @@ func createFileTag(w http.ResponseWriter, r *http.Request) {
 		errType := detectErrorType(err)
 		switch errType {
 		case errorTypeUnique:
-			sendError("The name is not unique", http.StatusConflict, encoder, w)
+			sendError("The name is not unique", http.StatusConflict, encoder, w, err)
 			return
 		default:
-			sendError("Failed to create tag", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to create tag", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -50,19 +50,19 @@ func updateFileTag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	body, err := ParseBody[fileTagBody](r)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w)
+		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	fileTag, err := database.FindFileTagById(id)
 	if err != nil {
-		sendError("File tag not found", http.StatusNotFound, encoder, w)
+		sendError("File tag not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
@@ -75,10 +75,10 @@ func updateFileTag(w http.ResponseWriter, r *http.Request) {
 		errType := detectErrorType(err)
 		switch errType {
 		case errorTypeUnique:
-			sendError("The name is not unique", http.StatusConflict, encoder, w)
+			sendError("The name is not unique", http.StatusConflict, encoder, w, err)
 			return
 		default:
-			sendError("Failed to update tag", http.StatusInternalServerError, encoder, w)
+			sendError("Failed to update tag", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
 	}
@@ -91,19 +91,19 @@ func deleteFileTag(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		sendError("Invalid id", http.StatusBadRequest, encoder, w)
+		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	fileTag, err := database.FindFileTagById(id)
 	if err != nil {
-		sendError("Tag not found", http.StatusNotFound, encoder, w)
+		sendError("Tag not found", http.StatusNotFound, encoder, w, err)
 		return
 	}
 
 	err = fileTag.Delete()
 	if err != nil {
-		sendError("Failed to delete tag", http.StatusInternalServerError, encoder, w)
+		sendError("Failed to delete tag", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 

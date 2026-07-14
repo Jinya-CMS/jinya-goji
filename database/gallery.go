@@ -105,6 +105,7 @@ select id,
        type,
        orientation
 from gallery
+order by id
 `)
 }
 

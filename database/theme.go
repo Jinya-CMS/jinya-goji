@@ -83,6 +83,7 @@ select id,
        configuration,
        has_api_theme
 from theme
+order by id
 `)
 }
 

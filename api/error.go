@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/jackc/pgerrcode"
@@ -41,7 +42,7 @@ func detectErrorType(err error) int {
 	return errorTypeOther
 }
 
-func sendError(message string, statusCode int, encoder *json.Encoder, w http.ResponseWriter) {
+func sendError(message string, statusCode int, encoder *json.Encoder, w http.ResponseWriter, err error) {
 	w.WriteHeader(statusCode)
 
 	errorType := "unknown-error"
@@ -61,6 +62,10 @@ func sendError(message string, statusCode int, encoder *json.Encoder, w http.Res
 	case http.StatusForbidden:
 		errorType = "forbidden"
 		break
+	}
+
+	if statusCode >= 500 {
+		slog.Error("Internal server error", "message", message, "statusCode", statusCode, "error", err)
 	}
 
 	encoder.Encode(

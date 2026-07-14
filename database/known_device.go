@@ -98,5 +98,6 @@ select id,
        remote_address
 from known_device
 where device_key = $1
+order by id
 `, hashedKey)
 }

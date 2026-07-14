@@ -125,9 +125,9 @@
                             </a>
                             <a
                                     class="cosmo-menu__item"
-                                    href="/designer/frontstage/pages-and-forms/classic-pages"
-                                    x-active-route.area="pages-and-forms"
-                                    x-localize:pages_and_forms-menu-title
+                                    href="/designer/frontstage/pages/classic-pages"
+                                    x-active-route.area="pages"
+                                    x-localize:pages-menu-title
                             >
                             </a>
                             <a
@@ -202,27 +202,20 @@
                                 </a>
                             </div>
                         </template>
-                        <template x-if="$store.navigation.area === 'pages-and-forms'">
+                        <template x-if="$store.navigation.area === 'pages'">
                             <div class="cosmo-menu__row is--sub">
                                 <a
                                         class="cosmo-menu__item"
-                                        href="/designer/frontstage/pages-and-forms/classic-pages"
+                                        href="/designer/frontstage/pages/classic-pages"
                                         x-active-route="classic-pages"
-                                        x-localize:pages_and_forms-menu-classic_pages
+                                        x-localize:pages-menu-classic_pages
                                 >
                                 </a>
                                 <a
                                         class="cosmo-menu__item"
                                         href="/designer/frontstage/pages-and-forms/modern-pages"
                                         x-active-route="modern-pages"
-                                        x-localize:pages_and_forms-menu-modern_pages
-                                >
-                                </a>
-                                <a
-                                        class="cosmo-menu__item"
-                                        href="/designer/frontstage/pages-and-forms/forms"
-                                        x-active-route="forms"
-                                        x-localize:pages_and_forms-menu-forms
+                                        x-localize:pages-menu-modern_pages
                                 >
                                 </a>
                             </div>
@@ -357,19 +350,14 @@
             ></template>
 
             <template
-                    x-route="/frontstage/pages-and-forms/classic-pages"
+                    x-route="/frontstage/pages/classic-pages"
                     x-handler="[$store.authentication.needsLogin, $store.navigation.fetchScript]"
-                    x-template="/static/designer/templates/frontstage/pages-and-forms/classic-pages.html"
+                    x-template="/static/designer/templates/frontstage/pages/classic-pages.html"
             ></template>
             <template
-                    x-route="/frontstage/pages-and-forms/modern-pages"
+                    x-route="/frontstage/pages/modern-pages"
                     x-handler="[$store.authentication.needsLogin, $store.navigation.fetchScript]"
-                    x-template="/static/designer/templates/frontstage/pages-and-forms/modern-pages.html"
-            ></template>
-            <template
-                    x-route="/frontstage/pages-and-forms/forms"
-                    x-handler="[$store.authentication.needsLogin, $store.navigation.fetchScript]"
-                    x-template="/static/designer/templates/frontstage/pages-and-forms/forms.html"
+                    x-template="/static/designer/templates/frontstage/pages/modern-pages.html"
             ></template>
 
             <template
