@@ -66,7 +66,7 @@ func createClassicPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch detectErrorType(err) {
 		case errorTypeUnique:
-			sendError("Name is not unique", http.StatusConflict, encoder, w, err)
+			sendError("Title is not unique", http.StatusConflict, encoder, w, err)
 			return
 		default:
 			sendError("Failed to create classic page", http.StatusInternalServerError, encoder, w, err)
@@ -112,8 +112,14 @@ func updateClassicPage(w http.ResponseWriter, r *http.Request) {
 
 	err = page.Update()
 	if err != nil {
-		sendError("Failed to update classic page", http.StatusInternalServerError, encoder, w, err)
-		return
+		switch detectErrorType(err) {
+		case errorTypeUnique:
+			sendError("Title is not unique", http.StatusConflict, encoder, w, err)
+			return
+		default:
+			sendError("Failed to update classic page", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)

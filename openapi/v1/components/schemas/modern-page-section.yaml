@@ -11,8 +11,6 @@ properties:
     $ref: ./file.yaml
   link:
     type: string
-  script:
-    type: string
   html:
     type: string
 required:

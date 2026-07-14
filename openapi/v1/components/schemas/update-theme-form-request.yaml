@@ -1,7 +1,0 @@
-type: object
-description: A form assigned to a theme
-properties:
-  form:
-    type: integer
-required:
-  - form

@@ -5705,8 +5705,6 @@ components:
           $ref: '#/components/schemas/file'
         link:
           type: string
-        script:
-          type: string
         html:
           type: string
       required:
@@ -5716,18 +5714,20 @@ components:
       title: Modern page section
       type: object
       properties:
-        id:
-          type: string
-        gallery:
+        galleryId:
           type: integer
-        file:
+        fileId:
           type: integer
         link:
           type: string
-        script:
-          type: string
         html:
           type: string
+        type:
+          type: string
+          enum:
+            - gallery
+            - file
+            - html
     grouped-visits:
       type: object
       description: A collection of visits by country

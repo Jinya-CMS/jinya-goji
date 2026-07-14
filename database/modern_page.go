@@ -126,7 +126,7 @@ func (page *ModernPage) ReplaceSections(sections []ModernPageSection) error {
 	_, err = tx.Exec(`
 delete
 from modern_page_section
-where page_id = ?`, page.Id)
+where page_id = $1`, page.Id)
 	if err != nil {
 		return err
 	}

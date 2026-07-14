@@ -39,7 +39,7 @@ Alpine.data('modernPagesData', () => ({
     this.sections[index].html = value;
   },
   async init() {
-    this.galleries = (await getGalleries()).items;
+    this.galleries = await getGalleries();
     this.pages = await getModernPages();
     if (this.pages.length > 0) {
       await this.selectPage(this.pages[0]);

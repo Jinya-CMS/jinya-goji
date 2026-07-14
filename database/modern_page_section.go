@@ -10,7 +10,6 @@ type ModernPageSection struct {
 	Html      *string `db:"html"`
 	PageId    int     `db:"page_id"`
 	Action    *string `db:"action"`
-	Script    *string `db:"script"`
 	Target    *string `db:"target"`
 }
 
@@ -82,7 +81,6 @@ select id,
        html,
        page_id,
        action,
-       script,
        target
 from modern_page_section
 where page_id = $1

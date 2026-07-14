@@ -89,16 +89,15 @@ func FindClassicPageById(id int) (*ClassicPage, error) {
 
 func FindAllClassicPages() ([]ClassicPage, error) {
 	return Select[ClassicPage](`
-select
-    id,
-    creator_id,
-    updated_by_id,
-    created_at,
-    last_updated_at,
-    content,
-    title
-from
-    classic_page
+select id,
+       creator_id,
+       updated_by_id,
+       created_at,
+       last_updated_at,
+       content,
+       title
+from classic_page
+order by id
 `)
 }
 
