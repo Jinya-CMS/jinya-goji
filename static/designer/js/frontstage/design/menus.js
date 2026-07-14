@@ -17,7 +17,6 @@ import { getFiles } from '../../foundation/api/files.js';
 import { getClassicPages } from '../../foundation/api/classic-pages.js';
 import { getModernPages } from '../../foundation/api/modern-pages.js';
 import { getBlogCategories } from '../../foundation/api/blog-categories.js';
-import { getForms } from '../../foundation/api/forms.js';
 import { getArtists } from '../../foundation/api/artists.js';
 import { getMenuDatabase } from '../../foundation/database/menu.js';
 
@@ -31,7 +30,6 @@ Alpine.data('menusData', () => ({
   classicPages: [],
   modernPages: [],
   blogCategories: [],
-  forms: [],
   artists: [],
   selectedMenu: null,
   getItemTitle(item) {
@@ -42,8 +40,6 @@ Alpine.data('menusData', () => ({
       type = 'classic_page';
     } else if (item.modernPageId) {
       type = 'modern_page';
-    } else if (item.formId) {
-      type = 'form';
     } else if (item.galleryId) {
       type = 'gallery';
     } else if (item.blogCategoryId) {
@@ -63,8 +59,6 @@ Alpine.data('menusData', () => ({
       return item.classicPageName;
     } else if (item.modernPageId) {
       return item.modernPageName;
-    } else if (item.formId) {
-      return item.formName;
     } else if (item.galleryId) {
       return item.galleryName;
     } else if (item.blogCategoryId) {
@@ -95,8 +89,6 @@ Alpine.data('menusData', () => ({
           artistName: item.artistName ?? item.artist?.artistName,
           classicPageId: item.classicPageId ?? item.classicPage?.id,
           classicPageName: item.classicPageName ?? item.classicPage?.title,
-          formId: item.formId ?? item.form?.id,
-          formName: item.formName ?? item.form?.title,
           galleryId: item.galleryId ?? item.gallery?.id,
           galleryName: item.galleryName ?? item.gallery?.name,
           modernPageId: item.modernPageId ?? item.modernPage?.id,
@@ -118,29 +110,26 @@ Alpine.data('menusData', () => ({
       .flat(Infinity);
   },
   async init() {
-    const menus = await getMenus();
-    this.menus = menus.items;
+    this.menus = await getMenus();
     if (this.menus.length > 0) {
       await this.selectMenu(this.menus[0]);
     }
 
-    const [galleries, files, classicPages, modernPages, blogCategories, forms, artists] = await Promise.all([
+    const [galleries, files, classicPages, modernPages, blogCategories, artists] = await Promise.all([
       getGalleries(),
       getFiles(),
       getClassicPages(),
       getModernPages(),
       getBlogCategories(),
-      getForms(),
       getArtists(),
     ]);
 
-    this.galleries = galleries.items;
-    this.files = files.items;
-    this.classicPages = classicPages.items;
-    this.modernPages = modernPages.items;
-    this.blogCategories = blogCategories.items;
-    this.forms = forms.items;
-    this.artists = artists.items;
+    this.galleries = galleries;
+    this.files = files;
+    this.classicPages = classicPages;
+    this.modernPages = modernPages;
+    this.blogCategories = blogCategories;
+    this.artists = artists;
   },
   async selectMenu(menu) {
     if (menu) {
@@ -214,11 +203,6 @@ Alpine.data('menusData', () => ({
     } else {
       this.addItem.artist = undefined;
     }
-    if (this.forms.length > 0) {
-      this.addItem.form = this.forms[0].id;
-    } else {
-      this.addItem.form = undefined;
-    }
     if (this.blogCategories.length > 0) {
       this.addItem.blogCategory = this.blogCategories[0].id;
     } else {
@@ -236,7 +220,6 @@ Alpine.data('menusData', () => ({
     this.editItem.classicPage = item.classicPageId;
     this.editItem.modernPage = item.modernPageId;
     this.editItem.artist = item.artistId;
-    this.editItem.form = item.formId;
     this.editItem.blogCategory = item.blogCategoryId;
     this.editItem.blogHomePage = item.blogHomePage;
 
@@ -248,8 +231,6 @@ Alpine.data('menusData', () => ({
       this.editItem.type = 'type_modern_page';
     } else if (this.editItem.artist) {
       this.editItem.type = 'type_artist';
-    } else if (this.editItem.form) {
-      this.editItem.type = 'type_form';
     } else if (this.editItem.blogCategory) {
       this.editItem.type = 'type_blog_category';
     } else if (typeof this.editItem.route === 'string') {
@@ -373,7 +354,6 @@ Alpine.data('menusData', () => ({
           highlighted: item.highlighted,
           artistId: item.artistId,
           classicPageId: item.classicPageId,
-          formId: item.formId,
           galleryId: item.galleryId,
           modernPageId: item.modernPageId,
           route: item.route,
@@ -461,10 +441,6 @@ Alpine.data('menusData', () => ({
       const { id, name } = this.modernPages.find((modernPage) => modernPage.id === this.addItem.modernPage);
       res.modernPageId = id;
       res.modernPageName = name;
-    } else if (this.addItem.type === 'type_form') {
-      const { id, title } = this.forms.find((form) => form.id === this.addItem.form);
-      res.formId = id;
-      res.formName = title;
     } else if (this.addItem.type === 'type_gallery') {
       const { id, name } = this.galleries.find((gallery) => gallery.id === this.addItem.gallery);
       res.galleryId = id;
@@ -515,10 +491,6 @@ Alpine.data('menusData', () => ({
       const { id, name } = this.modernPages.find((modernPage) => modernPage.id === this.editItem.modernPage);
       res.modernPageId = id;
       res.modernPageName = name;
-    } else if (this.editItem.type === 'type_form') {
-      const { id, title } = this.forms.find((form) => form.id === this.editItem.form);
-      res.formId = id;
-      res.formName = title;
     } else if (this.editItem.type === 'type_gallery') {
       const { id, name } = this.galleries.find((gallery) => gallery.id === this.editItem.gallery);
       res.galleryId = id;
@@ -699,7 +671,6 @@ Alpine.data('menusData', () => ({
     classicPage: undefined,
     modernPage: undefined,
     artist: undefined,
-    form: undefined,
     blogCategory: undefined,
     blogHomePage: undefined,
   },
@@ -713,7 +684,6 @@ Alpine.data('menusData', () => ({
     classicPage: undefined,
     modernPage: undefined,
     artist: undefined,
-    form: undefined,
     blogCategory: undefined,
     blogHomePage: undefined,
   },

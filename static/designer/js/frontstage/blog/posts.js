@@ -152,9 +152,9 @@ Alpine.data('postsData', () => ({
   },
   async init() {
     const [posts, categories, galleries] = await Promise.all([getBlogPosts(), getBlogCategories(), getGalleries()]);
-    this.categories = prepareCategories(categoriesToTree(categories.items));
-    this.posts = posts.items;
-    this.galleries = galleries.items;
+    this.categories = prepareCategories(categoriesToTree(categories));
+    this.posts = posts;
+    this.galleries = galleries;
     this.$watch('create.title', (newValue, oldValue) => {
       if (slugify(oldValue) === this.create.slug) {
         this.create.slug = slugify(newValue);

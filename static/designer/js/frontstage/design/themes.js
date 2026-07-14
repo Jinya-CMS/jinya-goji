@@ -9,7 +9,6 @@ import {
   getThemeConfigurationStructure,
   getThemeDefaultConfiguration,
   getThemeFiles,
-  getThemeForms,
   getThemeGalleries,
   getThemeMenus,
   getThemeModernPages,
@@ -20,14 +19,12 @@ import {
   updateThemeClassicPage,
   updateThemeConfiguration,
   updateThemeFile,
-  updateThemeForm,
   updateThemeGallery,
   updateThemeMenu,
   updateThemeModernPage,
   updateThemeVariables,
   uploadTheme,
 } from '../../foundation/api/themes.js';
-import { getForms } from '../../foundation/api/forms.js';
 import { getGalleries } from '../../foundation/api/galleries.js';
 import { getModernPages } from '../../foundation/api/modern-pages.js';
 import { getMenus } from '../../foundation/api/menus.js';
@@ -90,20 +87,17 @@ Alpine.data('themesData', () => ({
       getModernPages(),
       getMenus(),
       getBlogCategories(),
-      getForms(),
-    ]).then(([galleries, classicPages, modernPages, menus, blogCategories, forms]) => {
-      this.galleries = galleries.items;
-      this.classicPages = classicPages.items;
-      this.modernPages = modernPages.items;
-      this.menus = menus.items;
-      this.blogCategories = blogCategories.items;
-      this.forms = forms.items;
+    ]).then(([galleries, classicPages, modernPages, menus, blogCategories]) => {
+      this.galleries = galleries;
+      this.classicPages = classicPages;
+      this.modernPages = modernPages;
+      this.menus = menus;
+      this.blogCategories = blogCategories;
     });
 
     mediaDatabase.cacheMedia().then(() => {});
 
-    const themes = await getThemes();
-    this.themes = themes.items;
+    this.themes = await getThemes();
     if (this.themes.length > 0) {
       await this.selectTheme(this.themes[0]);
     }
@@ -111,7 +105,6 @@ Alpine.data('themesData', () => ({
   selectedThemeData: {
     modernPages: {},
     classicPages: {},
-    forms: {},
     menus: {},
     galleries: {},
     files: {},
@@ -176,10 +169,9 @@ Alpine.data('themesData', () => ({
     }
   },
   async loadLinks() {
-    const [modernPages, classicPages, forms, menus, galleries, files, blogCategories] = await Promise.all([
+    const [modernPages, classicPages,  menus, galleries, files, blogCategories] = await Promise.all([
       getThemeModernPages(this.selectedTheme.id),
       getThemeClassicPages(this.selectedTheme.id),
-      getThemeForms(this.selectedTheme.id),
       getThemeMenus(this.selectedTheme.id),
       getThemeGalleries(this.selectedTheme.id),
       getThemeFiles(this.selectedTheme.id),
@@ -194,11 +186,6 @@ Alpine.data('themesData', () => ({
     this.selectedThemeData.classicPages = {};
     for (const [key, item] of Object.entries(classicPages)) {
       this.selectedThemeData.classicPages[key] = item.id;
-    }
-
-    this.selectedThemeData.forms = {};
-    for (const [key, item] of Object.entries(forms)) {
-      this.selectedThemeData.forms[key] = item.id;
     }
 
     this.selectedThemeData.menus = {};
@@ -278,7 +265,7 @@ Alpine.data('themesData', () => ({
     }
   },
   async saveLinks() {
-    const { modernPages, classicPages, forms, menus, galleries, files, blogCategories } = this.selectedThemeData;
+    const { modernPages, classicPages,  menus, galleries, files, blogCategories } = this.selectedThemeData;
     const { id } = this.selectedTheme;
     try {
       await Promise.all([
@@ -288,7 +275,6 @@ Alpine.data('themesData', () => ({
         ...Object.entries(classicPages).map(([name, link]) =>
           updateThemeClassicPage(id, name, link === 'null' ? null : link),
         ),
-        ...Object.entries(forms).map(([name, link]) => updateThemeForm(id, name, link === 'null' ? null : link)),
         ...Object.entries(menus).map(([name, link]) => updateThemeMenu(id, name, link === 'null' ? null : link)),
         ...Object.entries(galleries).map(([name, link]) => updateThemeGallery(id, name, link === 'null' ? null : link)),
         ...Object.entries(files).map(([name, link]) => updateThemeFile(id, name, link === 'null' ? null : link)),

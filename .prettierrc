@@ -9,5 +9,5 @@
   "proseWrap": "preserve",
   "quoteProps": "as-needed",
   "plugins": [],
-  "filepath": "public/**/*"
+  "filepath": "static/**/*"
 }

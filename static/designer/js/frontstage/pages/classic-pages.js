@@ -28,8 +28,7 @@ Alpine.data('classicPagesData', () => ({
     return `#${this.selectedPage.id} ${this.selectedPage.title}`;
   },
   async init() {
-    const pages = await getClassicPages();
-    this.pages = pages.items;
+    this.pages = await getClassicPages();
     if (this.pages.length > 0) {
       await this.selectPage(this.pages[0]);
     }

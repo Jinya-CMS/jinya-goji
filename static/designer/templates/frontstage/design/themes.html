@@ -288,28 +288,6 @@
                   </template>
                 </div>
               </template>
-              <template x-if="selectedThemeData.configurationStructure.links.forms">
-                <div style="display: contents">
-                  <span class="cosmo-input__header" x-localize:design-themes-links-forms></span>
-                  <template
-                    x-for="[formLink, label] in Object.entries(selectedThemeData.configurationStructure.links.forms)"
-                  >
-                    <div style="display: contents" x-data="{ id: $id('group') }">
-                      <label :for="id" class="cosmo-label" x-text="getValueForCurrentLanguage(label)"></label>
-                      <select :id="id" class="cosmo-select" x-model.number="selectedThemeData.forms[formLink]">
-                        <option :value="null" x-localize:design-themes-links-no_form></option>
-                        <template :key="form.id" x-for="form in forms">
-                          <option
-                            :selected="selectedThemeData.forms[formLink] === form.id"
-                            :value="form.id"
-                            x-text="form.name"
-                          ></option>
-                        </template>
-                      </select>
-                    </div>
-                  </template>
-                </div>
-              </template>
             </div>
             <div class="cosmo-button__container is--sticky-bottom">
               <button

@@ -249,7 +249,6 @@
                 value="type_modern_page"
                 x-show="modernPages.length > 0"
               ></option>
-              <option x-localize:design-menus-designer-type_form value="type_form" x-show="forms.length > 0"></option>
               <option
                 x-localize:design-menus-designer-type_artist
                 value="type_artist"
@@ -276,16 +275,6 @@
                 <select required class="cosmo-select" id="addItemGallery" x-model.number="addItem.gallery">
                   <template x-for="gallery in galleries" :key="gallery.id">
                     <option x-text="getDropdownLabel(gallery.id, gallery.name)" :value="gallery.id"></option>
-                  </template>
-                </select>
-              </div>
-            </template>
-            <template x-if="addItem.type === 'type_form'">
-              <div style="display: contents">
-                <label for="addItemForm" class="cosmo-label" x-localize:design-menus-designer-type_form></label>
-                <select required class="cosmo-select" id="addItemForm" x-model.number="addItem.form">
-                  <template x-for="form in forms" :key="form.id">
-                    <option x-text="getDropdownLabel(form.id, form.title)" :value="form.id"></option>
                   </template>
                 </select>
               </div>
@@ -393,20 +382,6 @@
                       :selected="gallery.id === editItem.gallery"
                       x-text="getDropdownLabel(gallery.id, gallery.name)"
                       :value="gallery.id"
-                    ></option>
-                  </template>
-                </select>
-              </div>
-            </template>
-            <template x-if="editItem.type === 'type_form'">
-              <div style="display: contents">
-                <label for="editItemForm" class="cosmo-label" x-localize:design-menus-designer-type_form></label>
-                <select required class="cosmo-select" id="editItemForm" x-model.number="editItem.form">
-                  <template x-for="form in forms" :key="form.id">
-                    <option
-                      :selected="form.id === editItem.form"
-                      x-text="getDropdownLabel(form.id, form.title)"
-                      :value="form.id"
                     ></option>
                   </template>
                 </select>

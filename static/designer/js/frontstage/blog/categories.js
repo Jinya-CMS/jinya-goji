@@ -31,7 +31,7 @@ Alpine.data('categoriesData', () => ({
   },
   async init() {
     const categories = await getBlogCategories();
-    this.categories = prepareCategories(categoriesToTree(categories.items));
+    this.categories = prepareCategories(categoriesToTree(categories));
     if (this.categories.length > 0) {
       await this.selectCategory(this.categories[0]);
     }
