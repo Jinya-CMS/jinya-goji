@@ -19,10 +19,6 @@ func (chunk *UploadingFileChunk) Delete() error {
 	return Delete(chunk)
 }
 
-func FindUploadingFileChunkById(id int) (*UploadingFileChunk, error) {
-	return Get[UploadingFileChunk](id)
-}
-
 func FindUploadingFileChunksByFile(uploadingFileId string) ([]UploadingFileChunk, error) {
 	return Select[UploadingFileChunk](`
 select id,

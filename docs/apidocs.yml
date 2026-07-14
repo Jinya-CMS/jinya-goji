@@ -1432,28 +1432,6 @@ paths:
         - header-auth: []
         - cookie-auth: []
       description: Deletes the given folder
-    get:
-      summary: Get folder by id
-      tags:
-        - folders
-      responses:
-        '200':
-          description: Successfully got the folder
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/folder'
-        '404':
-          description: Folder not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_folder_by_id
-      description: Gets the folder with the specified id
-      security:
-        - header-auth: []
-        - cookie-auth: []
   /api/file:
     post:
       summary: Create file
@@ -1578,28 +1556,6 @@ paths:
         - header-auth: []
         - cookie-auth: []
       description: Deletes the given file
-    get:
-      summary: Get file by id
-      tags:
-        - files
-      responses:
-        '200':
-          description: Successfully got the file
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/file'
-        '404':
-          description: File not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_file_by_id
-      description: Gets the file with the specified id
-      security:
-        - header-auth: []
-        - cookie-auth: []
   /api/file/{id}/content:
     parameters:
       - name: id
@@ -1752,34 +1708,6 @@ paths:
         - header-auth: []
         - cookie-auth: []
   /api/file-tag:
-    get:
-      summary: List file tags
-      tags:
-        - files
-      responses:
-        '200':
-          description: Successfully returned all file tags
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/file-tag-list'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_all_file_tags
-      description: Gets a list of all file tags
-      security:
-        - header-auth: []
-        - cookie-auth: []
     post:
       summary: Create file tag
       tags:
@@ -1903,28 +1831,6 @@ paths:
         - header-auth: []
         - cookie-auth: []
       description: Deletes the given file tag
-    get:
-      summary: Get file tag by id
-      tags:
-        - files
-      responses:
-        '200':
-          description: Successfully got the file tag
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/file-tag'
-        '404':
-          description: File tag not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_file_tag_by_id
-      description: Gets the file tag with the specified id
-      security:
-        - header-auth: []
-        - cookie-auth: []
   /api/gallery:
     get:
       summary: List galleries
@@ -5464,26 +5370,6 @@ components:
           type: array
           items:
             type: string
-    file-tag-list:
-      title: File tag list
-      type: object
-      description: A tag allows grouping of file tags
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/file-tag'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-file-tag-request:
       title: Create file tag
       type: object

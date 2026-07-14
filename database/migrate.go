@@ -36,9 +36,11 @@ func SetupDatabase() {
 		AddTableWithName[BlogPost]("blog_post")
 		AddTableWithName[BlogPostSection]("blog_post_section")
 		AddTableWithName[ClassicPage]("classic_page")
-		AddTableWithName[File]("file")
+		AddTableWithName[File]("file").
+			SetUniqueTogether("folder_id", "name")
 		AddTableWithName[FileTag]("file_tag")
-		AddTableWithName[Folder]("folder")
+		AddTableWithName[Folder]("folder").
+			SetUniqueTogether("parent_id", "name")
 		AddTableWithName[Gallery]("gallery")
 		AddTableWithName[GalleryFilePosition]("gallery_file_position")
 		AddTableWithName[KnownDevice]("known_device")

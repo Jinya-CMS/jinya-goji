@@ -23,19 +23,19 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createBlogCategory))).
 		Methods(http.MethodPost)
 	blogCategoryRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(getBlogCategoryById))).
 		Methods(http.MethodGet)
 	blogCategoryRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateBlogCategory))).
 		Methods(http.MethodPut)
 	blogCategoryRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteBlogCategory))).
 		Methods(http.MethodDelete)
 	blogCategoryRouter.
-		Path("/{id}/post").
+		Path("/{id:\\d+}/post").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getPostsByCategory))).
 		Methods(http.MethodGet)
 
@@ -50,23 +50,23 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createBlogPost))).
 		Methods(http.MethodPost)
 	blogPostRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getBlogPostById))).
 		Methods(http.MethodGet)
 	blogPostRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateBlogPost))).
 		Methods(http.MethodPut)
 	blogPostRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteBlogPost))).
 		Methods(http.MethodDelete)
 	blogPostRouter.
-		Path("/{id}/section").
+		Path("/{id:\\d+}/section").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getBlogPostSections))).
 		Methods(http.MethodGet)
 	blogPostRouter.
-		Path("/{id}/section").
+		Path("/{id:\\d+}/section").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateBlogPostSections))).
 		Methods(http.MethodPut)
 
@@ -81,35 +81,35 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(createArtist))).
 		Methods(http.MethodPost)
 	userRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getArtistById))).
 		Methods(http.MethodGet)
 	userRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(updateArtist))).
 		Methods(http.MethodPut)
 	userRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(deleteArtist))).
 		Methods(http.MethodDelete)
 	userRouter.
-		Path("/{id}/activation").
+		Path("/{id:\\d+}/activation").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(activateUser))).
 		Methods(http.MethodPut)
 	userRouter.
-		Path("/{id}/activation").
+		Path("/{id:\\d+}/activation").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(deactivateUser))).
 		Methods(http.MethodDelete)
 	userRouter.
-		Path("/{id}/profilepicture").
+		Path("/{id:\\d+}/profilepicture").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(updateUserProfilePicture))).
 		Methods(http.MethodPut)
 	userRouter.
-		Path("/{id}/profilepicture").
+		Path("/{id:\\d+}/profilepicture").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(deleteUserProfilePicture))).
 		Methods(http.MethodDelete)
 	userRouter.
-		Path("/{id}/totp").
+		Path("/{id:\\d+}/totp").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleAdmin)(http.HandlerFunc(resetTotp))).
 		Methods(http.MethodPut)
 
@@ -120,23 +120,27 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createFile))).
 		Methods(http.MethodPost)
 	fileRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(getFile))).
+		Methods(http.MethodGet)
+	fileRouter.
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateFile))).
 		Methods(http.MethodPut)
 	fileRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteFile))).
 		Methods(http.MethodDelete)
 	fileRouter.
-		Path("/{id}/content").
+		Path("/{id:\\d+}/content").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(startUpload))).
 		Methods(http.MethodPut)
 	fileRouter.
-		Path("/{id}/content/{position}").
+		Path("/{id:\\d+}/content/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(uploadChunk))).
 		Methods(http.MethodPut)
 	fileRouter.
-		Path("/{id}/content/finish").
+		Path("/{id:\\d+}/content/finish").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(finishUpload))).
 		Methods(http.MethodPut)
 
@@ -151,35 +155,35 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createGallery))).
 		Methods(http.MethodPost)
 	galleryRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getGalleryById))).
 		Methods(http.MethodGet)
 	galleryRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateGallery))).
 		Methods(http.MethodPut)
 	galleryRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteGallery))).
 		Methods(http.MethodDelete)
 	galleryRouter.
-		Path("/{id}/file").
+		Path("/{id:\\d+}/file").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getGalleryFiles))).
 		Methods(http.MethodGet)
 	galleryRouter.
-		Path("/{id}/file").
+		Path("/{id:\\d+}/file").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(addFileToGallery))).
 		Methods(http.MethodPost)
 	galleryRouter.
-		Path("/{id}/file/{position}").
+		Path("/{id:\\d+}/file/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getGalleryFileByPosition))).
 		Methods(http.MethodGet)
 	galleryRouter.
-		Path("/{id}/file/{position}").
+		Path("/{id:\\d+}/file/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateGalleryFile))).
 		Methods(http.MethodPut)
 	galleryRouter.
-		Path("/{id}/file/{position}").
+		Path("/{id:\\d+}/file/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteGalleryFile))).
 		Methods(http.MethodDelete)
 
@@ -194,15 +198,15 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createClassicPage))).
 		Methods(http.MethodPost)
 	classicPageRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getClassicPageById))).
 		Methods(http.MethodGet)
 	classicPageRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateClassicPage))).
 		Methods(http.MethodPut)
 	classicPageRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteClassicPage))).
 		Methods(http.MethodDelete)
 
@@ -217,23 +221,23 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createModernPage))).
 		Methods(http.MethodPost)
 	modernPageRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getModernPageById))).
 		Methods(http.MethodGet)
 	modernPageRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateModernPage))).
 		Methods(http.MethodPut)
 	modernPageRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteModernPage))).
 		Methods(http.MethodDelete)
 	modernPageRouter.
-		Path("/{id}/section").
+		Path("/{id:\\d+}/section").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getModernPageSections))).
 		Methods(http.MethodGet)
 	modernPageRouter.
-		Path("/{id}/section").
+		Path("/{id:\\d+}/section").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateModernPageSections))).
 		Methods(http.MethodPut)
 
@@ -248,31 +252,31 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createMenu))).
 		Methods(http.MethodPost)
 	menuRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getMenuById))).
 		Methods(http.MethodGet)
 	menuRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateMenu))).
 		Methods(http.MethodPut)
 	menuRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteMenu))).
 		Methods(http.MethodDelete)
 	menuRouter.
-		Path("/{id}/item").
+		Path("/{id:\\d+}/item").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getMenuItems))).
 		Methods(http.MethodGet)
 	menuRouter.
-		Path("/{id}/item").
+		Path("/{id:\\d+}/item").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(addMenuItem))).
 		Methods(http.MethodPost)
 	menuRouter.
-		Path("/{id}/item/{position}").
+		Path("/{id:\\d+}/item/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateMenuItem))).
 		Methods(http.MethodPut)
 	menuRouter.
-		Path("/{id}/item/{position}").
+		Path("/{id:\\d+}/item/{position:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteMenuItem))).
 		Methods(http.MethodDelete)
 
@@ -287,95 +291,95 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createTheme))).
 		Methods(http.MethodPost)
 	themeRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeById))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateTheme))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteTheme))).
 		Methods(http.MethodDelete)
 	themeRouter.
-		Path("/{id}/active").
+		Path("/{id:\\d+}/active").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(activateTheme))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/assets").
+		Path("/{id:\\d+}/assets").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeAssets))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/configuration").
+		Path("/{id:\\d+}/configuration").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeConfiguration))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/configuration").
+		Path("/{id:\\d+}/configuration").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeConfiguration))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/configuration/default").
+		Path("/{id:\\d+}/configuration/default").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeDefaultConfiguration))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/configuration/structure").
+		Path("/{id:\\d+}/configuration/structure").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeConfigurationStructure))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/styling").
+		Path("/{id:\\d+}/styling").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeStyling))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/styling").
+		Path("/{id:\\d+}/styling").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeStyling))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/blog-category").
+		Path("/{id:\\d+}/blog-category").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeBlogCategories))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/blog-category/{name}").
+		Path("/{id:\\d+}/blog-category/{name}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeBlogCategory))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/classic-page").
+		Path("/{id:\\d+}/classic-page").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeClassicPages))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/classic-page/{name}").
+		Path("/{id:\\d+}/classic-page/{name}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeClassicPage))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/file").
+		Path("/{id:\\d+}/file").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeFiles))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/file/{name}").
+		Path("/{id:\\d+}/file/{name}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeFile))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/gallery").
+		Path("/{id:\\d+}/gallery").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeGalleries))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/gallery/{name}").
+		Path("/{id:\\d+}/gallery/{name}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeGallery))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/menu").
+		Path("/{id:\\d+}/menu").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeMenus))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/menu/{name}").
+		Path("/{id:\\d+}/menu/{name}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeMenu))).
 		Methods(http.MethodPut)
 	themeRouter.
-		Path("/{id}/modern-page").
+		Path("/{id:\\d+}/modern-page").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeModernPages))).
 		Methods(http.MethodGet)
 	themeRouter.
-		Path("/{id}/modern-page/{name}").
+		Path("/{id:\\d+}/modern-page/{name}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeModernPage))).
 		Methods(http.MethodPut)
 
@@ -408,11 +412,11 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createFileTag))).
 		Methods(http.MethodPost)
 	fileTagRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateFileTag))).
 		Methods(http.MethodPut)
 	fileTagRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteFileTag))).
 		Methods(http.MethodDelete)
 
@@ -423,11 +427,11 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(createFolder))).
 		Methods(http.MethodPost)
 	folderRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateFolder))).
 		Methods(http.MethodPut)
 	folderRouter.
-		Path("/{id}").
+		Path("/{id:\\d+}").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteFolder))).
 		Methods(http.MethodDelete)
 
@@ -552,7 +556,7 @@ func SetupAdminApiRouter(router *mux.Router) {
 
 	// Theme preview
 	router.
-		Path("/api/theme/{id}/preview").
+		Path("/api/theme/{id:\\d+}/preview").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetThemePreview))).
 		Methods(http.MethodGet)
 

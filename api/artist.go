@@ -38,7 +38,7 @@ func getArtistById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	encoder.Encode(artist)
+	encoder.Encode(&artist)
 }
 
 type artistBody struct {
@@ -78,7 +78,7 @@ func createArtist(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	encoder.Encode(artist)
+	encoder.Encode(&artist)
 }
 
 func updateArtist(w http.ResponseWriter, r *http.Request) {

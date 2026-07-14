@@ -42,7 +42,7 @@ func createFileTag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	encoder.Encode(fileTag)
+	encoder.Encode(&fileTag)
 }
 
 func updateFileTag(w http.ResponseWriter, r *http.Request) {

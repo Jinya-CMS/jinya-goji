@@ -62,7 +62,7 @@ Alpine.data('filesData', () => ({
       return this.files;
     }
 
-    return this.files.files.filter((file) => file.tags.filter((tag) => this.activeTags.has(tag.id)).length > 0);
+    return this.files.filter((file) => file.tags.filter((tag) => this.activeTags.has(tag.id)).length > 0);
   },
   get randomColor() {
     return getRandomColor();

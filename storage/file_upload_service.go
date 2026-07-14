@@ -6,22 +6,31 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/google/uuid"
 	"jinya.de/goji/database"
 )
 
-func SaveFileChunk(fileId int, position int, data []byte) (*database.UploadingFileChunk, error) {
+func StartFileUpload(fileId int) error {
+	uploadingFile := database.UploadingFile{
+		Id:     uuid.NewString(),
+		FileId: fileId,
+	}
+	return uploadingFile.Create()
+}
+
+func SaveFileChunk(fileId int, position int, data []byte) error {
 	tempPath := filepath.Join(os.TempDir(), uuid.New().String())
 	err := os.WriteFile(tempPath, data, 0644)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	uploadingFile, err := database.FindUploadingFileByFile(fileId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	chunk := database.UploadingFileChunk{
@@ -30,38 +39,33 @@ func SaveFileChunk(fileId int, position int, data []byte) (*database.UploadingFi
 		UploadingFileId: uploadingFile.Id,
 	}
 
-	err = database.Insert(&chunk)
-	if err != nil {
-		return nil, err
-	}
-
-	return &chunk, nil
+	return chunk.Create()
 }
 
-func FinishFileUpload(fileId int) (*database.File, error) {
+func FinishFileUpload(fileId int) error {
 	file, err := database.FindFileById(fileId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	uploadingFile, err := database.FindUploadingFileByFile(fileId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	chunks, err := database.FindUploadingFileChunksByFile(uploadingFile.Id)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = ensureSavePathExists()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	outTempFile, err := os.CreateTemp("", "jinya-upload-*")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer os.Remove(outTempFile.Name())
@@ -70,23 +74,23 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 	for _, chunk := range chunks {
 		chunkData, err := os.ReadFile(chunk.ChunkPath)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		_, err = outTempFile.Write(chunkData)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
 	_, err = outTempFile.Seek(0, 0)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	hash, err := getFileHash(outTempFile)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	fileName := hash
@@ -95,18 +99,18 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 	// Copy temp file to final destination
 	_, err = outTempFile.Seek(0, 0)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	finalFile, err := os.Create(finalPath)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer finalFile.Close()
 
 	_, err = io.Copy(finalFile, outTempFile)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Detect mime type
@@ -127,10 +131,10 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 	}
 
 	file.Type = contentType
-	file.Path = fileName
+	file.Path = "/jinya-content/" + fileName
 	err = file.Update()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = ClearFileChunks(fileId)
@@ -143,7 +147,7 @@ func FinishFileUpload(fileId int) (*database.File, error) {
 		slog.Error("Failed to delete uploading file record", "error", err)
 	}
 
-	return file, nil
+	return nil
 }
 
 func ClearFileChunks(fileId int) error {
@@ -163,4 +167,10 @@ func ClearFileChunks(fileId int) error {
 	}
 
 	return nil
+}
+
+func DeleteFile(filePath string) error {
+	_, file := path.Split(filePath)
+
+	return os.Remove(path.Join(GetStoragePath(), file))
 }

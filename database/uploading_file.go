@@ -17,10 +17,6 @@ func (file *UploadingFile) Delete() error {
 	return Delete(file)
 }
 
-func FindUploadingFileById(id string) (*UploadingFile, error) {
-	return Get[UploadingFile](id)
-}
-
 func FindUploadingFileByFile(fileId int) (*UploadingFile, error) {
 	return SelectOne[UploadingFile](`
 select id,

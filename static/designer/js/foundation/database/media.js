@@ -1,7 +1,9 @@
-import { Dexie, liveQuery } from '../../../lib/dexie.js';
-import { getRootFolder } from '../api/media.js';
+import {Dexie, liveQuery} from '../../../lib/dexie.js';
+import {getRootFolder} from '../api/media.js';
 
 class MediaDatabase {
+  #database;
+
   constructor() {
     this.#database = new Dexie('media');
     this.#database.version(1).stores({
@@ -12,8 +14,6 @@ class MediaDatabase {
 
     this.replaceMedia = this.replaceMedia.bind(this);
   }
-
-  #database;
 
   async #openIfClosed() {
     if (!this.#database.isOpen()) {
@@ -158,6 +158,9 @@ class MediaDatabase {
   async saveFile(file) {
     await this.#openIfClosed();
 
+    if (file.folderId === null) {
+      file.folderId = -1;
+    }
     await this.#database.files.put(file);
   }
 
@@ -170,6 +173,9 @@ class MediaDatabase {
   async saveFolder(folder) {
     await this.#openIfClosed();
 
+    if (folder.parentId === null) {
+      folder.parentId = -1;
+    }
     await this.#database.folders.put(folder);
   }
 

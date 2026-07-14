@@ -90,7 +90,11 @@ func jinyaContent(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	hash := vars["hash"]
 
-	http.ServeFile(w, r, path.Join(storage.GetStoragePath(), hash))
+	if !database.FilePathExists("/jinya-content/" + hash) {
+		http.NotFound(w, r)
+	} else {
+		http.ServeFile(w, r, path.Join(storage.GetStoragePath(), hash))
+	}
 }
 
 func imagePhp(w http.ResponseWriter, r *http.Request) {
