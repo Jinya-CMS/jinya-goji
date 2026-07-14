@@ -2,6 +2,8 @@ import { Dexie } from '../../../lib/dexie.js';
 import { getTimestamp } from './utils.js';
 
 class BlogPostDatabase {
+  #database;
+
   constructor() {
     this.#database = new Dexie('blogPosts');
     this.#database.version(1).stores({
@@ -9,8 +11,6 @@ class BlogPostDatabase {
       changedPosts: 'postId',
     });
   }
-
-  #database;
 
   getSections(id) {
     return this.#database.sections.where('postId').equals(id).toArray();

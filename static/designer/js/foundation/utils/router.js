@@ -1,6 +1,6 @@
-import {checkLogin, isApiKeyValid} from '../api/authentication.js';
-import {Alpine} from '../../../../lib/alpine.js';
-import {setRedirect} from './storage.js';
+import { checkLogin, isApiKeyValid } from '../api/authentication.js';
+import { Alpine } from '../../../../lib/alpine.js';
+import { setRedirect } from './storage.js';
 
 export function needsLogin(context) {
   if (isApiKeyValid()) {
@@ -29,13 +29,13 @@ export async function needsLogout(context) {
   return null;
 }
 
-export async function fetchScript({route}) {
+export async function fetchScript({ route }) {
   if (route.startsWith('/login') || route.startsWith('/designer/login')) {
     await import('/static/designer/js/login/login.js');
   } else {
     let [, , stage, area, page] = route.split('/');
     if (page.includes(':')) {
-      page = page.replaceAll(':', '')
+      page = page.replaceAll(':', '');
     }
     if (stage && area) {
       await import(`/static/designer/js/${stage}/${area}/${page ?? 'index'}.js`);

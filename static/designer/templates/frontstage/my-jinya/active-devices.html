@@ -9,14 +9,14 @@
     </tr>
   </thead>
   <tbody>
-    <template x-for="device in devices" :key="device.key">
+    <template :key="device.key" x-for="device in devices">
       <tr>
         <td x-text="getBrowser(device.userAgent)"></td>
         <td x-text="getDevice(device.userAgent)"></td>
         <td x-text="getLocation(device.remoteAddress)"></td>
         <td x-text="device.remoteAddress"></td>
         <td>
-          <button class="cosmo-button" @click="forget(device.key)" x-localize:my_jinya-devices-action-forget></button>
+          <button @click="forget(device.key)" class="cosmo-button" x-localize:my_jinya-devices-action-forget></button>
         </td>
       </tr>
     </template>

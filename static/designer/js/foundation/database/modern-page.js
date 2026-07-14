@@ -2,6 +2,8 @@ import { Dexie } from '../../../lib/dexie.js';
 import { getTimestamp } from './utils.js';
 
 class ModernPageDatabase {
+  #database;
+
   constructor() {
     this.#database = new Dexie('modernPages');
     this.#database.version(2).stores({
@@ -9,8 +11,6 @@ class ModernPageDatabase {
       changedPages: 'pageId',
     });
   }
-
-  #database;
 
   getSections(id) {
     return this.#database.sections.where('pageId').equals(id).toArray();

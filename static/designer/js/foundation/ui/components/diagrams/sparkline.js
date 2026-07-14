@@ -11,40 +11,8 @@ class SparklineElement extends HTMLElement {
     this.root = this.attachShadow({ mode: 'closed' });
   }
 
-  connectedCallback() {
-    this.root.innerHTML = `
-      <style>
-          @import "/static/designer/css/statistics.css";
-          
-          #diagram {
-            width: 250px;
-            height: 35px;
-          }
-      </style>
-      <div id="diagram"></div>`;
-    this.renderDiagram();
-  }
-
-  disconnectedCallback() {
-    if (this.#echarts && this.#echarts.dispose) {
-      this.#echarts.dispose();
-    }
-  }
-
   static get observedAttributes() {
     return ['entity-id', 'type'];
-  }
-
-  attributeChangedCallback(property, oldValue, newValue) {
-    if (oldValue === newValue) {
-      return;
-    }
-
-    if (property === 'entity-id') {
-      this['entityId'] = newValue;
-    } else {
-      this[property] = newValue;
-    }
   }
 
   get entityId() {
@@ -86,6 +54,38 @@ class SparklineElement extends HTMLElement {
   set range(value) {
     this.setAttribute('range', value);
     this.renderDiagram();
+  }
+
+  connectedCallback() {
+    this.root.innerHTML = `
+      <style>
+          @import "/static/designer/css/statistics.css";
+          
+          #diagram {
+            width: 250px;
+            height: 35px;
+          }
+      </style>
+      <div id="diagram"></div>`;
+    this.renderDiagram();
+  }
+
+  disconnectedCallback() {
+    if (this.#echarts && this.#echarts.dispose) {
+      this.#echarts.dispose();
+    }
+  }
+
+  attributeChangedCallback(property, oldValue, newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    if (property === 'entity-id') {
+      this['entityId'] = newValue;
+    } else {
+      this[property] = newValue;
+    }
   }
 
   getOptions(stats) {

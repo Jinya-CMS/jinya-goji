@@ -57,7 +57,14 @@ function getAlignmentSides(placement, rects, rtl) {
   const alignment = getAlignment(placement);
   const alignmentAxis = getAlignmentAxis(placement);
   const length = getAxisLength(alignmentAxis);
-  let mainAlignmentSide = alignmentAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
+  let mainAlignmentSide =
+    alignmentAxis === 'x'
+      ? alignment === (rtl ? 'end' : 'start')
+        ? 'right'
+        : 'left'
+      : alignment === 'start'
+        ? 'bottom'
+        : 'top';
   if (rects.reference[length] > rects.floating[length]) {
     mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
   }
@@ -66,7 +73,11 @@ function getAlignmentSides(placement, rects, rtl) {
 
 function getExpandedPlacements(placement) {
   const oppositePlacement = getOppositePlacement(placement);
-  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+  return [
+    getOppositeAlignmentPlacement(placement),
+    oppositePlacement,
+    getOppositeAlignmentPlacement(oppositePlacement),
+  ];
 }
 
 function getOppositeAlignmentPlacement(placement) {
@@ -120,12 +131,14 @@ function expandPaddingObject(padding) {
 }
 
 function getPaddingObject(padding) {
-  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
-    top: padding,
-    right: padding,
-    bottom: padding,
-    left: padding,
-  };
+  return typeof padding !== 'number'
+    ? expandPaddingObject(padding)
+    : {
+        top: padding,
+        right: padding,
+        bottom: padding,
+        left: padding,
+      };
 }
 
 function rectToClientRect(rect) {
@@ -140,10 +153,7 @@ function rectToClientRect(rect) {
 
 // node_modules/@floating-ui/core/dist/floating-ui.core.mjs
 function computeCoordsFromPlacement(_ref, placement, rtl) {
-  let {
-    reference,
-    floating,
-  } = _ref;
+  let { reference, floating } = _ref;
   const sideAxis = getSideAxis(placement);
   const alignmentAxis = getAlignmentAxis(placement);
   const alignLength = getAxisLength(alignmentAxis);
@@ -196,12 +206,7 @@ function computeCoordsFromPlacement(_ref, placement, rtl) {
 }
 
 var computePosition = async (reference, floating, config) => {
-  const {
-    placement = 'bottom',
-    strategy = 'absolute',
-    middleware = [],
-    platform: platform2,
-  } = config;
+  const { placement = 'bottom', strategy = 'absolute', middleware = [], platform: platform2 } = config;
   const validMiddleware = middleware.filter(Boolean);
   const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(floating));
   let rects = await platform2.getElementRects({
@@ -209,18 +214,12 @@ var computePosition = async (reference, floating, config) => {
     floating,
     strategy,
   });
-  let {
-    x,
-    y,
-  } = computeCoordsFromPlacement(rects, placement, rtl);
+  let { x, y } = computeCoordsFromPlacement(rects, placement, rtl);
   let statefulPlacement = placement;
   let middlewareData = {};
   let resetCount = 0;
   for (let i = 0; i < validMiddleware.length; i++) {
-    const {
-      name,
-      fn,
-    } = validMiddleware[i];
+    const { name, fn } = validMiddleware[i];
     const {
       x: nextX,
       y: nextY,
@@ -256,19 +255,18 @@ var computePosition = async (reference, floating, config) => {
           statefulPlacement = reset.placement;
         }
         if (reset.rects) {
-          rects = reset.rects === true ? await platform2.getElementRects({
-            reference,
-            floating,
-            strategy,
-          }) : reset.rects;
+          rects =
+            reset.rects === true
+              ? await platform2.getElementRects({
+                  reference,
+                  floating,
+                  strategy,
+                })
+              : reset.rects;
         }
-        ({
-          x,
-          y,
-        } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+        ({ x, y } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
       }
       i = -1;
-      continue;
     }
   }
   return {
@@ -285,14 +283,7 @@ async function detectOverflow(state, options) {
   if (options === void 0) {
     options = {};
   }
-  const {
-    x,
-    y,
-    platform: platform2,
-    rects,
-    elements,
-    strategy,
-  } = state;
+  const { x, y, platform: platform2, rects, elements, strategy } = state;
   const {
     boundary = 'clippingAncestors',
     rootBoundary = 'viewport',
@@ -303,30 +294,50 @@ async function detectOverflow(state, options) {
   const paddingObject = getPaddingObject(padding);
   const altContext = elementContext === 'floating' ? 'reference' : 'floating';
   const element = elements[altBoundary ? altContext : elementContext];
-  const clippingClientRect = rectToClientRect(await platform2.getClippingRect({
-    element: ((_await$platform$isEle = await (platform2.isElement == null ? void 0 : platform2.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || await (platform2.getDocumentElement == null ? void 0 : platform2.getDocumentElement(elements.floating)),
-    boundary,
-    rootBoundary,
-    strategy,
-  }));
-  const rect = elementContext === 'floating' ? {
-    ...rects.floating,
-    x,
-    y,
-  } : rects.reference;
-  const offsetParent = await (platform2.getOffsetParent == null ? void 0 : platform2.getOffsetParent(elements.floating));
-  const offsetScale = await (platform2.isElement == null ? void 0 : platform2.isElement(offsetParent)) ? await (platform2.getScale == null ? void 0 : platform2.getScale(offsetParent)) || {
-    x: 1,
-    y: 1,
-  } : {
-    x: 1,
-    y: 1,
-  };
-  const elementClientRect = rectToClientRect(platform2.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform2.convertOffsetParentRelativeRectToViewportRelativeRect({
-    rect,
-    offsetParent,
-    strategy,
-  }) : rect);
+  const clippingClientRect = rectToClientRect(
+    await platform2.getClippingRect({
+      element: (
+        (_await$platform$isEle = await (platform2.isElement == null ? void 0 : platform2.isElement(element))) != null
+          ? _await$platform$isEle
+          : true
+      )
+        ? element
+        : element.contextElement ||
+          (await (platform2.getDocumentElement == null ? void 0 : platform2.getDocumentElement(elements.floating))),
+      boundary,
+      rootBoundary,
+      strategy,
+    }),
+  );
+  const rect =
+    elementContext === 'floating'
+      ? {
+          ...rects.floating,
+          x,
+          y,
+        }
+      : rects.reference;
+  const offsetParent = await (platform2.getOffsetParent == null
+    ? void 0
+    : platform2.getOffsetParent(elements.floating));
+  const offsetScale = (await (platform2.isElement == null ? void 0 : platform2.isElement(offsetParent)))
+    ? (await (platform2.getScale == null ? void 0 : platform2.getScale(offsetParent))) || {
+        x: 1,
+        y: 1,
+      }
+    : {
+        x: 1,
+        y: 1,
+      };
+  const elementClientRect = rectToClientRect(
+    platform2.convertOffsetParentRelativeRectToViewportRelativeRect
+      ? await platform2.convertOffsetParentRelativeRectToViewportRelativeRect({
+          rect,
+          offsetParent,
+          strategy,
+        })
+      : rect,
+  );
   return {
     top: (clippingClientRect.top - elementClientRect.top + paddingObject.top) / offsetScale.y,
     bottom: (elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom) / offsetScale.y,
@@ -335,7 +346,7 @@ async function detectOverflow(state, options) {
   };
 }
 
-var flip = function(options) {
+var flip = function (options) {
   if (options === void 0) {
     options = {};
   }
@@ -343,16 +354,8 @@ var flip = function(options) {
     name: 'flip',
     options,
     async fn(state) {
-      var _middlewareData$arrow,
-        _middlewareData$flip;
-      const {
-        placement,
-        middlewareData,
-        rects,
-        initialPlacement,
-        platform: platform2,
-        elements,
-      } = state;
+      var _middlewareData$arrow, _middlewareData$flip;
+      const { placement, middlewareData, rects, initialPlacement, platform: platform2, elements } = state;
       const {
         mainAxis: checkMainAxis = true,
         crossAxis: checkCrossAxis = true,
@@ -368,14 +371,21 @@ var flip = function(options) {
       const side = getSide(placement);
       const isBasePlacement = getSide(initialPlacement) === initialPlacement;
       const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
-      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [getOppositePlacement(initialPlacement)] : getExpandedPlacements(initialPlacement));
+      const fallbackPlacements =
+        specifiedFallbackPlacements ||
+        (isBasePlacement || !flipAlignment
+          ? [getOppositePlacement(initialPlacement)]
+          : getExpandedPlacements(initialPlacement));
       if (!specifiedFallbackPlacements && fallbackAxisSideDirection !== 'none') {
-        fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+        fallbackPlacements.push(
+          ...getOppositeAxisPlacements(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl),
+        );
       }
       const placements2 = [initialPlacement, ...fallbackPlacements];
       const overflow = await detectOverflow(state, detectOverflowOptions);
       const overflows = [];
-      let overflowsData = ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
+      let overflowsData =
+        ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
       if (checkMainAxis) {
         overflows.push(overflow[side]);
       }
@@ -383,14 +393,17 @@ var flip = function(options) {
         const sides2 = getAlignmentSides(placement, rects, rtl);
         overflows.push(overflow[sides2[0]], overflow[sides2[1]]);
       }
-      overflowsData = [...overflowsData, {
-        placement,
-        overflows,
-      }];
+      overflowsData = [
+        ...overflowsData,
+        {
+          placement,
+          overflows,
+        },
+      ];
       if (!overflows.every((side2) => side2 <= 0)) {
-        var _middlewareData$flip2,
-          _overflowsData$filter;
-        const nextIndex = (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
+        var _middlewareData$flip2, _overflowsData$filter;
+        const nextIndex =
+          (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
         const nextPlacement = placements2[nextIndex];
         if (nextPlacement) {
           return {
@@ -403,15 +416,25 @@ var flip = function(options) {
             },
           };
         }
-        let resetPlacement = (_overflowsData$filter = overflowsData.filter((d) => d.overflows[0] <= 0)
-          .sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+        let resetPlacement =
+          (_overflowsData$filter = overflowsData
+            .filter((d) => d.overflows[0] <= 0)
+            .sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null
+            ? void 0
+            : _overflowsData$filter.placement;
         if (!resetPlacement) {
           switch (fallbackStrategy) {
             case 'bestFit': {
               var _overflowsData$map$so;
-              const placement2 = (_overflowsData$map$so = overflowsData.map((d) => [d.placement, d.overflows.filter((overflow2) => overflow2 > 0)
-                .reduce((acc, overflow2) => acc + overflow2, 0)])
-                .sort((a, b) => a[1] - b[1])[0]) == null ? void 0 : _overflowsData$map$so[0];
+              const placement2 =
+                (_overflowsData$map$so = overflowsData
+                  .map((d) => [
+                    d.placement,
+                    d.overflows.filter((overflow2) => overflow2 > 0).reduce((acc, overflow2) => acc + overflow2, 0),
+                  ])
+                  .sort((a, b) => a[1] - b[1])[0]) == null
+                  ? void 0
+                  : _overflowsData$map$so[0];
               if (placement2) {
                 resetPlacement = placement2;
               }
@@ -436,11 +459,7 @@ var flip = function(options) {
 };
 
 async function convertValueToCoords(state, options) {
-  const {
-    placement,
-    platform: platform2,
-    elements,
-  } = state;
+  const { placement, platform: platform2, elements } = state;
   const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
   const side = getSide(placement);
   const alignment = getAlignment(placement);
@@ -448,33 +467,34 @@ async function convertValueToCoords(state, options) {
   const mainAxisMulti = ['left', 'top'].includes(side) ? -1 : 1;
   const crossAxisMulti = rtl && isVertical ? -1 : 1;
   const rawValue = evaluate(options, state);
-  let {
-    mainAxis,
-    crossAxis,
-    alignmentAxis,
-  } = typeof rawValue === 'number' ? {
-    mainAxis: rawValue,
-    crossAxis: 0,
-    alignmentAxis: null,
-  } : {
-    mainAxis: 0,
-    crossAxis: 0,
-    alignmentAxis: null,
-    ...rawValue,
-  };
+  let { mainAxis, crossAxis, alignmentAxis } =
+    typeof rawValue === 'number'
+      ? {
+          mainAxis: rawValue,
+          crossAxis: 0,
+          alignmentAxis: null,
+        }
+      : {
+          mainAxis: 0,
+          crossAxis: 0,
+          alignmentAxis: null,
+          ...rawValue,
+        };
   if (alignment && typeof alignmentAxis === 'number') {
     crossAxis = alignment === 'end' ? alignmentAxis * -1 : alignmentAxis;
   }
-  return isVertical ? {
-    x: crossAxis * crossAxisMulti,
-    y: mainAxis * mainAxisMulti,
-  } : {
-    x: mainAxis * mainAxisMulti,
-    y: crossAxis * crossAxisMulti,
-  };
+  return isVertical
+    ? {
+        x: crossAxis * crossAxisMulti,
+        y: mainAxis * mainAxisMulti,
+      }
+    : {
+        x: mainAxis * mainAxisMulti,
+        y: crossAxis * crossAxisMulti,
+      };
 }
 
-var offset = function(options) {
+var offset = function (options) {
   if (options === void 0) {
     options = 0;
   }
@@ -482,10 +502,7 @@ var offset = function(options) {
     name: 'offset',
     options,
     async fn(state) {
-      const {
-        x,
-        y,
-      } = state;
+      const { x, y } = state;
       const diffCoords = await convertValueToCoords(state, options);
       return {
         x: x + diffCoords.x,
@@ -495,7 +512,7 @@ var offset = function(options) {
     },
   };
 };
-var shift = function(options) {
+var shift = function (options) {
   if (options === void 0) {
     options = {};
   }
@@ -503,20 +520,13 @@ var shift = function(options) {
     name: 'shift',
     options,
     async fn(state) {
-      const {
-        x,
-        y,
-        placement,
-      } = state;
+      const { x, y, placement } = state;
       const {
         mainAxis: checkMainAxis = true,
         crossAxis: checkCrossAxis = false,
         limiter = {
           fn: (_ref) => {
-            let {
-              x: x2,
-              y: y2,
-            } = _ref;
+            let { x: x2, y: y2 } = _ref;
             return {
               x: x2,
               y: y2,
@@ -574,12 +584,20 @@ function getNodeName(node) {
 
 function getWindow(node) {
   var _node$ownerDocument;
-  return (node == null ? void 0 : (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+  return (
+    (node == null
+      ? void 0
+      : (_node$ownerDocument = node.ownerDocument) == null
+        ? void 0
+        : _node$ownerDocument.defaultView) || window
+  );
 }
 
 function getDocumentElement(node) {
   var _ref;
-  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null
+    ? void 0
+    : _ref.documentElement;
 }
 
 function isNode(value) {
@@ -602,13 +620,11 @@ function isShadowRoot(value) {
 }
 
 function isOverflowElement(element) {
-  const {
-    overflow,
-    overflowX,
-    overflowY,
-    display,
-  } = getComputedStyle(element);
-  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !['inline', 'contents'].includes(display);
+  const { overflow, overflowX, overflowY, display } = getComputedStyle(element);
+  return (
+    /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) &&
+    !['inline', 'contents'].includes(display)
+  );
 }
 
 function isTableElement(element) {
@@ -618,7 +634,15 @@ function isTableElement(element) {
 function isContainingBlock(element) {
   const webkit = isWebKit();
   const css = getComputedStyle(element);
-  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !webkit && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some((value) => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some((value) => (css.contain || '').includes(value));
+  return (
+    css.transform !== 'none' ||
+    css.perspective !== 'none' ||
+    (css.containerType ? css.containerType !== 'normal' : false) ||
+    (!webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false)) ||
+    (!webkit && (css.filter ? css.filter !== 'none' : false)) ||
+    ['transform', 'perspective', 'filter'].some((value) => (css.willChange || '').includes(value)) ||
+    ['paint', 'layout', 'strict', 'content'].some((value) => (css.contain || '').includes(value))
+  );
 }
 
 function getContainingBlock(element) {
@@ -645,8 +669,7 @@ function isLastTraversableNode(node) {
 }
 
 function getComputedStyle(element) {
-  return getWindow(element)
-    .getComputedStyle(element);
+  return getWindow(element).getComputedStyle(element);
 }
 
 function getNodeScroll(element) {
@@ -666,13 +689,12 @@ function getParentNode(node) {
   if (getNodeName(node) === 'html') {
     return node;
   }
-  const result = (
+  const result =
     // Step into the shadow DOM of the parent of a slotted node.
     node.assignedSlot || // DOM Element detected.
     node.parentNode || // ShadowRoot detected.
-    isShadowRoot(node) && node.host || // Fallback.
-    getDocumentElement(node)
-  );
+    (isShadowRoot(node) && node.host) || // Fallback.
+    getDocumentElement(node);
   return isShadowRoot(result) ? result.host : result;
 }
 
@@ -696,10 +718,16 @@ function getOverflowAncestors(node, list, traverseIframes) {
     traverseIframes = true;
   }
   const scrollableAncestor = getNearestOverflowAncestor(node);
-  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const isBody =
+    scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
   const win = getWindow(scrollableAncestor);
   if (isBody) {
-    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : []);
+    return list.concat(
+      win,
+      win.visualViewport || [],
+      isOverflowElement(scrollableAncestor) ? scrollableAncestor : [],
+      win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : [],
+    );
   }
   return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
 }
@@ -734,11 +762,7 @@ function getScale(element) {
     return createCoords(1);
   }
   const rect = domElement.getBoundingClientRect();
-  const {
-    width,
-    height,
-    $,
-  } = getCssDimensions(domElement);
+  const { width, height, $ } = getCssDimensions(domElement);
   let x = ($ ? round(rect.width) : rect.width) / width;
   let y = ($ ? round(rect.height) : rect.height) / height;
   if (!x || !Number.isFinite(x)) {
@@ -770,7 +794,7 @@ function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
   if (isFixed === void 0) {
     isFixed = false;
   }
-  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== getWindow(element)) {
+  if (!floatingOffsetParent || (isFixed && floatingOffsetParent !== getWindow(element))) {
     return false;
   }
   return isFixed;
@@ -795,7 +819,9 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
       scale = getScale(element);
     }
   }
-  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent)
+    ? getVisualOffsets(domElement)
+    : createCoords(0);
   let x = (clientRect.left + visualOffsets.x) / scale.x;
   let y = (clientRect.top + visualOffsets.y) / scale.y;
   let width = clientRect.width / scale.x;
@@ -828,11 +854,7 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
 }
 
 function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
-  let {
-    rect,
-    offsetParent,
-    strategy,
-  } = _ref;
+  let { rect, offsetParent, strategy } = _ref;
   const isOffsetParentAnElement = isHTMLElement(offsetParent);
   const documentElement = getDocumentElement(offsetParent);
   if (offsetParent === documentElement) {
@@ -844,7 +866,7 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
   };
   let scale = createCoords(1);
   const offsets = createCoords(0);
-  if (isOffsetParentAnElement || !isOffsetParentAnElement && strategy !== 'fixed') {
+  if (isOffsetParentAnElement || (!isOffsetParentAnElement && strategy !== 'fixed')) {
     if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
       scroll = getNodeScroll(offsetParent);
     }
@@ -902,7 +924,7 @@ function getViewportRect(element, strategy) {
     width = visualViewport.width;
     height = visualViewport.height;
     const visualViewportBased = isWebKit();
-    if (!visualViewportBased || visualViewportBased && strategy === 'fixed') {
+    if (!visualViewportBased || (visualViewportBased && strategy === 'fixed')) {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
     }
@@ -964,8 +986,7 @@ function getClippingElementAncestors(element, cache) {
   if (cachedResult) {
     return cachedResult;
   }
-  let result = getOverflowAncestors(element, [], false)
-    .filter((el) => isElement(el) && getNodeName(el) !== 'body');
+  let result = getOverflowAncestors(element, [], false).filter((el) => isElement(el) && getNodeName(el) !== 'body');
   let currentContainingBlockComputedStyle = null;
   const elementIsFixed = getComputedStyle(element).position === 'fixed';
   let currentNode = elementIsFixed ? getParentNode(element) : element;
@@ -975,7 +996,13 @@ function getClippingElementAncestors(element, cache) {
     if (!currentNodeIsContaining && computedStyle.position === 'fixed') {
       currentContainingBlockComputedStyle = null;
     }
-    const shouldDropCurrentNode = elementIsFixed ? !currentNodeIsContaining && !currentContainingBlockComputedStyle : !currentNodeIsContaining && computedStyle.position === 'static' && !!currentContainingBlockComputedStyle && ['absolute', 'fixed'].includes(currentContainingBlockComputedStyle.position) || isOverflowElement(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode);
+    const shouldDropCurrentNode = elementIsFixed
+      ? !currentNodeIsContaining && !currentContainingBlockComputedStyle
+      : (!currentNodeIsContaining &&
+          computedStyle.position === 'static' &&
+          !!currentContainingBlockComputedStyle &&
+          ['absolute', 'fixed'].includes(currentContainingBlockComputedStyle.position)) ||
+        (isOverflowElement(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode));
     if (shouldDropCurrentNode) {
       result = result.filter((ancestor) => ancestor !== currentNode);
     } else {
@@ -988,23 +1015,22 @@ function getClippingElementAncestors(element, cache) {
 }
 
 function getClippingRect(_ref) {
-  let {
-    element,
-    boundary,
-    rootBoundary,
-    strategy,
-  } = _ref;
-  const elementClippingAncestors = boundary === 'clippingAncestors' ? getClippingElementAncestors(element, this._c) : [].concat(boundary);
+  let { element, boundary, rootBoundary, strategy } = _ref;
+  const elementClippingAncestors =
+    boundary === 'clippingAncestors' ? getClippingElementAncestors(element, this._c) : [].concat(boundary);
   const clippingAncestors = [...elementClippingAncestors, rootBoundary];
   const firstClippingAncestor = clippingAncestors[0];
-  const clippingRect = clippingAncestors.reduce((accRect, clippingAncestor) => {
-    const rect = getClientRectFromClippingAncestor(element, clippingAncestor, strategy);
-    accRect.top = max(rect.top, accRect.top);
-    accRect.right = min(rect.right, accRect.right);
-    accRect.bottom = min(rect.bottom, accRect.bottom);
-    accRect.left = max(rect.left, accRect.left);
-    return accRect;
-  }, getClientRectFromClippingAncestor(element, firstClippingAncestor, strategy));
+  const clippingRect = clippingAncestors.reduce(
+    (accRect, clippingAncestor) => {
+      const rect = getClientRectFromClippingAncestor(element, clippingAncestor, strategy);
+      accRect.top = max(rect.top, accRect.top);
+      accRect.right = min(rect.right, accRect.right);
+      accRect.bottom = min(rect.bottom, accRect.bottom);
+      accRect.left = max(rect.left, accRect.left);
+      return accRect;
+    },
+    getClientRectFromClippingAncestor(element, firstClippingAncestor, strategy),
+  );
   return {
     width: clippingRect.right - clippingRect.left,
     height: clippingRect.bottom - clippingRect.top,
@@ -1027,7 +1053,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
     scrollTop: 0,
   };
   const offsets = createCoords(0);
-  if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+  if (isOffsetParentAnElement || (!isOffsetParentAnElement && !isFixed)) {
     if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
       scroll = getNodeScroll(offsetParent);
     }
@@ -1066,18 +1092,20 @@ function getOffsetParent(element, polyfill) {
   while (offsetParent && isTableElement(offsetParent) && getComputedStyle(offsetParent).position === 'static') {
     offsetParent = getTrueOffsetParent(offsetParent, polyfill);
   }
-  if (offsetParent && (getNodeName(offsetParent) === 'html' || getNodeName(offsetParent) === 'body' && getComputedStyle(offsetParent).position === 'static' && !isContainingBlock(offsetParent))) {
+  if (
+    offsetParent &&
+    (getNodeName(offsetParent) === 'html' ||
+      (getNodeName(offsetParent) === 'body' &&
+        getComputedStyle(offsetParent).position === 'static' &&
+        !isContainingBlock(offsetParent)))
+  ) {
     return window2;
   }
   return offsetParent || getContainingBlock(element) || window2;
 }
 
-var getElementRects = async function(_ref) {
-  let {
-    reference,
-    floating,
-    strategy,
-  } = _ref;
+var getElementRects = async function (_ref) {
+  let { reference, floating, strategy } = _ref;
   const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
   const getDimensionsFn = this.getDimensions;
   return {
@@ -1085,7 +1113,7 @@ var getElementRects = async function(_ref) {
     floating: {
       x: 0,
       y: 0,
-      ...await getDimensionsFn(floating),
+      ...(await getDimensionsFn(floating)),
     },
   };
 };
@@ -1126,12 +1154,7 @@ function observeMove(element, onMove) {
       threshold = 1;
     }
     cleanup();
-    const {
-      left,
-      top,
-      width,
-      height,
-    } = element.getBoundingClientRect();
+    const { left, top, width, height } = element.getBoundingClientRect();
     if (!skip) {
       onMove();
     }
@@ -1194,11 +1217,15 @@ function autoUpdate(reference, floating, update, options) {
     animationFrame = false,
   } = options;
   const referenceEl = unwrapElement(reference);
-  const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
+  const ancestors =
+    ancestorScroll || ancestorResize
+      ? [...(referenceEl ? getOverflowAncestors(referenceEl) : []), ...getOverflowAncestors(floating)]
+      : [];
   ancestors.forEach((ancestor) => {
-    ancestorScroll && ancestor.addEventListener('scroll', update, {
-      passive: true,
-    });
+    ancestorScroll &&
+      ancestor.addEventListener('scroll', update, {
+        passive: true,
+      });
     ancestorResize && ancestor.addEventListener('resize', update);
   });
   const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
@@ -1229,7 +1256,13 @@ function autoUpdate(reference, floating, update, options) {
 
   function frameLoop() {
     const nextRefRect = getBoundingClientRect(reference);
-    if (prevRefRect && (nextRefRect.x !== prevRefRect.x || nextRefRect.y !== prevRefRect.y || nextRefRect.width !== prevRefRect.width || nextRefRect.height !== prevRefRect.height)) {
+    if (
+      prevRefRect &&
+      (nextRefRect.x !== prevRefRect.x ||
+        nextRefRect.y !== prevRefRect.y ||
+        nextRefRect.width !== prevRefRect.width ||
+        nextRefRect.height !== prevRefRect.height)
+    ) {
       update();
     }
     prevRefRect = nextRefRect;
@@ -1280,43 +1313,32 @@ function src_default(Alpine) {
       to._x_anchor = from._x_anchor;
     }
   });
-  Alpine.directive('anchor', Alpine.skipDuringClone(
-    (el, {
-      expression,
-      modifiers,
-      value,
-    }, {
-       cleanup,
-       evaluate: evaluate2,
-     }) => {
-      let {
-        placement,
-        offsetValue,
-        unstyled,
-      } = getOptions(modifiers);
-      el._x_anchor = Alpine.reactive({
-        x: 0,
-        y: 0,
-      });
-      let reference = evaluate2(expression);
-      if (!reference) {
-        throw 'Alpine: no element provided to x-anchor...';
-      }
-      let compute = () => {
-        let previousValue;
-        computePosition2(reference, el, {
-          placement,
-          middleware: [flip(), shift({ padding: 5 }), offset(offsetValue)],
-        })
-          .then(({
-                   x,
-                   y,
-                 }) => {
+  Alpine.directive(
+    'anchor',
+    Alpine.skipDuringClone(
+      (el, { expression, modifiers, value }, { cleanup, evaluate: evaluate2 }) => {
+        let { placement, offsetValue, unstyled } = getOptions(modifiers);
+        el._x_anchor = Alpine.reactive({
+          x: 0,
+          y: 0,
+        });
+        let reference = evaluate2(expression);
+        if (!reference) {
+          throw 'Alpine: no element provided to x-anchor...';
+        }
+        let compute = () => {
+          let previousValue;
+          computePosition2(reference, el, {
+            placement,
+            middleware: [flip(), shift({ padding: 5 }), offset(offsetValue)],
+          }).then(({ x, y }) => {
             unstyled || setStyles(el, x, y);
-            if (JSON.stringify({
-              x,
-              y,
-            }) !== previousValue) {
+            if (
+              JSON.stringify({
+                x,
+                y,
+              }) !== previousValue
+            ) {
               el._x_anchor.x = x;
               el._x_anchor.y = y;
             }
@@ -1325,29 +1347,19 @@ function src_default(Alpine) {
               y,
             });
           });
-      };
-      let release = autoUpdate(reference, el, () => compute());
-      cleanup(() => release());
-    },
-    // When cloning (or "morphing"), we will graft the style and position data from the live tree...
-    (el, {
-      expression,
-      modifiers,
-      value,
-    }, {
-       cleanup,
-       evaluate: evaluate2,
-     }) => {
-      let {
-        placement,
-        offsetValue,
-        unstyled,
-      } = getOptions(modifiers);
-      if (el._x_anchor) {
-        unstyled || setStyles(el, el._x_anchor.x, el._x_anchor.y);
-      }
-    },
-  ));
+        };
+        let release = autoUpdate(reference, el, () => compute());
+        cleanup(() => release());
+      },
+      // When cloning (or "morphing"), we will graft the style and position data from the live tree...
+      (el, { expression, modifiers, value }, { cleanup, evaluate: evaluate2 }) => {
+        let { placement, offsetValue, unstyled } = getOptions(modifiers);
+        if (el._x_anchor) {
+          unstyled || setStyles(el, el._x_anchor.x, el._x_anchor.y);
+        }
+      },
+    ),
+  );
 }
 
 function setStyles(el, x, y) {
@@ -1359,7 +1371,20 @@ function setStyles(el, x, y) {
 }
 
 function getOptions(modifiers) {
-  let positions = ['top', 'top-start', 'top-end', 'right', 'right-start', 'right-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'left-start', 'left-end'];
+  let positions = [
+    'top',
+    'top-start',
+    'top-end',
+    'right',
+    'right-start',
+    'right-end',
+    'bottom',
+    'bottom-start',
+    'bottom-end',
+    'left',
+    'left-start',
+    'left-end',
+  ];
   let placement = positions.find((i) => modifiers.includes(i));
   let offsetValue = 0;
   if (modifiers.includes('offset')) {
@@ -1376,7 +1401,4 @@ function getOptions(modifiers) {
 
 // packages/anchor/builds/module.js
 var module_default = src_default;
-export {
-  src_default as anchor,
-  module_default as default
-};
+export { src_default as anchor, module_default as default };

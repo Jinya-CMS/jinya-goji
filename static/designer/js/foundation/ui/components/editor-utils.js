@@ -1,5 +1,4 @@
 import { createFile, uploadFile } from '../../api/files.js';
-import { createFolder } from '../../api/folders.js';
 
 function dataUriToFile(dataUri) {
   try {

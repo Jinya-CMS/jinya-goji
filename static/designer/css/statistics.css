@@ -1,44 +1,44 @@
 .jinya-statistics {
-    display: grid;
-    grid-template:
+  display: grid;
+  grid-template:
         "title title title title title title" auto
         "daily daily daily daily daily daily" auto
         "country country country country country country" auto
         "language language referer referer type type" auto
         "os os os browser browser browser" auto
         / 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 1rem;
-    height: 100%;
+  gap: 1rem;
+  height: 100%;
 }
 
 .jinya-statistics__title {
-    grid-area: title;
+  grid-area: title;
 }
 
 .jinya-statistics__country {
-    grid-area: country;
+  grid-area: country;
 }
 
 .jinya-statistics__daily {
-    grid-area: daily;
+  grid-area: daily;
 }
 
 .jinya-statistics__language {
-    grid-area: language;
+  grid-area: language;
 }
 
 .jinya-statistics__referer {
-    grid-area: referer;
+  grid-area: referer;
 }
 
 .jinya-statistics__type {
-    grid-area: type;
+  grid-area: type;
 }
 
 .jinya-statistics__browser {
-    grid-area: browser;
+  grid-area: browser;
 }
 
 .jinya-statistics__os {
-    grid-area: os;
+  grid-area: os;
 }

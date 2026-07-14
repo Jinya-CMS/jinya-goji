@@ -3,8 +3,8 @@
   <div class="cosmo-toolbar">
     <div class="cosmo-toolbar__group">
       <button
-        class="cosmo-button"
         @click="openUpdateDialog"
+        class="cosmo-button"
         x-localize:maintenance-configuration-action-update
       ></button>
     </div>
@@ -40,7 +40,7 @@
     <dd x-text="configuration.jinya.ip_database_url"></dd>
   </dl>
   <template x-if="update.open">
-    <form class="cosmo-modal__container" @submit.prevent="updateConfiguration">
+    <form @submit.prevent="updateConfiguration" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:maintenance-configuration-update-title></h1>
         <div class="cosmo-modal__content">
@@ -51,15 +51,15 @@
           <div class="cosmo-tab" x-data="{ selectedTab: 'mailer' }">
             <div class="cosmo-tab__links">
               <a
-                class="cosmo-tab__link"
                 :class="{ 'is--active': selectedTab === 'mailer' }"
                 @click="selectedTab = 'mailer'"
+                class="cosmo-tab__link"
                 x-localize:maintenance-configuration-mailer-title
               ></a>
               <a
-                class="cosmo-tab__link"
                 :class="{ 'is--active': selectedTab === 'jinya' }"
                 @click="selectedTab = 'jinya'"
+                class="cosmo-tab__link"
                 x-localize:maintenance-configuration-jinya-title
               ></a>
             </div>
@@ -73,11 +73,11 @@
                       x-localize:maintenance-configuration-mailer-host
                     ></label>
                     <input
-                      x-model="update.configuration.mailer.host"
                       class="cosmo-input"
-                      type="text"
                       id="mailer_host"
                       required
+                      type="text"
+                      x-model="update.configuration.mailer.host"
                     />
                     <label
                       class="cosmo-label"
@@ -85,13 +85,13 @@
                       x-localize:maintenance-configuration-mailer-port
                     ></label>
                     <input
-                      x-model.number="update.configuration.mailer.port"
                       class="cosmo-input"
-                      type="number"
-                      min="1"
-                      max="65535"
                       id="mailer_port"
+                      max="65535"
+                      min="1"
                       required
+                      type="number"
+                      x-model.number="update.configuration.mailer.port"
                     />
                     <label
                       class="cosmo-label"
@@ -99,10 +99,10 @@
                       x-localize:maintenance-configuration-mailer-username
                     ></label>
                     <input
-                      x-model="update.configuration.mailer.username"
                       class="cosmo-input"
-                      type="text"
                       id="mailer_username"
+                      type="text"
+                      x-model="update.configuration.mailer.username"
                     />
                     <label
                       class="cosmo-label"
@@ -110,10 +110,10 @@
                       x-localize:maintenance-configuration-mailer-password
                     ></label>
                     <input
-                      x-model="update.configuration.mailer.password"
                       class="cosmo-input"
-                      type="password"
                       id="mailer_password"
+                      type="password"
+                      x-model="update.configuration.mailer.password"
                     />
                     <label
                       class="cosmo-label"
@@ -121,9 +121,9 @@
                       x-localize:maintenance-configuration-mailer-encryption
                     ></label>
                     <select
-                      x-model="update.configuration.mailer.encryption"
                       class="cosmo-select"
                       id="mailer_encryption"
+                      x-model="update.configuration.mailer.encryption"
                     >
                       <option
                         :selected="!update.configuration.mailer.encryption"
@@ -135,10 +135,10 @@
                     </select>
                     <div class="cosmo-input__group is--checkbox">
                       <input
-                        x-model="update.configuration.mailer.smtp_auth"
-                        type="checkbox"
-                        id="mailer_smtp_auth"
                         class="cosmo-checkbox"
+                        id="mailer_smtp_auth"
+                        type="checkbox"
+                        x-model="update.configuration.mailer.smtp_auth"
                       />
                       <label for="mailer_smtp_auth" x-localize:maintenance-configuration-mailer-smtp_auth></label>
                     </div>
@@ -148,11 +148,11 @@
                       x-localize:maintenance-configuration-mailer-from
                     ></label>
                     <input
-                      x-model="update.configuration.mailer.from"
                       class="cosmo-input"
-                      type="email"
                       id="mailer_from"
                       required
+                      type="email"
+                      x-model="update.configuration.mailer.from"
                     />
                   </div>
                 </template>
@@ -164,11 +164,11 @@
                       x-localize:maintenance-configuration-jinya-api_key_expiry
                     ></label>
                     <input
-                      x-model.number="update.configuration.jinya.api_key_expiry"
                       class="cosmo-input"
-                      type="number"
                       id="jinya_api_key_expiry"
                       required
+                      type="number"
+                      x-model.number="update.configuration.jinya.api_key_expiry"
                     />
                     <label
                       class="cosmo-label"
@@ -176,11 +176,11 @@
                       x-localize:maintenance-configuration-jinya-ip_database_url
                     ></label>
                     <input
-                      x-model="update.configuration.jinya.ip_database_url"
                       class="cosmo-input"
-                      type="text"
                       id="jinya_ip_database_url"
                       required
+                      type="text"
+                      x-model="update.configuration.jinya.ip_database_url"
                     />
                   </div>
                 </template>
@@ -190,9 +190,9 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
+            @click="update.open = false"
             class="cosmo-button"
             x-localize:maintenance-configuration-update-cancel
-            @click="update.open = false"
           ></button>
           <button class="cosmo-button" type="submit" x-localize:maintenance-configuration-update-save></button>
         </div>

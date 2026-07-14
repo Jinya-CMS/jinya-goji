@@ -158,6 +158,7 @@ select id,
        last_updated_at,
        category_id
 from blog_post
+order by id
 `)
 }
 
@@ -175,6 +176,7 @@ select id,
        category_id
 from blog_post
 where public is true
+order by id
 `)
 }
 

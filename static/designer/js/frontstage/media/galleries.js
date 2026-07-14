@@ -109,7 +109,6 @@ Alpine.data('galleriesData', () => ({
       },
     });
 
-
     this.galleries = await getGalleries();
     this.loading = false;
 

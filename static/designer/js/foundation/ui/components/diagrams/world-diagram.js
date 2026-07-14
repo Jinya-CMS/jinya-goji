@@ -223,13 +223,17 @@ const echartsCountryMapping = {
 };
 
 class WorldMapElement extends HTMLElement {
+  #echartsMap;
+  #echartsDonut;
+
   constructor() {
     super();
     this.root = this.attachShadow({ mode: 'closed' });
   }
 
-  #echartsMap;
-  #echartsDonut;
+  static get observedAttributes() {
+    return ['range', 'group'];
+  }
 
   get name() {
     return localize({ key: this.getAttribute('name') });
@@ -317,10 +321,6 @@ class WorldMapElement extends HTMLElement {
     if (this.#echartsMap && this.#echartsMap.dispose) {
       this.#echartsMap.dispose();
     }
-  }
-
-  static get observedAttributes() {
-    return ['range', 'group'];
   }
 
   attributeChangedCallback(property, oldValue, newValue) {

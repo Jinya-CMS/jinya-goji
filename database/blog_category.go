@@ -58,6 +58,7 @@ select id,
        webhook_enabled,
        webhook_url
 from blog_category
+order by id
 `)
 }
 
@@ -90,7 +91,8 @@ select id,
        last_updated_at,
        category_id
 from blog_post
-where category_id in (select id from category_cte)`
+where category_id in (select id from category_cte)
+order by id`
 	} else {
 		query = `
 select id,
@@ -105,6 +107,7 @@ select id,
        category_id
 from blog_post
 where category_id = $1
+order by id
 `
 	}
 

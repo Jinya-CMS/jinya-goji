@@ -12,5 +12,11 @@ properties:
     type: string
   file:
     type: integer
+  type:
+    type: string
+    enum:
+      - gallery
+      - file
+      - html
 required:
   - position

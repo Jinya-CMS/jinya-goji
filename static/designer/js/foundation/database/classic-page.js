@@ -2,14 +2,14 @@ import { Dexie } from '../../../lib/dexie.js';
 import { getTimestamp } from './utils.js';
 
 class ClassicPageDatabase {
+  #database;
+
   constructor() {
     this.#database = new Dexie('classicPages');
     this.#database.version(1).stores({
       changes: `++id`,
     });
   }
-
-  #database;
 
   getChangedPage(id) {
     return this.#database.changes.get(id);

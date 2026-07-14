@@ -8,18 +8,14 @@
         x-text="page.title"
       ></a>
     </template>
-    <button
-      @click="openCreateDialog"
-      class="cosmo-button is--full-width"
-      x-localize:pages-classic-action-new
-    ></button>
+    <button @click="openCreateDialog" class="cosmo-button is--full-width" x-localize:pages-classic-action-new></button>
   </nav>
   <template x-if="selectedPage">
     <div class="cosmo-side-list__content jinya-designer">
       <div class="jinya-designer__title">
         <span class="cosmo-title" x-text="title"></span>
       </div>
-      <cms-sparkline class="jinya-designer__sparkline" type="classic-page" :entity-id="selectedPage.id"></cms-sparkline>
+      <cms-sparkline :entity-id="selectedPage.id" class="jinya-designer__sparkline" type="classic-page"></cms-sparkline>
       <div class="cosmo-toolbar is--designer">
         <div class="cosmo-toolbar__group">
           <button @click="openEditDialog" class="cosmo-button" x-localize:pages-classic-action-edit></button>
@@ -36,11 +32,11 @@
           <p class="cosmo-message__message" x-text="messageContent"></p>
         </div>
         <cms-toolbar-editor
-          class="jinya-editor is--simple-page"
           :content="content"
           @change="updateContent"
-          type="classic-page"
+          class="jinya-editor is--simple-page"
           height="calc(var(--page-height) - 2.75rem - 1.25rem - 2rem - 2rem - 0.25rem - 3rem)"
+          type="classic-page"
         ></cms-toolbar-editor>
         <div class="cosmo-button__container is--simple-page">
           <button
@@ -69,11 +65,7 @@
             <p class="cosmo-message__message" x-text="create.error.message"></p>
           </div>
           <div class="cosmo-input__group">
-            <label
-              class="cosmo-label"
-              for="createPageTitle"
-              x-localize:pages-classic-create-page_title
-            ></label>
+            <label class="cosmo-label" for="createPageTitle" x-localize:pages-classic-create-page_title></label>
             <input class="cosmo-input" id="createPageTitle" required type="text" x-model="create.title" />
           </div>
         </div>

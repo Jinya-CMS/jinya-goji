@@ -522,7 +522,8 @@ export default {
       },
       delete_files: {
         title: 'Dateien löschen',
-        message: 'Willst du die gewählten {count} Dateien wirklich löschen? Wenn du nur einzelne löschen möchtest, wähle sie bitte direkt.',
+        message:
+          'Willst du die gewählten {count} Dateien wirklich löschen? Wenn du nur einzelne löschen möchtest, wähle sie bitte direkt.',
         approve: 'Dateien löschen',
         decline: 'Dateien behalten',
         error: {
@@ -943,7 +944,8 @@ export default {
       },
       delete: {
         title: 'Kategorie löschen',
-        message: 'Soll die Kategorie {name} wirklich gelöscht werden? Alle Unterkategorien werden nicht gelöscht, sondern um eine Ebene nach oben geschoben.',
+        message:
+          'Soll die Kategorie {name} wirklich gelöscht werden? Alle Unterkategorien werden nicht gelöscht, sondern um eine Ebene nach oben geschoben.',
         keep: 'Kategorie behalten',
         delete: 'Kategorie löschen',
         error: {
@@ -1345,7 +1347,8 @@ export default {
         enable: 'Aktivieren',
         qrcode: {
           header: 'Was mache ich mit dem QR Code?',
-          message: 'Der QR Code der hier angezeigt wird muss mit deiner Zwei Faktor App gescannt werden.<br>Beliebt sind der Google Authenticator oder Authy.',
+          message:
+            'Der QR Code der hier angezeigt wird muss mit deiner Zwei Faktor App gescannt werden.<br>Beliebt sind der Google Authenticator oder Authy.',
         },
         error: {
           title: 'Fehler beim Aktivieren',
@@ -1375,7 +1378,8 @@ export default {
         login_email_enabled: 'Login Email',
         login_email_enabled_help: 'Wenn aktiviert, dann wird dir bei<br>jedem erfolgreichen Login eine Email geschickt',
         new_device_email_enabled: 'Neues Gerät Email',
-        new_device_email_enabled_help: 'Wenn aktiviert, dann wird dir jedes Mal,<br>wenn ein Gerät gespeichert wird eine Email geschickt',
+        new_device_email_enabled_help:
+          'Wenn aktiviert, dann wird dir jedes Mal,<br>wenn ein Gerät gespeichert wird eine Email geschickt',
         error: {
           message: 'Die Einstellungen konnten nicht gespeichert werden',
           title: 'Speichern fehlgeschlagen',
@@ -1552,7 +1556,8 @@ export default {
     },
     reset_totp: {
       title: 'Zwei Faktor zurücksetzen',
-      message: 'Soll die Zwei Faktor Authentifizierung für den Künstler {artistName} wirklich auf Email zurückgesetzt werden?',
+      message:
+        'Soll die Zwei Faktor Authentifizierung für den Künstler {artistName} wirklich auf Email zurückgesetzt werden?',
       keep: 'Nicht zurücksetzen',
       reset: 'Zurücksetzen',
       error: {

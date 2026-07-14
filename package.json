@@ -4,24 +4,24 @@
   "description": "Jinya Gallery CMS",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jinya-CMS/jinya-cms.git"
+    "url": "git+https://github.com/Jinya-CMS/jinya-cms-goji.git"
   },
   "author": "Jinya Developers",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Jinya-CMS/jinya-cms/issues"
+    "url": "https://github.com/Jinya-CMS/jinya-cms-goji/issues"
   },
   "type": "module",
   "scripts": {
-    "designer:prettier": "prettier public/designer/js public/designer/templates --check",
-    "designer:eslint": "eslint -c eslint.config.cjs public/designer/js/ public/designer/lang/",
-    "designer:stylelint": "stylelint public/designer/**/*.css",
-    "designer:format": "prettier public/designer/js public/designer/templates --write",
+    "designer:prettier": "prettier static/designer/js static/designer/templates --check",
+    "designer:eslint": "eslint -c eslint.config.cjs static/designer/js/ static/designer/lang/",
+    "designer:stylelint": "stylelint static/designer/**/*.css",
+    "designer:format": "prettier static/designer/js static/designer/templates --write",
     "designer:lint": "bun run designer:prettier && bun run designer:eslint && bun run designer:stylelint",
-    "installer:prettier": "prettier public/installer --check",
-    "installer:eslint": "eslint -c eslint.config.cjs public/installer/",
-    "installer:stylelint": "stylelint public/installer/**/*.css --fix",
-    "installer:format": "prettier public/installer --write"
+    "installer:prettier": "prettier static/installer --check",
+    "installer:eslint": "eslint -c eslint.config.cjs static/installer/",
+    "installer:stylelint": "stylelint static/installer/**/*.css --fix",
+    "installer:format": "prettier static/installer --write"
   },
   "homepage": "https://jinya.de",
   "devDependencies": {

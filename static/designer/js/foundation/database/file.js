@@ -11,6 +11,8 @@ const STATUS_CURRENT_UPLOAD = 'current';
 const STATUS_RECENT_UPLOAD = 'recent';
 
 class FileDatabase {
+  #database;
+
   constructor() {
     this.#database = new Dexie('files');
     this.#database.version(1).stores({
@@ -48,8 +50,6 @@ class FileDatabase {
     this.watchCurrentUpload = this.watchCurrentUpload.bind(this);
     this.watchUploadError = this.watchUploadError.bind(this);
   }
-
-  #database;
 
   async #openIfClosed() {
     if (!this.#database.isOpen()) {

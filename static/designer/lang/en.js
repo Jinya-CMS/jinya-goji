@@ -57,7 +57,7 @@ export default {
     CD: 'Congo, Democratic Republic of the',
     CK: 'Cook Islands',
     CR: 'Costa Rica',
-    CI: 'Côte d\'Ivoire',
+    CI: "Côte d'Ivoire",
     HR: 'Croatia',
     CU: 'Cuba',
     CW: 'Curaçao',
@@ -121,11 +121,11 @@ export default {
     KZ: 'Kazakhstan',
     KE: 'Kenya',
     KI: 'Kiribati',
-    KP: 'Korea, Democratic People\'s Republic of',
+    KP: "Korea, Democratic People's Republic of",
     KR: 'Korea, Republic of',
     KW: 'Kuwait',
     KG: 'Kyrgyzstan',
-    LA: 'Lao People\'s Democratic Republic',
+    LA: "Lao People's Democratic Republic",
     LV: 'Latvia',
     LB: 'Lebanon',
     LS: 'Lesotho',
@@ -467,7 +467,7 @@ export default {
     error: {
       login_failed: {
         title: 'Login failed',
-        message: 'Your email and password don\'t match, please use a different combination.',
+        message: "Your email and password don't match, please use a different combination.",
       },
       '2fa_failed': {
         title: 'Login failed',
@@ -502,7 +502,8 @@ export default {
       },
       delete_files: {
         title: 'Delete files',
-        message: 'Do you really want to delete the selected {count} files? If you want to delete only specific files, then select them separate.',
+        message:
+          'Do you really want to delete the selected {count} files? If you want to delete only specific files, then select them separate.',
         approve: 'Delete files',
         decline: 'Keep files',
         error: {
@@ -932,7 +933,8 @@ export default {
       },
       delete: {
         title: 'Delete category',
-        message: 'Do you really want to delete the category {name}? The subcategories won\'t be deleted, they instead will be elevated by one level.',
+        message:
+          "Do you really want to delete the category {name}? The subcategories won't be deleted, they instead will be elevated by one level.",
         keep: 'Keep category',
         delete: 'Delete category',
         error: {
@@ -1013,7 +1015,7 @@ export default {
       publish: {
         title: 'Publish post',
         message: 'Do you want to publish the post {title}?',
-        dont: 'Don\'t publish',
+        dont: "Don't publish",
         publish: 'Publish post',
         error: {
           title: 'Publishing failed',
@@ -1023,7 +1025,7 @@ export default {
       unpublish: {
         title: 'Unpublish post',
         message: 'Do you want to unpublish the post {title}?',
-        dont: 'Don\'t unpublish',
+        dont: "Don't unpublish",
         publish: 'Unpublish post',
         error: {
           title: 'Unpublishing failed',
@@ -1059,7 +1061,7 @@ export default {
         publish: {
           title: 'Publish post',
           message: 'Do you want to publish the post {title}?',
-          dont: 'Don\'t publish',
+          dont: "Don't publish",
           publish: 'Publish post',
           error: {
             title: 'Publishing failed',
@@ -1185,7 +1187,7 @@ export default {
         title: 'Activate theme',
         message: 'Do you want to activate the theme {displayName}?',
         approve: 'Activate theme',
-        decline: 'Don\'t activate theme',
+        decline: "Don't activate theme",
         success: {
           title: 'Activate theme',
           message: 'The theme {displayName} was activated successfully',
@@ -1318,7 +1320,7 @@ export default {
         profile_picture: 'Profile picture',
         error: {
           title: 'Error saving',
-          message: 'Your profile couldn\'t be saved, please contact your administrator',
+          message: "Your profile couldn't be saved, please contact your administrator",
         },
       },
       enable_totp: {
@@ -1329,7 +1331,8 @@ export default {
         enable: 'Enable',
         qrcode: {
           header: 'What to do with the QR Code?',
-          message: 'You need to scan the QR code you see here with the two factor app of your choice.<br>Popular choices are Google Authenticator or Authy.',
+          message:
+            'You need to scan the QR code you see here with the two factor app of your choice.<br>Popular choices are Google Authenticator or Authy.',
         },
         error: {
           title: 'Error enabling',
@@ -1346,7 +1349,7 @@ export default {
         change: 'Change password',
         error: {
           forbidden: 'The old password is wrong',
-          generic: 'Changing the password didn\'t work, please contact your administrator',
+          generic: "Changing the password didn't work, please contact your administrator",
           title: 'Error changing password',
           not_match: 'The new passwords need to match',
         },
@@ -1372,7 +1375,7 @@ export default {
         },
         error: {
           title: 'Error saving',
-          message: 'Your profile couldn\'t be saved, please contact your administrator',
+          message: "Your profile couldn't be saved, please contact your administrator",
         },
       },
     },
@@ -1546,7 +1549,7 @@ export default {
     reset_totp: {
       title: 'Reset two factor',
       message: 'Do you really want to reset the two factor authentication for the artist {artistName} to email?',
-      keep: 'Don\'t reset',
+      keep: "Don't reset",
       reset: 'Reset',
       error: {
         title: 'Reset failed',

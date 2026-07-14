@@ -2,49 +2,14 @@ import { createJodit } from '../jodit.js';
 import { getMutationObserver } from './editor-utils.js';
 
 export class BaseEditorElement extends HTMLElement {
+  #internalChange = false;
+  #observer = null;
+
   constructor() {
     super();
 
     this.root = this;
     this.editor = null;
-  }
-
-  #internalChange = false;
-  #observer = null;
-
-  getAdditionalStyles() {
-    return '';
-  }
-
-  getIsInline() {
-    return false;
-  }
-
-  connectedCallback() {
-    this.root.innerHTML = `
-      ${this.getAdditionalStyles()}
-      <div x-ignore><textarea></textarea></div>
-    `;
-    this.editor = createJodit(this.root.querySelector('textarea'), this.getIsInline(), this.height);
-    this.editor.value = this.content;
-    this.editor.events.on('change', (e) => {
-      this.#internalChange = true;
-    });
-
-    this.#initObserver();
-  }
-
-  #initObserver() {
-    if (this.#observer) {
-      this.#observer.disconnect();
-    }
-
-    this.#observer = getMutationObserver(this.root, this.type);
-    this.#observer.observe(this, { childList: true, subtree: true });
-  }
-
-  disconnectedCallback() {
-    this.editor?.destruct();
   }
 
   static get observedAttributes() {
@@ -83,6 +48,41 @@ export class BaseEditorElement extends HTMLElement {
     } else {
       this.removeAttribute('focused');
     }
+  }
+
+  getAdditionalStyles() {
+    return '';
+  }
+
+  getIsInline() {
+    return false;
+  }
+
+  connectedCallback() {
+    this.root.innerHTML = `
+      ${this.getAdditionalStyles()}
+      <div x-ignore><textarea></textarea></div>
+    `;
+    this.editor = createJodit(this.root.querySelector('textarea'), this.getIsInline(), this.height);
+    this.editor.value = this.content;
+    this.editor.events.on('change', (e) => {
+      this.#internalChange = true;
+    });
+
+    this.#initObserver();
+  }
+
+  #initObserver() {
+    if (this.#observer) {
+      this.#observer.disconnect();
+    }
+
+    this.#observer = getMutationObserver(this.root, this.type);
+    this.#observer.observe(this, { childList: true, subtree: true });
+  }
+
+  disconnectedCallback() {
+    this.editor?.destruct();
   }
 
   attributeChangedCallback(property, oldValue, newValue) {

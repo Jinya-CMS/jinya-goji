@@ -1,6 +1,6 @@
 <div class="jinya-profile-view" x-data="profileData">
   <div class="jinya-profile__sidebar">
-    <img :src="$store.artist.profilePicture" class="jinya-profile__picture" :alt="$store.artist.artistName" />
+    <img :alt="$store.artist.artistName" :src="$store.artist.profilePicture" class="jinya-profile__picture" />
   </div>
   <div class="cosmo-title is--profile">
     <span x-text="$store.artist.artistName"></span>
@@ -9,70 +9,70 @@
   <div class="cosmo-toolbar is--profile">
     <div class="cosmo-toolbar__group">
       <button
+        @click="openProfileDialog"
         class="cosmo-button"
         type="button"
         x-localize:my_jinya-my_profile-action-edit_profile
-        @click="openProfileDialog"
       ></button>
       <button
+        @click="openPreferencesDialog"
         class="cosmo-button"
         type="button"
         x-localize:my_jinya-my_profile-action-preferences
-        @click="openPreferencesDialog"
       ></button>
     </div>
     <template x-if="$store.artist.totpMode !== 'app'">
       <div class="cosmo-toolbar__group">
         <button
+          @click="openEnableTotpDialog"
           class="cosmo-button"
           type="button"
           x-localize:my_jinya-my_profile-action-enable_totp
-          @click="openEnableTotpDialog"
         ></button>
         <button
+          @click="openChangePasswordDialog"
           class="cosmo-button"
           type="button"
           x-localize:my_jinya-my_profile-action-change_password
-          @click="openChangePasswordDialog"
         ></button>
       </div>
     </template>
     <template x-if="$store.artist.totpMode === 'app'">
       <div class="cosmo-toolbar__group">
         <button
+          @click="openChangePasswordDialog"
           class="cosmo-button"
           type="button"
           x-localize:my_jinya-my_profile-action-change_password
-          @click="openChangePasswordDialog"
         ></button>
       </div>
     </template>
   </div>
   <div
+    :class="{ 'is--negative': aboutMe.message.isNegative, 'is--positive': !aboutMe.message.isNegative }"
     class="cosmo-message is--profile"
     x-show="aboutMe.message.hasMessage"
-    :class="{ 'is--negative': aboutMe.message.isNegative, 'is--positive': !aboutMe.message.isNegative }"
   >
     <span class="cosmo-message__header" x-text="aboutMe.message.title"></span>
     <p class="cosmo-message__message" x-text="aboutMe.message.content"></p>
   </div>
   <cms-toolbar-editor
-    class="jinya-editor is--profile"
     :content="aboutMe.data"
     @change="(e) => aboutMe.data = e.value"
+    class="jinya-editor is--profile"
     height="calc(var(--page-height) - 2.75rem - 1.25rem - 2rem - 2rem - 0.25rem - 3rem)"
   ></cms-toolbar-editor>
   <div class="cosmo-button__container is--profile">
     <button class="cosmo-button" type="button" x-localize:my_jinya-my_profile-action-discard_profile></button>
     <button
+      @click="saveAboutMe"
       class="cosmo-button is--primary"
       type="button"
       x-localize:my_jinya-my_profile-action-save_profile
-      @click="saveAboutMe"
     ></button>
   </div>
   <template x-if="changePassword.open">
-    <form class="cosmo-modal__container" @submit.prevent="updatePassword">
+    <form @submit.prevent="updatePassword" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:my_jinya-my_profile-change_password-title></h1>
         <div class="cosmo-modal__content">
@@ -82,42 +82,42 @@
           </div>
           <div class="cosmo-input__group">
             <label
-              for="oldPassword"
               class="cosmo-label"
+              for="oldPassword"
               x-localize:my_jinya-my_profile-change_password-old_password
             ></label>
-            <input required type="password" id="oldPassword" class="cosmo-input" x-model="changePassword.oldPassword" />
+            <input class="cosmo-input" id="oldPassword" required type="password" x-model="changePassword.oldPassword" />
             <label
-              for="newPassword"
               class="cosmo-label"
+              for="newPassword"
               x-localize:my_jinya-my_profile-change_password-new_password
             ></label>
-            <input required type="password" id="newPassword" class="cosmo-input" x-model="changePassword.newPassword" />
+            <input class="cosmo-input" id="newPassword" required type="password" x-model="changePassword.newPassword" />
             <label
-              for="newPasswordRepeat"
               class="cosmo-label"
+              for="newPasswordRepeat"
               x-localize:my_jinya-my_profile-change_password-new_password_repeat
             ></label>
             <input
+              class="cosmo-input"
+              id="newPasswordRepeat"
               required
               type="password"
-              id="newPasswordRepeat"
-              class="cosmo-input"
               x-model="changePassword.newPasswordRepeat"
             />
             <span
-              x-show="changePassword.newPassword !== changePassword.newPasswordRepeat"
               class="cosmo-input__message is--negative"
               x-localize:my_jinya-my_profile-change_password-error-not_match
+              x-show="changePassword.newPassword !== changePassword.newPasswordRepeat"
             ></span>
           </div>
         </div>
         <div class="cosmo-modal__button-bar">
           <button
+            @click="changePassword.open = false"
             class="cosmo-button"
             type="button"
             x-localize:my_jinya-my_profile-change_password-keep
-            @click="changePassword.open = false"
           ></button>
           <button
             :disabled="changePassword.newPassword !== changePassword.newPasswordRepeat"
@@ -130,7 +130,7 @@
     </form>
   </template>
   <template x-if="appTotp.open">
-    <form class="cosmo-modal__container" @submit.prevent="enableTotp">
+    <form @submit.prevent="enableTotp" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:my_jinya-my_profile-enable_totp-title></h1>
         <div class="cosmo-modal__content">
@@ -143,11 +143,11 @@
             <p class="cosmo-message__message" x-localize:my_jinya-my_profile-enable_totp-qrcode-message.html></p>
           </div>
           <div class="jinya-totp-qr">
-            <img :src="appTotp.qrCode" :alt="appTotp.secret" />
+            <img :alt="appTotp.secret" :src="appTotp.qrCode" />
           </div>
           <div class="cosmo-input__group">
-            <label for="code" class="cosmo-label" x-localize:my_jinya-my_profile-enable_totp-code></label>
-            <input required type="text" maxlength="6" id="code" class="cosmo-input" x-model="appTotp.code" />
+            <label class="cosmo-label" for="code" x-localize:my_jinya-my_profile-enable_totp-code></label>
+            <input class="cosmo-input" id="code" maxlength="6" required type="text" x-model="appTotp.code" />
             <span
               class="cosmo-input__message is--information"
               x-localize:my_jinya-my_profile-enable_totp-code_help
@@ -156,10 +156,10 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
+            @click="appTotp.open = false"
             class="cosmo-button"
             type="button"
             x-localize:my_jinya-my_profile-enable_totp-cancel
-            @click="appTotp.open = false"
           ></button>
           <button
             :disabled="!appTotp.code"
@@ -172,7 +172,7 @@
     </form>
   </template>
   <template x-if="edit.open">
-    <form class="cosmo-modal__container" @submit.prevent="updateProfile">
+    <form @submit.prevent="updateProfile" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:my_jinya-my_profile-edit-title></h1>
         <div class="cosmo-modal__content">
@@ -181,29 +181,29 @@
             <p class="cosmo-message__message" x-text="edit.error.message"></p>
           </div>
           <div class="cosmo-input__group">
-            <label for="artistName" class="cosmo-label" x-localize:my_jinya-my_profile-edit-artist_name></label>
-            <input required x-model="edit.artistName" type="text" id="artistName" class="cosmo-input" />
-            <label for="email" class="cosmo-label" x-localize:my_jinya-my_profile-edit-email></label>
-            <input required x-model="edit.email" type="email" id="email" class="cosmo-input" />
+            <label class="cosmo-label" for="artistName" x-localize:my_jinya-my_profile-edit-artist_name></label>
+            <input class="cosmo-input" id="artistName" required type="text" x-model="edit.artistName" />
+            <label class="cosmo-label" for="email" x-localize:my_jinya-my_profile-edit-email></label>
+            <input class="cosmo-input" id="email" required type="email" x-model="edit.email" />
             <label
-              for="profilePictureFile"
               class="cosmo-label"
+              for="profilePictureFile"
               x-localize:my_jinya-my_profile-edit-profile_picture
             ></label>
             <input
               @change="edit.selectProfilePicture($event.target.files)"
-              type="file"
               class="cosmo-input"
               id="profilePictureFile"
+              type="file"
             />
           </div>
         </div>
         <div class="cosmo-modal__button-bar">
           <button
+            @click="edit.open = false"
             class="cosmo-button"
             type="button"
             x-localize:my_jinya-my_profile-edit-discard_profile
-            @click="edit.open = false"
           ></button>
           <button class="cosmo-button" type="submit" x-localize:my_jinya-my_profile-edit-save_profile></button>
         </div>
@@ -211,7 +211,7 @@
     </form>
   </template>
   <template x-if="preferences.open">
-    <form class="cosmo-modal__container" @submit.prevent="updatePreferences">
+    <form @submit.prevent="updatePreferences" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:my_jinya-my_profile-preferences-title></h1>
         <div class="cosmo-modal__content">
@@ -223,9 +223,9 @@
             <span class="cosmo-input__header" x-localize:my_jinya-my_profile-preferences-email></span>
             <label for="loginEmailEnabled" x-localize:my_jinya-my_profile-preferences-login_email_enabled></label>
             <input
-              type="checkbox"
               class="cosmo-switch"
               id="loginEmailEnabled"
+              type="checkbox"
               x-model="preferences.loginEmailEnabled"
             />
             <span
@@ -237,9 +237,9 @@
               x-localize:my_jinya-my_profile-preferences-new_device_email_enabled
             ></label>
             <input
-              type="checkbox"
               class="cosmo-switch"
               id="newDeviceEmailEnabled"
+              type="checkbox"
               x-model="preferences.newDeviceEmailEnabled"
             />
             <span
@@ -250,10 +250,10 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
+            @click="preferences.open = false"
             class="cosmo-button"
             type="button"
             x-localize:my_jinya-my_profile-preferences-keep
-            @click="preferences.open = false"
           ></button>
           <button class="cosmo-button" type="submit" x-localize:my_jinya-my_profile-preferences-change></button>
         </div>

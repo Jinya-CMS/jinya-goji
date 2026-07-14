@@ -2954,7 +2954,6 @@ var Storage = (function () {
     this._roots = [];
     this._displayList = [];
     this._displayListLen = 0;
-    return;
   };
   Storage.prototype.getRoots = function () {
     return this._roots;
@@ -3991,7 +3990,6 @@ function parse(colorStr, rgbaArr) {
     }
   }
   setRgba(rgbaArr, 0, 0, 0, 1);
-  return;
 }
 function hsla2rgba(hsla, rgba) {
   var h = (((parseFloat(hsla[0]) % 360) + 360) % 360) / 360;
@@ -7995,7 +7993,7 @@ function reformIntervals(list) {
   });
   var curr = -Infinity;
   var currClose = 1;
-  for (var i = 0; i < list.length; ) {
+  for (var i = 0; i < list.length;) {
     var interval = list[i].interval;
     var close_1 = list[i].close;
     for (var lg = 0; lg < 2; lg++) {
@@ -10615,7 +10613,7 @@ var PathProxy = (function () {
     var x0 = 0;
     var y0 = 0;
     var i;
-    for (i = 0; i < this._len; ) {
+    for (i = 0; i < this._len;) {
       var cmd = data[i++];
       var isFirst = i === 1;
       if (isFirst) {
@@ -10700,7 +10698,7 @@ var PathProxy = (function () {
     var pathSegLen = this._pathSegLen;
     var pathTotalLen = 0;
     var segCount = 0;
-    for (var i = 0; i < len; ) {
+    for (var i = 0; i < len;) {
       var cmd = data[i++];
       var isFirst = i === 1;
       if (isFirst) {
@@ -10822,7 +10820,7 @@ var PathProxy = (function () {
         return;
       }
     }
-    lo: for (var i = 0; i < len; ) {
+    lo: for (var i = 0; i < len;) {
       var cmd = d[i++];
       var isFirst = i === 1;
       if (isFirst) {
@@ -11293,7 +11291,7 @@ function containPath(path, lineWidth, isStroke, x, y) {
   var y0 = 0;
   var x1;
   var y1;
-  for (var i = 0; i < len; ) {
+  for (var i = 0; i < len;) {
     var cmd = data[i++];
     var isFirst = i === 1;
     if (cmd === CMD$1.M && i > 1) {
@@ -12990,19 +12988,15 @@ function blurSeries(targetSeriesIndex, focus, blurScope, api) {
       coordSys = coordSys.master;
     }
     var sameCoordSys = coordSys && targetCoordSys ? coordSys === targetCoordSys : sameSeries; // If there is no coordinate system. use sameSeries instead.
-    if (
-      !(
-        // Not blur other series if blurScope series
-        (
-          (blurScope === 'series' && !sameSeries) ||
-          // Not blur other coordinate system if blurScope is coordinateSystem
-          (blurScope === 'coordinateSystem' && !sameCoordSys) ||
-          // Not blur self series if focus is series.
-          (focus === 'series' && sameSeries)
-        )
-        // TODO blurScope: coordinate system
-      )
-    ) {
+    if (!(
+      // Not blur other series if blurScope series
+      (blurScope === 'series' && !sameSeries) ||
+      // Not blur other coordinate system if blurScope is coordinateSystem
+      (blurScope === 'coordinateSystem' && !sameCoordSys) ||
+      // Not blur self series if focus is series.
+      (focus === 'series' && sameSeries)
+      // TODO blurScope: coordinate system
+    )) {
       var view = api.getViewOfSeriesModel(seriesModel);
       view.group.traverse(function (child) {
         // For the elements that have been triggered by other components,
@@ -13395,7 +13389,7 @@ function transformPath(path, m) {
   var R = CMD$2.R;
   var A = CMD$2.A;
   var Q = CMD$2.Q;
-  for (i = 0, j = 0; i < len; ) {
+  for (i = 0, j = 0; i < len;) {
     cmd = data[i++];
     j = i;
     nPoint = 0;
@@ -21366,7 +21360,6 @@ function detectSourceFormat(data) {
     for (var i = 0, len = data.length; i < len; i++) {
       var item = data[i];
       if (item == null) {
-        continue;
       } else if (isArray(item) || isTypedArray(item)) {
         sourceFormat = SOURCE_FORMAT_ARRAY_ROWS;
         break;
@@ -21636,9 +21629,7 @@ var DefaultDataProvider = /** @class */ (function () {
   DefaultDataProvider.prototype.count = function () {
     return 0;
   };
-  DefaultDataProvider.prototype.getItem = function (idx, out) {
-    return;
-  };
+  DefaultDataProvider.prototype.getItem = function (idx, out) {};
   DefaultDataProvider.prototype.appendData = function (newData) {};
   DefaultDataProvider.prototype.clean = function () {};
   DefaultDataProvider.protoInitialize = (function () {
@@ -22028,7 +22019,6 @@ var DataFormatMixin = /** @class */ (function () {
    */
   DataFormatMixin.prototype.formatTooltip = function (dataIndex, multipleSeries, dataType) {
     // Empty function
-    return;
   };
   return DataFormatMixin;
 })();
@@ -22597,15 +22587,11 @@ var ExternalSource = /** @class */ (function () {
     // Only built-in transform available.
     throw new Error('not supported');
   };
-  ExternalSource.prototype.cloneRawData = function () {
-    return;
-  };
+  ExternalSource.prototype.cloneRawData = function () {};
   /**
    * @return If dimension not found, return null/undefined.
    */
-  ExternalSource.prototype.getDimensionInfo = function (dim) {
-    return;
-  };
+  ExternalSource.prototype.getDimensionInfo = function (dim) {};
   /**
    * dimensions defined if and only if either:
    * (a) dataset.dimensions are declared.
@@ -22615,23 +22601,15 @@ var ExternalSource = /** @class */ (function () {
    * Otherwise, `dimensionInfoAll` is determined by data columns.
    * @return Always return an array (even empty array).
    */
-  ExternalSource.prototype.cloneAllDimensionInfo = function () {
-    return;
-  };
-  ExternalSource.prototype.count = function () {
-    return;
-  };
+  ExternalSource.prototype.cloneAllDimensionInfo = function () {};
+  ExternalSource.prototype.count = function () {};
   /**
    * Only support by dimension index.
    * No need to support by dimension name in transform function,
    * because transform function is not case-specific, no need to use name literally.
    */
-  ExternalSource.prototype.retrieveValue = function (dataIndex, dimIndex) {
-    return;
-  };
-  ExternalSource.prototype.retrieveValueFromItem = function (dataItem, dimIndex) {
-    return;
-  };
+  ExternalSource.prototype.retrieveValue = function (dataIndex, dimIndex) {};
+  ExternalSource.prototype.retrieveValueFromItem = function (dataItem, dimIndex) {};
   ExternalSource.prototype.convertValue = function (rawVal, dimInfo) {
     return parseDataValue(rawVal, dimInfo);
   };
@@ -24900,9 +24878,7 @@ var SeriesModel = /** @class */ (function (_super) {
    * Init a data structure from data related option in series
    * Must be overridden.
    */
-  SeriesModel.prototype.getInitialData = function (option, ecModel) {
-    return;
-  };
+  SeriesModel.prototype.getInitialData = function (option, ecModel) {};
   /**
    * Append data to list
    */
@@ -29721,7 +29697,7 @@ var ECharts = /** @class */ (function (_super) {
         };
         !isComponent && scheduler.prepareView(view, model, ecModel, api);
       }
-      for (var i = 0; i < viewList.length; ) {
+      for (var i = 0; i < viewList.length;) {
         var view = viewList[i];
         if (!view.__alive) {
           !isComponent && view.renderTask.dispose();
@@ -33773,7 +33749,6 @@ var OrdinalScale = /** @class */ (function (_super) {
   };
   OrdinalScale.prototype.getMinorTicks = function (splitNumber) {
     // Not support.
-    return;
   };
   /**
    * @see `Ordinal['_ordinalNumbersByTick']`
@@ -35880,9 +35855,7 @@ var AxisModelCommonMixin = /** @class */ (function () {
    * Should be implemented by each axis model if necessary.
    * @return coordinate system model
    */
-  AxisModelCommonMixin.prototype.getCoordSysModel = function () {
-    return;
-  };
+  AxisModelCommonMixin.prototype.getCoordSysModel = function () {};
   return AxisModelCommonMixin;
 })();
 
@@ -36913,7 +36886,6 @@ var Axis = /** @class */ (function () {
    */
   Axis.prototype.pointToData = function (point, clamp) {
     // Should be implemented in derived class if necessary.
-    return;
   };
   /**
    * Different from `zrUtil.map(axis.getTicks(), axis.dataToCoord, axis)`,
@@ -37252,7 +37224,7 @@ function nearestPointOnPath(pt, path, out) {
   var data = path.data;
   var x = pt.x;
   var y = pt.y;
-  for (var i = 0; i < data.length; ) {
+  for (var i = 0; i < data.length;) {
     var cmd = data[i++];
     if (i === 1) {
       xi = data[i];
@@ -40260,12 +40232,12 @@ var Layer = (function (_super) {
     var hasIntersections;
     do {
       hasIntersections = false;
-      for (var i = 0; i < mergedRepaintRects.length; ) {
+      for (var i = 0; i < mergedRepaintRects.length;) {
         if (mergedRepaintRects[i].isZero()) {
           mergedRepaintRects.splice(i, 1);
           continue;
         }
-        for (var j = i + 1; j < mergedRepaintRects.length; ) {
+        for (var j = i + 1; j < mergedRepaintRects.length;) {
           if (mergedRepaintRects[i].intersect(mergedRepaintRects[j])) {
             hasIntersections = true;
             mergedRepaintRects[i].union(mergedRepaintRects[j]);
@@ -42037,7 +42009,7 @@ var ECPolyline = /** @class */ (function (_super) {
     var y0;
     var isDimX = dim === 'x';
     var roots = [];
-    for (var i = 0; i < data.length; ) {
+    for (var i = 0; i < data.length;) {
       var cmd = data[i++];
       var x = void 0;
       var y = void 0;
@@ -42316,7 +42288,7 @@ function bboxFromPoints(points) {
   var minY = Infinity;
   var maxX = -Infinity;
   var maxY = -Infinity;
-  for (var i = 0; i < points.length; ) {
+  for (var i = 0; i < points.length;) {
     var x = points[i++];
     var y = points[i++];
     if (!isNaN(x)) {
@@ -46418,7 +46390,7 @@ var LargeSymbolPath = /** @class */ (function (_super) {
       return;
     }
     this._ctx = null;
-    for (i = this._off; i < points.length; ) {
+    for (i = this._off; i < points.length;) {
       var x = points[i++];
       var y = points[i++];
       if (isNaN(x) || isNaN(y)) {
@@ -46449,7 +46421,7 @@ var LargeSymbolPath = /** @class */ (function (_super) {
       return;
     }
     // PENDING If style or other canvas status changed?
-    for (i = this._off; i < points.length; ) {
+    for (i = this._off; i < points.length;) {
       var x = points[i++];
       var y = points[i++];
       if (isNaN(x) || isNaN(y)) {
@@ -46514,7 +46486,7 @@ var LargeSymbolPath = /** @class */ (function (_super) {
       var minY = Infinity;
       var maxX = -Infinity;
       var maxY = -Infinity;
-      for (var i = 0; i < points.length; ) {
+      for (var i = 0; i < points.length;) {
         var x = points[i++];
         var y = points[i++];
         minX = Math.min(x, minX);
@@ -50290,7 +50262,7 @@ function placeJitterOnDirection(items, fixedCoord, floatCoord, radius, jitter, m
         y = requiredY;
         // Loop from the start again
         i = -1; // Reset index to recheck all items
-        continue; // Recalculate with the new y position
+        // Recalculate with the new y position
       }
     }
   }
@@ -53873,9 +53845,12 @@ var MapView = /** @class */ (function (_super) {
       this._mapDraw.resetForLabelLayout();
     }
     // Not update map if it is an roam action from self
-    if (
-      !(payload && payload.type === 'geoRoam' && payload.componentType === 'series' && payload.seriesId === mapModel.id)
-    ) {
+    if (!(
+      payload &&
+      payload.type === 'geoRoam' &&
+      payload.componentType === 'series' &&
+      payload.seriesId === mapModel.id
+    )) {
       if (mapModel.needsDrawMap) {
         var mapDraw = this._mapDraw || new MapDraw(api);
         group.add(mapDraw.group);
@@ -54695,9 +54670,12 @@ function resizeGeo(geoModel, api) {
   if (boundingCoords != null) {
     var leftTop_1 = boundingCoords[0];
     var rightBottom_1 = boundingCoords[1];
-    if (
-      !(isFinite(leftTop_1[0]) && isFinite(leftTop_1[1]) && isFinite(rightBottom_1[0]) && isFinite(rightBottom_1[1]))
-    ) {
+    if (!(
+      isFinite(leftTop_1[0]) &&
+      isFinite(leftTop_1[1]) &&
+      isFinite(rightBottom_1[0]) &&
+      isFinite(rightBottom_1[1])
+    )) {
       if ('development' !== 'production') {
         console.error('Invalid boundingCoords');
       }
@@ -59355,7 +59333,7 @@ function squarify(node, options, hideChildren, depth) {
   var best = Infinity; // the best row score so far
   var row = [];
   row.area = 0;
-  for (var i = 0, len = viewChildren.length; i < len; ) {
+  for (var i = 0, len = viewChildren.length; i < len;) {
     var child = viewChildren[i];
     row.push(child);
     row.area += child.getLayout().area;
@@ -68715,7 +68693,7 @@ var LargeBoxPath = /** @class */ (function (_super) {
     // Drawing lines is more efficient than drawing
     // a whole line or drawing rects.
     var points = shape.points;
-    for (var i = 0; i < points.length; ) {
+    for (var i = 0; i < points.length;) {
       if (this.__sign === points[i++]) {
         var x = points[i++];
         ctx.moveTo(x, points[i++]);
@@ -69669,7 +69647,7 @@ var LargeLinesPath = /** @class */ (function (_super) {
     var curveness = shape.curveness;
     var i;
     if (shape.polyline) {
-      for (i = this._off; i < segs.length; ) {
+      for (i = this._off; i < segs.length;) {
         var count = segs[i++];
         if (count > 0) {
           ctx.moveTo(segs[i++], segs[i++]);
@@ -69679,7 +69657,7 @@ var LargeLinesPath = /** @class */ (function (_super) {
         }
       }
     } else {
-      for (i = this._off; i < segs.length; ) {
+      for (i = this._off; i < segs.length;) {
         var x0 = segs[i++];
         var y0 = segs[i++];
         var x1 = segs[i++];
@@ -69706,7 +69684,7 @@ var LargeLinesPath = /** @class */ (function (_super) {
     var lineWidth = this.style.lineWidth;
     if (shape.polyline) {
       var dataIndex = 0;
-      for (var i = 0; i < segs.length; ) {
+      for (var i = 0; i < segs.length;) {
         var count = segs[i++];
         if (count > 0) {
           var x0 = segs[i++];
@@ -69723,7 +69701,7 @@ var LargeLinesPath = /** @class */ (function (_super) {
       }
     } else {
       var dataIndex = 0;
-      for (var i = 0; i < segs.length; ) {
+      for (var i = 0; i < segs.length;) {
         var x0 = segs[i++];
         var y0 = segs[i++];
         var x1 = segs[i++];
@@ -69767,7 +69745,7 @@ var LargeLinesPath = /** @class */ (function (_super) {
       var minY = Infinity;
       var maxX = -Infinity;
       var maxY = -Infinity;
-      for (var i = 0; i < points.length; ) {
+      for (var i = 0; i < points.length;) {
         var x = points[i++];
         var y = points[i++];
         minX = Math.min(x, minX);
@@ -70219,7 +70197,7 @@ var LinesSeriesModel = /** @class */ (function (_super) {
       var coordsCursor = 0;
       var offsetCursor = 0;
       var dataCount = 0;
-      for (var i = 0; i < len; ) {
+      for (var i = 0; i < len;) {
         dataCount++;
         var count = data[i++];
         // Offset
@@ -79384,7 +79362,7 @@ var MatrixDim = /** @class */ (function () {
     var _cellCount = 0;
     self._leavesCount = traverseInitCells(dimModelData, 0, 0);
     postInitCells();
-    return;
+
     function traverseInitCells(dimModelData, firstLeafLocator, level) {
       var totalSpan = 0;
       if (!dimModelData) {
@@ -80069,7 +80047,7 @@ function renderDimensionCells(group, matrixModel, ecModel) {
     var thisDimLabelModel = thisDimModel.getModel('label');
     var tooltipOption = matrixModel.getShallow('tooltip', true);
     var xyLocator = [];
-    for (var it_1 = thisDim.resetCellIterator(); it_1.next(); ) {
+    for (var it_1 = thisDim.resetCellIterator(); it_1.next();) {
       var dimCell = it_1.item;
       var shape = {};
       BoundingRect.copy(shape, dimCell.rect);
@@ -80111,8 +80089,8 @@ function createBodyAndCorner(group, matrixModel, xDim, yDim, ecModel) {
     var ity = new ListIterator();
     var xyLocator = [];
     var tooltipOption = matrixModel.getShallow('tooltip', true);
-    for (dimForCoordY.resetLayoutIterator(ity, 1); ity.next(); ) {
-      for (dimForCoordX.resetLayoutIterator(itx, 0); itx.next(); ) {
+    for (dimForCoordY.resetLayoutIterator(ity, 1); ity.next();) {
+      for (dimForCoordX.resetLayoutIterator(itx, 0); itx.next();) {
         var xLayout = itx.item;
         var yLayout = ity.item;
         set(xyLocator, xLayout.id.x, yLayout.id.y);
@@ -80500,24 +80478,24 @@ function layOutUnitsOnDimension(dimModels, dims, matrixRect, dimIdx) {
   // consistent return of `dataToLayout`.
   var otherDimShow = otherDim.shouldShow();
   // Reset
-  for (var it_1 = thisDim.resetCellIterator(); it_1.next(); ) {
+  for (var it_1 = thisDim.resetCellIterator(); it_1.next();) {
     it_1.item.wh = it_1.item.xy = NaN;
   }
-  for (var it_2 = otherDim.resetLayoutIterator(null, dimIdx); it_2.next(); ) {
+  for (var it_2 = otherDim.resetLayoutIterator(null, dimIdx); it_2.next();) {
     it_2.item.wh = it_2.item.xy = NaN;
   }
   // Set specified size from option.
   var restSize = matrixRect[WH$1[dimIdx]];
   var restCellsCount = thisDim.getLocatorCount(dimIdx) + otherDim.getLocatorCount(dimIdx);
   var tmpLevelModel = new Model();
-  for (var it_3 = otherDim.resetLevelIterator(); it_3.next(); ) {
+  for (var it_3 = otherDim.resetLevelIterator(); it_3.next();) {
     // Consider `matrix.x.levelSize` and `matrix.x.levels[i].levelSize`.
     tmpLevelModel.option = it_3.item.option;
     tmpLevelModel.parentModel = dimModels[XY$1[otherDimIdx]];
     layOutSpecified(it_3.item, otherDimShow ? tmpLevelModel.get('levelSize') : 0);
   }
   var tmpCellModel = new Model();
-  for (var it_4 = thisDim.resetCellIterator(); it_4.next(); ) {
+  for (var it_4 = thisDim.resetCellIterator(); it_4.next();) {
     // Only leaf support size specification, to avoid unnecessary complexity.
     if (it_4.item.type === MatrixCellLayoutInfoType.leaf) {
       tmpCellModel.option = it_4.item.option;
@@ -80544,10 +80522,10 @@ function layOutUnitsOnDimension(dimModels, dims, matrixRect, dimIdx) {
   var maxLocator = thisDim.getLocatorCount(dimIdx) - 1;
   var it = new ListIterator();
   // Lay out levels of the perpendicular dim.
-  for (otherDim.resetLayoutIterator(it, dimIdx); it.next(); ) {
+  for (otherDim.resetLayoutIterator(it, dimIdx); it.next();) {
     layOutUnspecified(it.item);
   }
-  for (thisDim.resetLayoutIterator(it, dimIdx); it.next(); ) {
+  for (thisDim.resetLayoutIterator(it, dimIdx); it.next();) {
     layOutUnspecified(it.item);
   }
   function layOutUnspecified(item) {
@@ -80564,7 +80542,7 @@ function layOutUnitsOnDimension(dimModels, dims, matrixRect, dimIdx) {
 }
 function layOutDimCellsRestInfoByUnit(dimIdx, dims) {
   // Finally save layout info based on the unit leaves and levels.
-  for (var it_5 = dims[XY$1[dimIdx]].resetCellIterator(); it_5.next(); ) {
+  for (var it_5 = dims[XY$1[dimIdx]].resetCellIterator(); it_5.next();) {
     var dimCell = it_5.item;
     layOutRectOneDimBasedOnUnit(dimCell.rect, dimIdx, dimCell.id, dimCell.span, dims);
     // Consider level varitation on tree leaves, should extend the size to touch matrix body
@@ -80699,7 +80677,7 @@ function pointToDataOnlyHeaderFillOut(ctx, partialOut, dimIdx, dims) {
   if (ctx[XY$1[dimIdx]] === CtxPointToDataAreaType.outside) {
     return;
   }
-  for (dims[XY$1[dimIdx]].resetCellIterator(_ptdDimCellIt); _ptdDimCellIt.next(); ) {
+  for (dims[XY$1[dimIdx]].resetCellIterator(_ptdDimCellIt); _ptdDimCellIt.next();) {
     var cell = _ptdDimCellIt.item;
     if (
       isCoordInRect(ctx.point[dimIdx], cell.rect, dimIdx) &&
@@ -80721,7 +80699,7 @@ function pointToDataBodyCornerFillOut(ctx, partialOut, dimIdx, dims) {
     return;
   }
   var dim = ctx[XY$1[dimIdx]] === CtxPointToDataAreaType.inCorner ? dims[XY$1[1 - dimIdx]] : dims[XY$1[dimIdx]];
-  for (dim.resetLayoutIterator(_ptdLevelIt, dimIdx); _ptdLevelIt.next(); ) {
+  for (dim.resetLayoutIterator(_ptdLevelIt, dimIdx); _ptdLevelIt.next();) {
     if (isCoordInLayoutInfo(ctx.point[dimIdx], _ptdLevelIt.item)) {
       partialOut[dimIdx] = _ptdLevelIt.item.id[XY$1[dimIdx]];
       return;
@@ -95056,7 +95034,6 @@ function ariaVisual(ecModel, api) {
     var ariaLabel;
     if (seriesCnt < 1) {
       // No series, no aria label
-      return;
     } else {
       var title = getTitle();
       if (title) {
@@ -95667,7 +95644,7 @@ function pathToBezierCurves(path) {
   var y1;
   var x2;
   var y2;
-  for (var i = 0; i < len; ) {
+  for (var i = 0; i < len;) {
     var cmd = data[i++];
     var isFirst = i === 1;
     if (isFirst) {
@@ -95829,7 +95806,7 @@ function pathToPolygons(path, scale) {
     var x0 = beziers[0];
     var y0 = beziers[1];
     polygon.push(x0, y0);
-    for (var k = 2; k < beziers.length; ) {
+    for (var k = 2; k < beziers.length;) {
       var x1 = beziers[k++];
       var y1 = beziers[k++];
       var x2 = beziers[k++];
@@ -96061,7 +96038,7 @@ function copyPathProps(source, target) {
 }
 function polygonConvert(points) {
   var out = [];
-  for (var i = 0; i < points.length; ) {
+  for (var i = 0; i < points.length;) {
     out.push([points[i++], points[i++]]);
   }
   return out;
@@ -96181,7 +96158,7 @@ function alignSubpath(subpath1, subpath2) {
   var eachCurveSubDivCount = Math.ceil(diff / shorterBezierCount) + 1;
   var newSubpath = [shorterPath[0], shorterPath[1]];
   var remained = diff;
-  for (var i = 2; i < shorterLen; ) {
+  for (var i = 2; i < shorterLen;) {
     var x0 = shorterPath[i - 2];
     var y0 = shorterPath[i - 1];
     var x1 = shorterPath[i++];
@@ -96216,7 +96193,7 @@ function createSubpath(lastSubpathSubpath, otherSubpath) {
   var lastX = lastSubpathSubpath[len - 2];
   var lastY = lastSubpathSubpath[len - 1];
   var newSubpath = [];
-  for (var i = 0; i < otherSubpath.length; ) {
+  for (var i = 0; i < otherSubpath.length;) {
     newSubpath[i++] = lastX;
     newSubpath[i++] = lastY;
   }
@@ -96412,7 +96389,7 @@ function restoreMethod(obj, methodName) {
 function applyTransformOnBeziers(bezierCurves, mm) {
   for (var i = 0; i < bezierCurves.length; i++) {
     var subBeziers = bezierCurves[i];
-    for (var k = 0; k < subBeziers.length; ) {
+    for (var k = 0; k < subBeziers.length;) {
       var x = subBeziers[k];
       var y = subBeziers[k + 1];
       subBeziers[k++] = mm[0] * x + mm[2] * y + mm[4];
@@ -96465,7 +96442,7 @@ function prepareMorphPath(fromPath, toPath) {
         var x0 = tmpArr[0];
         var y0 = tmpArr[1];
         path.moveTo(x0, y0);
-        for (var m = 2; m < from.length; ) {
+        for (var m = 2; m < from.length;) {
           var x1 = tmpArr[m++];
           var y1 = tmpArr[m++];
           var x2 = tmpArr[m++];

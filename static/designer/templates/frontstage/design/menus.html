@@ -1,14 +1,14 @@
 <div class="cosmo-side-list" x-data="menusData">
   <nav class="cosmo-side-list__items">
-    <template x-for="menu in menus" :key="menu.id">
+    <template :key="menu.id" x-for="menu in menus">
       <a
-        class="cosmo-side-list__item"
-        x-text="menu.name"
         :class="{ 'is--active': selectedMenu?.id === menu.id }"
         @click="selectMenu(menu)"
+        class="cosmo-side-list__item"
+        x-text="menu.name"
       ></a>
     </template>
-    <button class="cosmo-button is--full-width" x-localize:design-menus-action-new @click="openCreateDialog"></button>
+    <button @click="openCreateDialog" class="cosmo-button is--full-width" x-localize:design-menus-action-new></button>
   </nav>
   <template x-if="selectedMenu">
     <div class="cosmo-side-list__content jinya-designer">
@@ -17,60 +17,60 @@
       </div>
       <div class="cosmo-toolbar is--menu">
         <div class="cosmo-toolbar__group">
-          <button class="cosmo-button" x-localize:design-menus-action-edit @click="openEditDialog"></button>
-          <button class="cosmo-button" x-localize:design-menus-action-delete @click="deleteMenu"></button>
+          <button @click="openEditDialog" class="cosmo-button" x-localize:design-menus-action-edit></button>
+          <button @click="deleteMenu" class="cosmo-button" x-localize:design-menus-action-delete></button>
         </div>
         <div class="cosmo-toolbar__group">
           <button
+            @click="saveItems"
             class="cosmo-button is--primary"
             x-localize:design-menus-action-save_items
-            @click="saveItems"
           ></button>
         </div>
       </div>
       <div class="jinya-menu-designer">
         <div
-          class="cosmo-message is--menu"
           :class="{ 'is--negative': updateItems.message.isNegative, 'is--positive': !updateItems.message.isNegative }"
+          class="cosmo-message is--menu"
           x-show="updateItems.message.hasMessage"
         >
           <span class="cosmo-message__header" x-text="updateItems.message.title"></span>
           <p class="cosmo-message__message" x-text="updateItems.message.content"></p>
         </div>
-        <template x-for="(item, index) in items" :key="index">
+        <template :key="index" x-for="(item, index) in items">
           <div style="display: contents">
-            <button class="cosmo-button is--circle is--primary is--add is--menu" @click="openAddItemDialog(index)">
+            <button @click="openAddItemDialog(index)" class="cosmo-button is--circle is--primary is--add is--menu">
               <svg
                 class="jinya-icon is--add is--menu"
-                viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
               >
                 <path d="M5 12h14" />
                 <path d="M12 5v14" />
               </svg>
             </button>
             <div
-              class="jinya-designer-item is--menu"
               :style="{ '--nesting': item.nesting }"
-              draggable="true"
-              @dragstart="startItemDrag(item, index)"
               @dragover.prevent="dragOver(item, index)"
+              @dragstart="startItemDrag(item, index)"
+              class="jinya-designer-item is--menu"
+              draggable="true"
             >
               <span class="jinya-designer-item__title" x-text="getItemTitle(item)"></span>
               <div class="jinya-designer-item__details is--menu" x-data="{ itemLabel: getItemLabel(item) }">
                 <svg
-                  width="1rem"
+                  :fill="item.highlighted ? 'var(--primary-color)' : 'none'"
                   height="1rem"
-                  viewBox="0 0 24 24"
-                  stroke-width="2"
+                  stroke="var(--primary-color)"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  :fill="item.highlighted ? 'var(--primary-color)' : 'none'"
-                  stroke="var(--primary-color)"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="1rem"
                 >
                   <polygon
                     points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
@@ -89,9 +89,9 @@
               </div>
               <div class="jinya-designer-item__edit">
                 <button
-                  class="cosmo-button is--icon is--primary"
-                  @click="decreaseItemNesting(item, index)"
                   :disabled="item.nesting === 0"
+                  @click="decreaseItemNesting(item, index)"
+                  class="cosmo-button is--icon is--primary"
                   x-localize:design-menus-action-decrease_nesting.title
                 >
                   <svg viewBox="0 0 24 24">
@@ -102,9 +102,9 @@
                   </svg>
                 </button>
                 <button
-                  class="cosmo-button is--icon is--primary"
-                  @click="increaseItemNesting(item, index)"
                   :disabled="index === 0 || item.nesting > items[index - 1].nesting"
+                  @click="increaseItemNesting(item, index)"
+                  class="cosmo-button is--icon is--primary"
                   x-localize:design-menus-action-increase_nesting.title
                 >
                   <svg viewBox="0 0 24 24">
@@ -115,8 +115,8 @@
                   </svg>
                 </button>
                 <button
-                  class="cosmo-button is--icon is--primary"
                   @click="openEditItemDialog(item, index)"
+                  class="cosmo-button is--icon is--primary"
                   x-localize:design-menus-action-edit_item.title
                 >
                   <svg viewBox="0 0 24 24">
@@ -125,8 +125,8 @@
                   </svg>
                 </button>
                 <button
-                  class="cosmo-button is--icon is--negative"
                   @click="deleteItem(item, index)"
+                  class="cosmo-button is--icon is--negative"
                   x-localize:design-menus-action-delete_item.title
                 >
                   <svg viewBox="0 0 24 24">
@@ -140,8 +140,8 @@
           </div>
         </template>
         <button
-          class="cosmo-button is--circle is--primary is--add is--menu is--last"
           @click="openAddItemDialog(items.length)"
+          class="cosmo-button is--circle is--primary is--add is--menu is--last"
         >
           <svg class="jinya-icon is--add is--menu" viewBox="0 0 24 24">
             <path d="M5 12h14" />
@@ -153,7 +153,7 @@
     </div>
   </template>
   <template x-if="create.open">
-    <form class="cosmo-modal__container" @submit.prevent="createMenu">
+    <form @submit.prevent="createMenu" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:design-menus-create-title></h1>
         <div class="cosmo-modal__content">
@@ -162,15 +162,15 @@
             <p class="cosmo-message__message" x-text="create.error.message"></p>
           </div>
           <div class="cosmo-input__group">
-            <label for="createMenuName" class="cosmo-label" x-localize:design-menus-create-name></label>
-            <input required type="text" id="createMenuName" class="cosmo-input" x-model="create.name" />
-            <label for="createMenuLogo" class="cosmo-label" x-localize:design-menus-create-logo></label>
+            <label class="cosmo-label" for="createMenuName" x-localize:design-menus-create-name></label>
+            <input class="cosmo-input" id="createMenuName" required type="text" x-model="create.name" />
+            <label class="cosmo-label" for="createMenuLogo" x-localize:design-menus-create-logo></label>
             <button
+              :data-picker="create.picker.label"
+              @click="selectAddLogo"
               class="cosmo-input is--picker"
               id="createMenuLogo"
-              :data-picker="create.picker.label"
               type="button"
-              @click="selectAddLogo"
               x-text="create.picker.selected"
             ></button>
             <img :src="create.logoPath" alt="" class="jinya-picker__selected-file" x-show="create.logoId" />
@@ -178,18 +178,18 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
-            type="button"
-            class="cosmo-button"
-            x-localize:design-menus-create-cancel
             @click="create.open = false"
+            class="cosmo-button"
+            type="button"
+            x-localize:design-menus-create-cancel
           ></button>
-          <button type="submit" class="cosmo-button" x-localize:design-menus-create-create></button>
+          <button class="cosmo-button" type="submit" x-localize:design-menus-create-create></button>
         </div>
       </div>
     </form>
   </template>
   <template x-if="edit.open">
-    <form class="cosmo-modal__container" @submit.prevent="updateMenu">
+    <form @submit.prevent="updateMenu" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:design-menus-edit-title></h1>
         <div class="cosmo-modal__content">
@@ -198,15 +198,15 @@
             <p class="cosmo-message__message" x-text="edit.error.message"></p>
           </div>
           <div class="cosmo-input__group">
-            <label for="editMenuName" class="cosmo-label" x-localize:design-menus-edit-name></label>
-            <input required type="text" id="editMenuName" class="cosmo-input" x-model="edit.name" />
-            <label for="editMenuLogo" class="cosmo-label" x-localize:design-menus-edit-logo></label>
+            <label class="cosmo-label" for="editMenuName" x-localize:design-menus-edit-name></label>
+            <input class="cosmo-input" id="editMenuName" required type="text" x-model="edit.name" />
+            <label class="cosmo-label" for="editMenuLogo" x-localize:design-menus-edit-logo></label>
             <button
+              :data-picker="edit.picker.label"
+              @click="selectEditLogo"
               class="cosmo-input is--picker"
               id="editMenuLogo"
-              :data-picker="edit.picker.label"
               type="button"
-              @click="selectEditLogo"
               x-text="edit.picker.selected"
             ></button>
             <img :src="edit.logoPath" alt="" class="jinya-picker__selected-file" x-show="edit.logoId" />
@@ -214,67 +214,67 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
-            type="button"
-            class="cosmo-button"
-            x-localize:design-menus-edit-cancel
             @click="edit.open = false"
+            class="cosmo-button"
+            type="button"
+            x-localize:design-menus-edit-cancel
           ></button>
-          <button type="submit" class="cosmo-button" x-localize:design-menus-edit-update></button>
+          <button class="cosmo-button" type="submit" x-localize:design-menus-edit-update></button>
         </div>
       </div>
     </form>
   </template>
   <template x-if="addItem.open">
-    <form class="cosmo-modal__container" @submit.prevent="insertItem">
+    <form @submit.prevent="insertItem" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:design-menus-designer-add-title></h1>
         <div class="cosmo-modal__content">
           <div class="cosmo-input__group">
-            <label for="addItemType" class="cosmo-label" x-localize:design-menus-designer-add-type></label>
-            <select required class="cosmo-select" id="addItemType" x-model="addItem.type">
-              <option x-localize:design-menus-designer-type_group value="type_group"></option>
-              <option x-localize:design-menus-designer-type_external_link value="type_external_link"></option>
+            <label class="cosmo-label" for="addItemType" x-localize:design-menus-designer-add-type></label>
+            <select class="cosmo-select" id="addItemType" required x-model="addItem.type">
+              <option value="type_group" x-localize:design-menus-designer-type_group></option>
+              <option value="type_external_link" x-localize:design-menus-designer-type_external_link></option>
               <option
-                x-localize:design-menus-designer-type_gallery
                 value="type_gallery"
+                x-localize:design-menus-designer-type_gallery
                 x-show="galleries.length > 0"
               ></option>
               <option
-                x-localize:design-menus-designer-type_classic_page
                 value="type_classic_page"
+                x-localize:design-menus-designer-type_classic_page
                 x-show="classicPages.length > 0"
               ></option>
               <option
-                x-localize:design-menus-designer-type_modern_page
                 value="type_modern_page"
+                x-localize:design-menus-designer-type_modern_page
                 x-show="modernPages.length > 0"
               ></option>
               <option
-                x-localize:design-menus-designer-type_artist
                 value="type_artist"
+                x-localize:design-menus-designer-type_artist
                 x-show="artists.length > 0"
               ></option>
-              <option x-localize:design-menus-designer-type_blog_home_page value="type_blog_home_page"></option>
+              <option value="type_blog_home_page" x-localize:design-menus-designer-type_blog_home_page></option>
               <option
-                x-localize:design-menus-designer-type_blog_category
                 value="type_blog_category"
+                x-localize:design-menus-designer-type_blog_category
                 x-show="blogCategories.length > 0"
               ></option>
             </select>
-            <label for="addItemTitle" class="cosmo-label" x-localize:design-menus-designer-add-item_title></label>
-            <input required type="text" id="addItemTitle" class="cosmo-input" x-model="addItem.title" />
+            <label class="cosmo-label" for="addItemTitle" x-localize:design-menus-designer-add-item_title></label>
+            <input class="cosmo-input" id="addItemTitle" required type="text" x-model="addItem.title" />
             <template x-if="addItem.type !== 'type_group'">
               <div style="display: contents">
-                <label for="addItemRoute" class="cosmo-label" x-localize:design-menus-designer-add-route></label>
-                <input required type="text" id="addItemRoute" class="cosmo-input" x-model="addItem.route" />
+                <label class="cosmo-label" for="addItemRoute" x-localize:design-menus-designer-add-route></label>
+                <input class="cosmo-input" id="addItemRoute" required type="text" x-model="addItem.route" />
               </div>
             </template>
             <template x-if="addItem.type === 'type_gallery'">
               <div style="display: contents">
-                <label for="addItemGallery" class="cosmo-label" x-localize:design-menus-designer-type_gallery></label>
-                <select required class="cosmo-select" id="addItemGallery" x-model.number="addItem.gallery">
-                  <template x-for="gallery in galleries" :key="gallery.id">
-                    <option x-text="getDropdownLabel(gallery.id, gallery.name)" :value="gallery.id"></option>
+                <label class="cosmo-label" for="addItemGallery" x-localize:design-menus-designer-type_gallery></label>
+                <select class="cosmo-select" id="addItemGallery" required x-model.number="addItem.gallery">
+                  <template :key="gallery.id" x-for="gallery in galleries">
+                    <option :value="gallery.id" x-text="getDropdownLabel(gallery.id, gallery.name)"></option>
                   </template>
                 </select>
               </div>
@@ -282,15 +282,15 @@
             <template x-if="addItem.type === 'type_classic_page'">
               <div style="display: contents">
                 <label
-                  for="addItemClassicPage"
                   class="cosmo-label"
+                  for="addItemClassicPage"
                   x-localize:design-menus-designer-type_classic_page
                 ></label>
-                <select required class="cosmo-select" id="addItemClassicPage" x-model.number="addItem.classicPage">
-                  <template x-for="classicPage in classicPages" :key="classicPage.id">
+                <select class="cosmo-select" id="addItemClassicPage" required x-model.number="addItem.classicPage">
+                  <template :key="classicPage.id" x-for="classicPage in classicPages">
                     <option
-                      x-text="getDropdownLabel(classicPage.id, classicPage.title)"
                       :value="classicPage.id"
+                      x-text="getDropdownLabel(classicPage.id, classicPage.title)"
                     ></option>
                   </template>
                 </select>
@@ -299,13 +299,13 @@
             <template x-if="addItem.type === 'type_modern_page'">
               <div style="display: contents">
                 <label
-                  for="addItemModernPage"
                   class="cosmo-label"
+                  for="addItemModernPage"
                   x-localize:design-menus-designer-type_modern_page
                 ></label>
-                <select required class="cosmo-select" id="addItemModernPage" x-model.number="addItem.modernPage">
-                  <template x-for="modernPage in modernPages" :key="modernPage.id">
-                    <option x-text="getDropdownLabel(modernPage.id, modernPage.name)" :value="modernPage.id"></option>
+                <select class="cosmo-select" id="addItemModernPage" required x-model.number="addItem.modernPage">
+                  <template :key="modernPage.id" x-for="modernPage in modernPages">
+                    <option :value="modernPage.id" x-text="getDropdownLabel(modernPage.id, modernPage.name)"></option>
                   </template>
                 </select>
               </div>
@@ -313,15 +313,15 @@
             <template x-if="addItem.type === 'type_blog_category'">
               <div style="display: contents">
                 <label
-                  for="addItemBlogCategory"
                   class="cosmo-label"
+                  for="addItemBlogCategory"
                   x-localize:design-menus-designer-type_blog_category
                 ></label>
-                <select required class="cosmo-select" id="addItemBlogCategory" x-model.number="addItem.blogCategory">
-                  <template x-for="blogCategory in blogCategories" :key="blogCategory.id">
+                <select class="cosmo-select" id="addItemBlogCategory" required x-model.number="addItem.blogCategory">
+                  <template :key="blogCategory.id" x-for="blogCategory in blogCategories">
                     <option
-                      x-text="getDropdownLabel(blogCategory.id, blogCategory.name)"
                       :value="blogCategory.id"
+                      x-text="getDropdownLabel(blogCategory.id, blogCategory.name)"
                     ></option>
                   </template>
                 </select>
@@ -329,19 +329,19 @@
             </template>
             <template x-if="addItem.type === 'type_artist'">
               <div style="display: contents">
-                <label for="addItemArtist" class="cosmo-label" x-localize:design-menus-designer-type_artist></label>
-                <select required class="cosmo-select" id="addItemArtist" x-model.number="addItem.artist">
-                  <template x-for="artist in artists" :key="artist.id">
-                    <option x-text="getDropdownLabel(artist.id, artist.artistName)" :value="artist.id"></option>
+                <label class="cosmo-label" for="addItemArtist" x-localize:design-menus-designer-type_artist></label>
+                <select class="cosmo-select" id="addItemArtist" required x-model.number="addItem.artist">
+                  <template :key="artist.id" x-for="artist in artists">
+                    <option :value="artist.id" x-text="getDropdownLabel(artist.id, artist.artistName)"></option>
                   </template>
                 </select>
               </div>
             </template>
             <div class="cosmo-input__group is--checkbox">
-              <input type="checkbox" id="addItemHighlighted" class="cosmo-checkbox" x-model="addItem.highlighted" />
+              <input class="cosmo-checkbox" id="addItemHighlighted" type="checkbox" x-model="addItem.highlighted" />
               <label
-                for="addItemHighlighted"
                 class="cosmo-label"
+                for="addItemHighlighted"
                 x-localize:design-menus-designer-add-is_highlighted
               ></label>
             </div>
@@ -349,39 +349,39 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
-            type="button"
-            class="cosmo-button"
-            x-localize:design-menus-designer-add-cancel
             @click="addItem.open = false"
+            class="cosmo-button"
+            type="button"
+            x-localize:design-menus-designer-add-cancel
           ></button>
-          <button type="submit" class="cosmo-button" x-localize:design-menus-designer-add-create></button>
+          <button class="cosmo-button" type="submit" x-localize:design-menus-designer-add-create></button>
         </div>
       </div>
     </form>
   </template>
   <template x-if="editItem.open">
-    <form class="cosmo-modal__container" @submit.prevent="updateItem">
+    <form @submit.prevent="updateItem" class="cosmo-modal__container">
       <div class="cosmo-modal">
         <h1 class="cosmo-modal__title" x-localize:design-menus-designer-edit-title></h1>
         <div class="cosmo-modal__content">
           <div class="cosmo-input__group">
-            <label for="editItemTitle" class="cosmo-label" x-localize:design-menus-designer-edit-item_title></label>
-            <input required type="text" id="editItemTitle" class="cosmo-input" x-model="editItem.title" />
+            <label class="cosmo-label" for="editItemTitle" x-localize:design-menus-designer-edit-item_title></label>
+            <input class="cosmo-input" id="editItemTitle" required type="text" x-model="editItem.title" />
             <template x-if="editItem.type !== 'type_group'">
               <div style="display: contents">
-                <label for="editItemRoute" class="cosmo-label" x-localize:design-menus-designer-edit-route></label>
-                <input required type="text" id="editItemRoute" class="cosmo-input" x-model="editItem.route" />
+                <label class="cosmo-label" for="editItemRoute" x-localize:design-menus-designer-edit-route></label>
+                <input class="cosmo-input" id="editItemRoute" required type="text" x-model="editItem.route" />
               </div>
             </template>
             <template x-if="editItem.type === 'type_gallery'">
               <div style="display: contents">
-                <label for="editItemGallery" class="cosmo-label" x-localize:design-menus-designer-type_gallery></label>
-                <select required class="cosmo-select" id="editItemGallery" x-model.number="editItem.gallery">
-                  <template x-for="gallery in galleries" :key="gallery.id">
+                <label class="cosmo-label" for="editItemGallery" x-localize:design-menus-designer-type_gallery></label>
+                <select class="cosmo-select" id="editItemGallery" required x-model.number="editItem.gallery">
+                  <template :key="gallery.id" x-for="gallery in galleries">
                     <option
                       :selected="gallery.id === editItem.gallery"
-                      x-text="getDropdownLabel(gallery.id, gallery.name)"
                       :value="gallery.id"
+                      x-text="getDropdownLabel(gallery.id, gallery.name)"
                     ></option>
                   </template>
                 </select>
@@ -390,16 +390,16 @@
             <template x-if="editItem.type === 'type_classic_page'">
               <div style="display: contents">
                 <label
-                  for="editItemClassicPage"
                   class="cosmo-label"
+                  for="editItemClassicPage"
                   x-localize:design-menus-designer-type_classic_page
                 ></label>
-                <select required class="cosmo-select" id="editItemClassicPage" x-model.number="editItem.classicPage">
-                  <template x-for="classicPage in classicPages" :key="classicPage.id">
+                <select class="cosmo-select" id="editItemClassicPage" required x-model.number="editItem.classicPage">
+                  <template :key="classicPage.id" x-for="classicPage in classicPages">
                     <option
                       :selected="classicPage.id === editItem.gallery"
-                      x-text="getDropdownLabel(classicPage.id, classicPage.title)"
                       :value="classicPage.id"
+                      x-text="getDropdownLabel(classicPage.id, classicPage.title)"
                     ></option>
                   </template>
                 </select>
@@ -408,16 +408,16 @@
             <template x-if="editItem.type === 'type_modern_page'">
               <div style="display: contents">
                 <label
-                  for="editItemModernPage"
                   class="cosmo-label"
+                  for="editItemModernPage"
                   x-localize:design-menus-designer-type_modern_page
                 ></label>
-                <select required class="cosmo-select" id="editItemModernPage" x-model.number="editItem.modernPage">
-                  <template x-for="modernPage in modernPages" :key="modernPage.id">
+                <select class="cosmo-select" id="editItemModernPage" required x-model.number="editItem.modernPage">
+                  <template :key="modernPage.id" x-for="modernPage in modernPages">
                     <option
                       :selected="modernPage.id === editItem.modernPage"
-                      x-text="getDropdownLabel(modernPage.id, modernPage.name)"
                       :value="modernPage.id"
+                      x-text="getDropdownLabel(modernPage.id, modernPage.name)"
                     ></option>
                   </template>
                 </select>
@@ -426,16 +426,16 @@
             <template x-if="editItem.type === 'type_blog_category'">
               <div style="display: contents">
                 <label
-                  for="editItemBlogCategory"
                   class="cosmo-label"
+                  for="editItemBlogCategory"
                   x-localize:design-menus-designer-type_blog_category
                 ></label>
-                <select required class="cosmo-select" id="editItemBlogCategory" x-model.number="editItem.blogCategory">
-                  <template x-for="blogCategory in blogCategories" :key="blogCategory.id">
+                <select class="cosmo-select" id="editItemBlogCategory" required x-model.number="editItem.blogCategory">
+                  <template :key="blogCategory.id" x-for="blogCategory in blogCategories">
                     <option
                       :selected="blogCategory.id === editItem.blogCategory"
-                      x-text="getDropdownLabel(blogCategory.id, blogCategory.name)"
                       :value="blogCategory.id"
+                      x-text="getDropdownLabel(blogCategory.id, blogCategory.name)"
                     ></option>
                   </template>
                 </select>
@@ -443,23 +443,23 @@
             </template>
             <template x-if="editItem.type === 'type_artist'">
               <div style="display: contents">
-                <label for="editItemArtist" class="cosmo-label" x-localize:design-menus-designer-type_artist></label>
-                <select required class="cosmo-select" id="editItemArtist" x-model.number="editItem.artist">
-                  <template x-for="artist in artists" :key="artist.id">
+                <label class="cosmo-label" for="editItemArtist" x-localize:design-menus-designer-type_artist></label>
+                <select class="cosmo-select" id="editItemArtist" required x-model.number="editItem.artist">
+                  <template :key="artist.id" x-for="artist in artists">
                     <option
                       :selected="artist.id === editItem.artist"
-                      x-text="getDropdownLabel(artist.id, artist.artistName)"
                       :value="artist.id"
+                      x-text="getDropdownLabel(artist.id, artist.artistName)"
                     ></option>
                   </template>
                 </select>
               </div>
             </template>
             <div class="cosmo-input__group is--checkbox">
-              <input type="checkbox" id="editItemHighlighted" class="cosmo-checkbox" x-model="editItem.highlighted" />
+              <input class="cosmo-checkbox" id="editItemHighlighted" type="checkbox" x-model="editItem.highlighted" />
               <label
-                for="editItemHighlighted"
                 class="cosmo-label"
+                for="editItemHighlighted"
                 x-localize:design-menus-designer-edit-is_highlighted
               ></label>
             </div>
@@ -467,12 +467,12 @@
         </div>
         <div class="cosmo-modal__button-bar">
           <button
-            type="button"
-            class="cosmo-button"
-            x-localize:design-menus-designer-edit-cancel
             @click="editItem.open = false"
+            class="cosmo-button"
+            type="button"
+            x-localize:design-menus-designer-edit-cancel
           ></button>
-          <button type="submit" class="cosmo-button" x-localize:design-menus-designer-edit-update></button>
+          <button class="cosmo-button" type="submit" x-localize:design-menus-designer-edit-update></button>
         </div>
       </div>
     </form>

@@ -11,49 +11,8 @@ export class DiagramBase extends HTMLElement {
     this.root = this.attachShadow({ mode: 'closed' });
   }
 
-  connectedCallback() {
-    this.root.innerHTML = `
-      <style>
-          @import "/static/lib/cosmo/typography.css";
-      
-          .content {
-            display: grid;
-            
-            jinya-loader {
-              place-self: center center;
-            }
-          }
-
-          #diagram {
-            width: 100%;
-            height: 20rem;
-          }
-      </style>
-      <div class="content">
-        <jinya-loader id="loader"></jinya-loader>
-        <h2 id="title"></h2>
-        <div id="diagram">
-        </div>
-      </div>`;
-    this.renderDiagram();
-  }
-
-  disconnectedCallback() {
-    if (this.#echarts && this.#echarts.dispose) {
-      this.#echarts.dispose();
-    }
-  }
-
   static get observedAttributes() {
     return ['range', 'group'];
-  }
-
-  attributeChangedCallback(property, oldValue, newValue) {
-    if (oldValue === newValue) {
-      return;
-    }
-
-    this[property] = newValue;
   }
 
   get name() {
@@ -99,6 +58,47 @@ export class DiagramBase extends HTMLElement {
   set title(value) {
     this.setAttribute('title', value);
     this.renderDiagram();
+  }
+
+  connectedCallback() {
+    this.root.innerHTML = `
+      <style>
+          @import "/static/lib/cosmo/typography.css";
+      
+          .content {
+            display: grid;
+            
+            jinya-loader {
+              place-self: center center;
+            }
+          }
+
+          #diagram {
+            width: 100%;
+            height: 20rem;
+          }
+      </style>
+      <div class="content">
+        <jinya-loader id="loader"></jinya-loader>
+        <h2 id="title"></h2>
+        <div id="diagram">
+        </div>
+      </div>`;
+    this.renderDiagram();
+  }
+
+  disconnectedCallback() {
+    if (this.#echarts && this.#echarts.dispose) {
+      this.#echarts.dispose();
+    }
+  }
+
+  attributeChangedCallback(property, oldValue, newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    this[property] = newValue;
   }
 
   getOptions() {

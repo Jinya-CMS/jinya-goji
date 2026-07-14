@@ -1,14 +1,14 @@
 import { Dexie } from '../../../lib/dexie.js';
 
 class MenuDatabase {
+  #database;
+
   constructor() {
     this.#database = new Dexie('menus');
     this.#database.version(1).stores({
       items: `++id,menuId`,
     });
   }
-
-  #database;
 
   getItems(id) {
     return this.#database.items.where('menuId').equals(id).toArray();

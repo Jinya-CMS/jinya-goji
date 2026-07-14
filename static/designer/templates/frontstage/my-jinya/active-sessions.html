@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <template x-for="session in sessions" :key="session.key">
+    <template :key="session.key" x-for="session in sessions">
       <tr>
         <td x-text="getValidSince(session.validSince)"></td>
         <td x-text="getBrowser(session.userAgent)"></td>
@@ -20,8 +20,8 @@
         <td>
           <button
             :disabled="currentApiKey === session.key"
-            class="cosmo-button"
             @click="logout(session.key)"
+            class="cosmo-button"
             x-localize:my_jinya-sessions-action-logout
           ></button>
         </td>

@@ -81,19 +81,15 @@ Alpine.data('themesData', () => ({
     return this.getValueForCurrentLanguage(this.selectedTheme.description);
   },
   async init() {
-    Promise.all([
-      getGalleries(),
-      getClassicPages(),
-      getModernPages(),
-      getMenus(),
-      getBlogCategories(),
-    ]).then(([galleries, classicPages, modernPages, menus, blogCategories]) => {
-      this.galleries = galleries;
-      this.classicPages = classicPages;
-      this.modernPages = modernPages;
-      this.menus = menus;
-      this.blogCategories = blogCategories;
-    });
+    Promise.all([getGalleries(), getClassicPages(), getModernPages(), getMenus(), getBlogCategories()]).then(
+      ([galleries, classicPages, modernPages, menus, blogCategories]) => {
+        this.galleries = galleries;
+        this.classicPages = classicPages;
+        this.modernPages = modernPages;
+        this.menus = menus;
+        this.blogCategories = blogCategories;
+      },
+    );
 
     mediaDatabase.cacheMedia().then(() => {});
 
@@ -169,7 +165,7 @@ Alpine.data('themesData', () => ({
     }
   },
   async loadLinks() {
-    const [modernPages, classicPages,  menus, galleries, files, blogCategories] = await Promise.all([
+    const [modernPages, classicPages, menus, galleries, files, blogCategories] = await Promise.all([
       getThemeModernPages(this.selectedTheme.id),
       getThemeClassicPages(this.selectedTheme.id),
       getThemeMenus(this.selectedTheme.id),
@@ -265,7 +261,7 @@ Alpine.data('themesData', () => ({
     }
   },
   async saveLinks() {
-    const { modernPages, classicPages,  menus, galleries, files, blogCategories } = this.selectedThemeData;
+    const { modernPages, classicPages, menus, galleries, files, blogCategories } = this.selectedThemeData;
     const { id } = this.selectedTheme;
     try {
       await Promise.all([

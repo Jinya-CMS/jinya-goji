@@ -179,11 +179,11 @@
                     <div style="display: contents" x-data="{ id: $id('group') }">
                       <label :for="id" class="cosmo-label" x-text="getValueForCurrentLanguage(label)"></label>
                       <button
-                        class="cosmo-input is--picker"
-                        :id="id"
                         :data-picker="links.picker.label"
-                        type="button"
+                        :id="id"
                         @click="selectFile(fileLink)"
+                        class="cosmo-input is--picker"
+                        type="button"
                         x-text="getSelectedFileName(selectedThemeData.files[fileLink])"
                       ></button>
                       <img

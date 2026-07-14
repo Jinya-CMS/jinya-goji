@@ -190,7 +190,7 @@ Alpine.data('postsData', () => ({
   },
   async selectCategory(category) {
     this.selectedCategory = category;
-    this.posts = (await getBlogPosts(this.selectedCategory?.id)).items;
+    this.posts = await getBlogPosts(this.selectedCategory?.id);
     this.selectedPost = null;
   },
   async selectPost(index, post) {
@@ -270,7 +270,7 @@ Alpine.data('postsData', () => ({
         this.create.headerImage?.id,
       );
       this.create.open = false;
-      this.posts = (await getBlogPosts(this.selectedCategory?.id)).items;
+      this.posts = await getBlogPosts(this.selectedCategory?.id);
       this.selectPost(savedPost);
     } catch (e) {
       this.create.error.hasError = true;
@@ -299,7 +299,9 @@ Alpine.data('postsData', () => ({
       this.posts[this.posts.indexOf(this.selectedPost)].title = this.edit.title;
       this.posts[this.posts.indexOf(this.selectedPost)].slug = this.edit.slug;
       this.posts[this.posts.indexOf(this.selectedPost)].headerImage = this.edit.headerImage;
-      this.posts[this.posts.indexOf(this.selectedPost)].category = this.edit.category;
+      this.posts[this.posts.indexOf(this.selectedPost)].category = this.categories.find(
+        (cat) => cat.id === this.edit.categoryId,
+      );
     } catch (e) {
       this.edit.error.hasError = true;
       this.edit.error.title = localize({ key: 'blog.posts.edit.error.title' });

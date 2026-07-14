@@ -1,5 +1,5 @@
-import {Dexie, liveQuery} from '../../../lib/dexie.js';
-import {getRootFolder} from '../api/media.js';
+import { Dexie, liveQuery } from '../../../lib/dexie.js';
+import { getRootFolder } from '../api/media.js';
 
 class MediaDatabase {
   #database;

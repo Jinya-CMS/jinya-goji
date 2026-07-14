@@ -1,9 +1,9 @@
 title: Modern page section
 type: object
 properties:
-  galleryId:
+  gallery:
     type: integer
-  fileId:
+  file:
     type: integer
   link:
     type: string

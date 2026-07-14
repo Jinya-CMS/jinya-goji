@@ -5071,6 +5071,12 @@ components:
           type: string
         file:
           type: integer
+        type:
+          type: string
+          enum:
+            - gallery
+            - file
+            - html
       required:
         - position
     mysql-configuration:
@@ -5714,9 +5720,9 @@ components:
       title: Modern page section
       type: object
       properties:
-        galleryId:
+        gallery:
           type: integer
-        fileId:
+        file:
           type: integer
         link:
           type: string
