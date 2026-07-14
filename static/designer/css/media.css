@@ -87,8 +87,17 @@
 
         @media screen and (width > 1920px) {
             width: 6.5rem;
-        height: 4.5rem;
+            height: 4.5rem;
         }
+    }
+}
+
+.is--dark .jinya-media-tile.is--folder {
+    --stroke-color: var(--primary-color-darker);
+    --fill-color: var(--primary-color-darker);
+
+    &:hover {
+        --stroke-color: var(--primary-color-dark);
     }
 }
 
@@ -206,6 +215,11 @@
 
         --stroke-color: var(--primary-color-lighter);
         --fill-color: var(--primary-color-lighter);
+
+        @media (prefers-color-scheme: dark) {
+            --stroke-color: var(--primary-color-darker);
+            --fill-color: var(--primary-color-darker);
+        }
 
         &:hover {
             --stroke-color: var(--primary-color-light);
