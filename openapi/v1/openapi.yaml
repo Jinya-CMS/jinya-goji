@@ -281,10 +281,6 @@ paths:
     $ref: paths/api_theme_{id}_file.yaml
   /api/theme/{id}/file/{name}:
     $ref: paths/api_theme_{id}_file_{name}.yaml
-  /api/theme/{id}/form:
-    $ref: paths/api_theme_{id}_form.yaml
-  /api/theme/{id}/form/{name}:
-    $ref: paths/api_theme_{id}_form_{name}.yaml
   /api/theme/{id}/gallery:
     $ref: paths/api_theme_{id}_gallery.yaml
   /api/theme/{id}/gallery/{name}:

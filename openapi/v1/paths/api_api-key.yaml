@@ -8,7 +8,9 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/api-key-list.yaml
+            type: array
+            items:
+              $ref: ../components/schemas/api-key.yaml
     '401':
       description: Api Key is missing
       content:

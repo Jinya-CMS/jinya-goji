@@ -8,7 +8,9 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/gallery-list.yaml
+            type: array
+            items:
+              $ref: ../components/schemas/gallery.yaml
     '401':
       description: Api key missing
       content:

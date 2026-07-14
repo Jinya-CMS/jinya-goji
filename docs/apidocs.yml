@@ -94,7 +94,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-key-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/api-key'
         '401':
           description: Api Key is missing
           content:
@@ -152,7 +154,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
         '401':
           description: Api key missing
           content:
@@ -731,7 +735,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/blog-category-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/blog-category'
         '401':
           description: Api key missing
           content:
@@ -958,7 +964,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/blog-post-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/blog-post'
         '401':
           description: Api key missing
           content:
@@ -1842,7 +1850,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/gallery-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/gallery'
         '401':
           description: Api key missing
           content:
@@ -2193,7 +2203,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/known-device-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/known-device'
         '401':
           description: Api Key missing
           content:
@@ -2305,7 +2317,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/menu-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/menu'
         '401':
           description: Api key missing
           content:
@@ -2809,7 +2823,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/classic-page-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/classic-page'
         '401':
           description: Api key missing
           content:
@@ -2989,7 +3005,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/modern-page-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/modern-page'
         '401':
           description: Api key missing
           content:
@@ -3536,7 +3554,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/theme-list'
+                type: array
+                items:
+                  $ref: '#/components/schemas/theme'
         '401':
           description: Api key missing
           content:
@@ -3997,96 +4017,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/update-theme-file-request'
-  /api/theme/{id}/form:
-    parameters:
-      - name: id
-        schema:
-          type: integer
-        in: path
-        required: true
-    get:
-      summary: Get theme forms
-      tags:
-        - themes
-      responses:
-        '200':
-          description: Successfully got the theme forms
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  $ref: '#/components/schemas/form'
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Theme not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: get_theme_forms
-      description: Gets the theme forms for the given theme
-      security:
-        - header-auth: []
-        - cookie-auth: []
-  /api/theme/{id}/form/{name}:
-    parameters:
-      - name: id
-        schema:
-          type: integer
-        in: path
-        required: true
-      - name: name
-        schema:
-          type: string
-        in: path
-        required: true
-    put:
-      summary: Set theme form with the given name in the given theme
-      tags:
-        - themes
-      responses:
-        '204':
-          description: Successfully updated the theme form
-        '401':
-          description: Api key missing
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '403':
-          description: Invalid api key
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-        '404':
-          description: Theme or form not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/exception'
-      operationId: update_theme_form_by_name
-      description: Updates the theme form with the given name in the given theme
-      security:
-        - header-auth: []
-        - cookie-auth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/update-theme-form-request'
   /api/theme/{id}/gallery:
     parameters:
       - name: id
@@ -4702,25 +4632,6 @@ components:
         - remoteAddress
         - userAgent
         - validSince
-    api-key-list:
-      title: A list of api keys
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/api-key'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     error:
       title: Error details
       type: object
@@ -4787,25 +4698,6 @@ components:
         - email
         - enabled
         - id
-    user-list:
-      title: A list of users
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/user'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-user-request:
       type: object
       properties:
@@ -4920,25 +4812,6 @@ components:
       required:
         - id
         - name
-    blog-category-list:
-      title: A list of blog categories
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/blog-category'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-blog-category-request:
       title: Create blog category request
       type: object
@@ -5394,25 +5267,6 @@ components:
           type: string
         emoji:
           type: string
-    gallery-list:
-      title: A list of galleries
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/gallery'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-gallery-request:
       title: Create gallery request
       description: A gallery is a way to organize files to display them to end users
@@ -5510,25 +5364,6 @@ components:
         - key
         - remoteAddress
         - userAgent
-    known-device-list:
-      title: A list of known devices
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/known-device'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     ip-location:
       title: IP location
       description: The data of a located ip
@@ -5568,25 +5403,6 @@ components:
       required:
         - id
         - name
-    menu-list:
-      title: A list of menus
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/menu'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-menu-request:
       title: Create menu request
       type: object
@@ -5819,25 +5635,6 @@ components:
         - id
         - title
         - content
-    classic-page-list:
-      title: A list of classic pages
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/classic-page'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-classic-page-request:
       title: Create classic page request
       type: object
@@ -5878,25 +5675,6 @@ components:
         - id
         - name
         - sectionCount
-    modern-page-list:
-      title: A list of modern pages
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/modern-page'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     create-modern-page-request:
       title: Create modern page request
       type: object
@@ -5990,25 +5768,6 @@ components:
         - description
         - scssVariables
         - hasApi
-    theme-list:
-      title: A list of themes
-      type: object
-      properties:
-        offset:
-          type: integer
-        itemsCount:
-          type: integer
-        totalCount:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/theme'
-      required:
-        - offset
-        - itemsCount
-        - totalCount
-        - items
     update-theme-variables-request:
       type: object
       properties:
@@ -6032,88 +5791,6 @@ components:
           type: integer
       required:
         - file
-    form-item:
-      title: Form item
-      description: A form item is a field in a form
-      type: object
-      required:
-        - id
-        - type
-        - label
-        - position
-        - isRequired
-        - isFromAddress
-        - isSubject
-      properties:
-        id:
-          type: integer
-        type:
-          type: string
-          enum:
-            - text
-            - email
-            - textarea
-            - select
-            - checkbox
-        options:
-          type: array
-          items:
-            type: string
-        spamFilter:
-          type: array
-          items:
-            type: string
-        label:
-          type: string
-        placeholder:
-          type: string
-        helpText:
-          type: string
-        position:
-          type: string
-        isRequired:
-          type: boolean
-        isFromAddress:
-          type: boolean
-        isSubject:
-          type: boolean
-    form:
-      title: Form
-      type: object
-      description: A form is a content element that allows end users to send requests and feedback to the artist
-      properties:
-        id:
-          type: integer
-        created:
-          $ref: '#/components/schemas/modification'
-        description:
-          type: string
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/form-item'
-        title:
-          type: string
-        toAddress:
-          type: string
-          format: email
-        updated:
-          $ref: '#/components/schemas/modification'
-      required:
-        - id
-        - created
-        - items
-        - updated
-        - title
-        - toAddress
-    update-theme-form-request:
-      type: object
-      description: A form assigned to a theme
-      properties:
-        form:
-          type: integer
-      required:
-        - form
     update-theme-gallery-request:
       type: object
       description: A gallery assigned to a theme
