@@ -1,21 +1,24 @@
 package database
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type MenuItem struct {
-	Id            int     `db:"id,primarykey,autoincrement"`
-	Position      int     `db:"position"`
-	MenuId        *int    `db:"menu_id"`
-	ParentId      *int    `db:"parent_id"`
-	Title         string  `db:"title"`
-	Route         *string `db:"route"`
-	Highlighted   bool    `db:"highlighted"`
-	ArtistId      *int    `db:"artist_id"`
-	GalleryId     *int    `db:"gallery_id"`
-	ModernPageId  *int    `db:"segment_page_id"`
-	ClassicPageId *int    `db:"page_id"`
-	CategoryId    *int    `db:"category_id"`
-	BlogHomePage  *bool   `db:"blog_home_page"`
+	Id            int        `db:"id,primarykey,autoincrement"`
+	Position      int        `db:"position"`
+	MenuId        *int       `db:"menu_id"`
+	ParentId      *int       `db:"parent_id"`
+	Title         string     `db:"title"`
+	Route         *string    `db:"route"`
+	Highlighted   bool       `db:"highlighted"`
+	ArtistId      *int       `db:"artist_id"`
+	GalleryId     *int       `db:"gallery_id"`
+	ModernPageId  *int       `db:"segment_page_id"`
+	ClassicPageId *int       `db:"page_id"`
+	CategoryId    *int       `db:"category_id"`
+	BlogHomePage  *bool      `db:"blog_home_page"`
+	Children      []MenuItem `db:"-"`
 }
 
 func (item *MenuItem) MarshalJSON() ([]byte, error) {

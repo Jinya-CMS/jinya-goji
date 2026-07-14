@@ -10,8 +10,6 @@ properties:
     type: string
   blogHomePage:
     type: boolean
-  formId:
-    type: integer
   artistId:
     type: integer
   classicPageId:

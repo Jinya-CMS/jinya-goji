@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -314,19 +313,9 @@ func updateBlogPostSections(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if section.Gallery != nil {
-			if _, err = database.FindGalleryById(*section.Gallery); err != nil {
-				sendError(fmt.Sprintf("Gallery %d not found", *section.Gallery), http.StatusConflict, encoder, w, err)
-				return
-			}
-
 			s.GalleryId = section.Gallery
 		}
 		if section.File != nil {
-			if _, err = database.FindFileById(*section.File); err != nil {
-				sendError(fmt.Sprintf("File %d not found", *section.File), http.StatusConflict, encoder, w, err)
-				return
-			}
-
 			s.FileId = section.File
 		}
 
@@ -335,8 +324,14 @@ func updateBlogPostSections(w http.ResponseWriter, r *http.Request) {
 
 	err = post.ReplaceSections(sections)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
-		return
+		switch detectErrorType(err) {
+		case errorTypeReference:
+			sendError("One of the files or galleries does not exist", http.StatusConflict, encoder, w, err)
+			return
+		default:
+			sendError("Failed to replace blog post sections", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)

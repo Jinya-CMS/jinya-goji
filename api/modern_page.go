@@ -239,8 +239,14 @@ func updateModernPageSections(w http.ResponseWriter, r *http.Request) {
 
 	err = page.ReplaceSections(sections)
 	if err != nil {
-		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
-		return
+		switch detectErrorType(err) {
+		case errorTypeReference:
+			sendError("One of the files or galleries does not exist", http.StatusConflict, encoder, w, err)
+			return
+		default:
+			sendError("Failed to replace modern page sections", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)

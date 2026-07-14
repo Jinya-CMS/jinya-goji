@@ -265,16 +265,8 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Methods(http.MethodGet)
 	menuRouter.
 		Path("/{id:\\d+}/item").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(addMenuItem))).
-		Methods(http.MethodPost)
-	menuRouter.
-		Path("/{id:\\d+}/item/{position:\\d+}").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateMenuItem))).
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateMenuItems))).
 		Methods(http.MethodPut)
-	menuRouter.
-		Path("/{id:\\d+}/item/{position:\\d+}").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(deleteMenuItem))).
-		Methods(http.MethodDelete)
 
 	// Theme
 	themeRouter := apiRouter.PathPrefix("/theme").Subrouter()

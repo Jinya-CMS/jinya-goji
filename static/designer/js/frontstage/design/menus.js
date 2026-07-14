@@ -117,7 +117,6 @@ Alpine.data('menusData', () => ({
 
     const [galleries, files, classicPages, modernPages, blogCategories, artists] = await Promise.all([
       getGalleries(),
-      getFiles(),
       getClassicPages(),
       getModernPages(),
       getBlogCategories(),
@@ -125,7 +124,6 @@ Alpine.data('menusData', () => ({
     ]);
 
     this.galleries = galleries;
-    this.files = files;
     this.classicPages = classicPages;
     this.modernPages = modernPages;
     this.blogCategories = blogCategories;
@@ -453,10 +451,10 @@ Alpine.data('menusData', () => ({
       res.blogHomePage = this.addItem.blogHomePage;
     }
 
-    if (this.addItem.index === this.items.length) {
-      res.nesting = this.items[this.items.length - 1].nesting + 1;
-    } else if (this.addItem.index === 0) {
+    if (this.addItem.index === 0) {
       res.nesting = 0;
+    } else if (this.addItem.index === this.items.length) {
+      res.nesting = this.items[this.items.length - 1].nesting + 1;
     } else {
       res.nesting = this.items[this.addItem.index - 1].nesting + 1;
     }
