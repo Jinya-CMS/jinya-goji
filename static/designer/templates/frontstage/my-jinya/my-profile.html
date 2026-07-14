@@ -58,7 +58,7 @@
   </div>
   <cms-toolbar-editor
     :content="aboutMe.data"
-    @change="(e) => aboutMe.data = e.value"
+    @change="(e) => aboutMe.data = e.target.value"
     class="jinya-editor is--profile"
     height="calc(var(--page-height) - 2.75rem - 1.25rem - 2rem - 2rem - 0.25rem - 3rem)"
   ></cms-toolbar-editor>
@@ -142,9 +142,7 @@
             <span class="cosmo-message__header" x-localize:my_jinya-my_profile-enable_totp-qrcode-header></span>
             <p class="cosmo-message__message" x-localize:my_jinya-my_profile-enable_totp-qrcode-message.html></p>
           </div>
-          <div class="jinya-totp-qr">
-            <img :alt="appTotp.secret" :src="appTotp.qrCode" />
-          </div>
+          <div class="jinya-totp-qr" x-html="qrCode"></div>
           <div class="cosmo-input__group">
             <label class="cosmo-label" for="code" x-localize:my_jinya-my_profile-enable_totp-code></label>
             <input class="cosmo-input" id="code" maxlength="6" required type="text" x-model="appTotp.code" />

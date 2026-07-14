@@ -1,5 +1,5 @@
 import { Alpine } from '../../../../lib/alpine.js';
-import { changePassword, logout } from '../../foundation/api/authentication.js';
+import { changePassword } from '../../foundation/api/authentication.js';
 import localize from '../../foundation/utils/localize.js';
 import {
   getMyProfile,
@@ -10,6 +10,7 @@ import {
   updateProfilePicture,
   verifyAppTotp,
 } from '../../foundation/api/my-jinya.js';
+import QRCodeStyling from '../../../lib/qrcode-styling.js';
 
 import '../../foundation/ui/components/toolbar-editor.js';
 
@@ -28,8 +29,33 @@ Alpine.data('profileData', () => ({
     this.appTotp.code = '';
     this.appTotp.error.reset();
     const totp = await prepareAppTotp();
-    this.appTotp.qrCode = totp.qrCode;
-    this.appTotp.secret = totp.secret;
+    const qrCode = new QRCodeStyling({
+      dotsOptions: {
+        color: '#19324c',
+        type: 'classy',
+      },
+      backgroundOptions: {
+        color: 'transparent',
+      },
+      imageOptions: {
+        crossOrigin: 'anonymous',
+        margin: 0,
+        hideBackgroundDots: false,
+        imageSize: 0.3,
+      },
+      width: 450,
+      height: 450,
+      margin: 0,
+      qrOptions: {
+        typeNumber: 0,
+        mode: 'Byte',
+        errorCorrectionLevel: 'H',
+      },
+      image: '/static/lib/images/qrlogo.svg',
+      data: totp.url,
+    });
+    await qrCode._svgDrawingPromise;
+    this.qrCode = qrCode._svg.outerHTML;
     this.appTotp.open = true;
   },
   openProfileDialog() {
@@ -47,7 +73,7 @@ Alpine.data('profileData', () => ({
   async updatePassword() {
     try {
       await changePassword(this.changePassword.oldPassword, this.changePassword.newPassword);
-      await logout(false);
+      Alpine.store('authentication').logout(false);
     } catch (e) {
       this.changePassword.error.title = localize({ key: 'my_jinya.my_profile.change_password.error.title' });
       this.changePassword.error.hasError = true;
@@ -99,7 +125,9 @@ Alpine.data('profileData', () => ({
   async updateProfile() {
     try {
       await updateProfile(this.edit.artistName, this.edit.email);
-      await updateProfilePicture(this.edit.profilePicture);
+      if (this.edit.profilePicture) {
+        await updateProfilePicture(this.edit.profilePicture);
+      }
 
       const myProfile = await getMyProfile();
       Alpine.store('artist').setArtist(myProfile);
@@ -143,7 +171,6 @@ Alpine.data('profileData', () => ({
     open: false,
     code: '',
     qrCode: '',
-    secret: '',
     error: {
       reset() {
         this.hasError = false;

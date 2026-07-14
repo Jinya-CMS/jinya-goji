@@ -470,11 +470,11 @@ func SetupAdminApiRouter(router *mux.Router) {
 	meRouter.
 		Path("/otp/app").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(setupOtpApp))).
-		Methods(http.MethodPost)
+		Methods(http.MethodPut)
 	meRouter.
 		Path("/otp/app/verify").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(verifyOtpApp))).
-		Methods(http.MethodPost)
+		Methods(http.MethodPut)
 
 	// Media
 	mediaRouter := apiRouter.PathPrefix("/media").Subrouter()

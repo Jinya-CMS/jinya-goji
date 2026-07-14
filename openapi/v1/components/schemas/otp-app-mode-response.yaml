@@ -1,9 +1,6 @@
 type: object
 required:
-  - qrCode
-  - secret
+  - url
 properties:
-  secret:
-    type: string
-  qrCode:
+  url:
     type: string

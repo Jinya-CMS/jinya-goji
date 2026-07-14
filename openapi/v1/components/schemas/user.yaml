@@ -19,6 +19,10 @@ properties:
         - ROLE_ADMIN
   enabled:
     type: boolean
+  loginMailEnabled:
+    type: boolean
+  newDeviceMailEnabled:
+    type: boolean
   id:
     type: integer
   aboutMe:
