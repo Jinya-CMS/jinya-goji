@@ -426,7 +426,7 @@ func SetupAdminApiRouter(router *mux.Router) {
 	// IP Location
 	ipLocationRouter := apiRouter.PathPrefix("/ip-location").Subrouter()
 	ipLocationRouter.
-		Path("{ip}").
+		Path("/{ip}").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(getIpLocation))).
 		Methods(http.MethodGet)
 

@@ -123,13 +123,13 @@ func LocalizeIp(ipStr string) (Location, error) {
 	addr, err := database.SelectOne[Location](`
 select country, city
 from ip_address
-where ip_start <= $1
-  and $1 <= ip_end
+where ip_start <= cast($1 as inet)
+  and ip_end >= cast($1 as inet)
 limit 1
 `, ipStr)
 
 	if err != nil {
-		return Location{Country: "-1", City: "-1"}, nil
+		return Location{Country: "ZZ", City: "ZZ"}, nil
 	}
 
 	return Location{

@@ -6,7 +6,5 @@ properties:
     type: string
   country:
     type: string
-  region:
-    type: string
-  providedBy:
+  poweredBy:
     type: string

@@ -7,8 +7,7 @@ Alpine.data('sessionsData', () => ({
   sessions: [],
   currentApiKey: '',
   async init() {
-    const apiKeys = await getApiKeys();
-    this.sessions = apiKeys.items;
+    this.sessions = await getApiKeys();
   },
   getBrowser(userAgent) {
     const parser = new UAParser(userAgent);
@@ -45,7 +44,7 @@ Alpine.data('sessionsData', () => ({
   },
   async getLocation(ip) {
     const location = await locateIp(ip);
-    if (location?.city) {
+    if (location?.city && location.city !== 'ZZ') {
       return `${location.city} ${localize({ key: `countries.${location.country}` })}`;
     }
 

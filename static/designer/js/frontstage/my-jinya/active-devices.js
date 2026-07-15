@@ -6,8 +6,7 @@ import localize from '../../foundation/utils/localize.js';
 Alpine.data('devicesData', () => ({
   devices: [],
   async init() {
-    const devices = await getKnownDevices();
-    this.devices = devices.items;
+    this.devices = await getKnownDevices();
   },
   getBrowser(userAgent) {
     const parser = new UAParser(userAgent);
