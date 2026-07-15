@@ -67,10 +67,6 @@ func (section *BlogPostSection) Delete() error {
 	return Delete(section)
 }
 
-func FindBlogPostSectionById(id int) (*BlogPostSection, error) {
-	return Get[BlogPostSection](id)
-}
-
 func FindBlogPostSectionsByPost(postId int) ([]BlogPostSection, error) {
 	return Select[BlogPostSection](`
 select

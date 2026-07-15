@@ -131,34 +131,6 @@ func (entry *AnalyticsEntry) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func FindAnalyticsById(id int) (*AnalyticsEntry, error) {
-	return Get[AnalyticsEntry](id)
-}
-
-func FindAllAnalytics() ([]AnalyticsEntry, error) {
-	return Select[AnalyticsEntry](`
-select id,
-       route,
-       timestamp,
-       unique_visit,
-       operating_system,
-       operating_system_version,
-       browser,
-       browser_version,
-       device_type,
-       entity_id,
-       entity_type,
-       language,
-       country,
-       device,
-       brand,
-       user_agent,
-       referer,
-       status
-from analytics
-`)
-}
-
 type AnalyticsPastIntervalResult struct {
 	Visits int    `db:"visits" json:"visits"`
 	Group  string `db:"group" json:"group"`

@@ -68,10 +68,6 @@ func (section *ModernPageSection) Delete() error {
 	return Delete(section)
 }
 
-func FindModernPageSectionById(id int) (*ModernPageSection, error) {
-	return Get[ModernPageSection](id)
-}
-
 func FindModernPageSectionsByPage(pageId int) ([]ModernPageSection, error) {
 	return Select[ModernPageSection](`
 select id,

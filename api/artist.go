@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"jinya.de/goji/api/middleware"
 	"jinya.de/goji/database"
 	"jinya.de/goji/storage"
 )
@@ -145,6 +146,12 @@ func deleteArtist(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		sendError("Invalid id", http.StatusBadRequest, encoder, w, err)
+		return
+	}
+
+	loggedInArtist := middleware.GetUserFromRequest(r)
+	if loggedInArtist.Id == id {
+		sendError("Cannot delete self", http.StatusConflict, encoder, w, err)
 		return
 	}
 

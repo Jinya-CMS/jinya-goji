@@ -70,10 +70,6 @@ func (device *KnownDevice) Delete() error {
 	return Delete(device)
 }
 
-func FindKnownDeviceById(id int) (*KnownDevice, error) {
-	return Get[KnownDevice](id)
-}
-
 func FindKnownDevicesByUser(userId int) ([]KnownDevice, error) {
 	return Select[KnownDevice](`
 select id,

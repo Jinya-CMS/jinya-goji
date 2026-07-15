@@ -13,12 +13,6 @@ import (
 	"jinya.de/goji/storage"
 )
 
-type fileBody struct {
-	Name     string   `json:"name"`
-	Tags     []string `json:"tags"`
-	FolderId *int     `json:"folderId"`
-}
-
 func getFile(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	vars := mux.Vars(r)

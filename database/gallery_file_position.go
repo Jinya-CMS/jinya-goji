@@ -163,10 +163,6 @@ where id = $2`, idx, item.Id)
 	return nil
 }
 
-func FindGalleryFilePositionById(id int) (*GalleryFilePosition, error) {
-	return Get[GalleryFilePosition](id)
-}
-
 func FindGalleryFilePositionByPosition(galleryId int, position int) (*GalleryFilePosition, error) {
 	return SelectOne[GalleryFilePosition](`
 select id,

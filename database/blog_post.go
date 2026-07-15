@@ -128,23 +128,6 @@ func FindBlogPostById(id int) (*BlogPost, error) {
 	return Get[BlogPost](id)
 }
 
-func FindBlogPostBySlug(slug string) (*BlogPost, error) {
-	return SelectOne[BlogPost](`
-select id,
-       title,
-       slug,
-       header_image_id,
-       public,
-       created_at,
-       creator_id,
-       updated_by_id,
-       last_updated_at,
-       category_id
-from blog_post
-where slug = $1
-`, slug)
-}
-
 func FindAllBlogPosts() ([]BlogPost, error) {
 	return Select[BlogPost](`
 select id,
@@ -158,24 +141,6 @@ select id,
        last_updated_at,
        category_id
 from blog_post
-order by id
-`)
-}
-
-func FindPublicBlogPosts() ([]BlogPost, error) {
-	return Select[BlogPost](`
-select id,
-       title,
-       slug,
-       header_image_id,
-       public,
-       created_at,
-       creator_id,
-       updated_by_id,
-       last_updated_at,
-       category_id
-from blog_post
-where public is true
 order by id
 `)
 }

@@ -170,22 +170,6 @@ where profile_picture = $1`, path)
 	return err == nil && profilePictures > 0
 }
 
-func FindAllFiles() ([]File, error) {
-	return Select[File](`
-select id,
-       creator_id,
-       updated_by_id,
-       created_at,
-       last_updated_at,
-       path,
-       name,
-       folder_id,
-       type
-from file
-order by name
-`)
-}
-
 func FindRootFiles() ([]File, error) {
 	return Select[File](`
 select id,

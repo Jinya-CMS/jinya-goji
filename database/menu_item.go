@@ -180,48 +180,6 @@ where route = $1
 `, route, "/"+route)
 }
 
-func FindMenuItemByMenuAndPosition(menuId int, position int) (*MenuItem, error) {
-	return SelectOne[MenuItem](`
-select id,
-       position,
-       menu_id,
-       parent_id,
-       title,
-       route,
-       highlighted,
-       artist_id,
-       gallery_id,
-       segment_page_id,
-       page_id,
-       category_id,
-       blog_home_page
-from menu_item
-where menu_id = $1
-  and position = $2
-`, menuId, position)
-}
-
-func FindMenuItemByMenuItemAndPosition(parentId int, position int) (*MenuItem, error) {
-	return SelectOne[MenuItem](`
-select id,
-       position,
-       menu_id,
-       parent_id,
-       title,
-       route,
-       highlighted,
-       artist_id,
-       gallery_id,
-       segment_page_id,
-       page_id,
-       category_id,
-       blog_home_page
-from menu_item
-where parent_id = $1
-  and position = $2
-`, parentId, position)
-}
-
 func (item *MenuItem) GetParent() (*MenuItem, error) {
 	if item.ParentId == nil {
 		return nil, nil

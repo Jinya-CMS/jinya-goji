@@ -54,15 +54,6 @@ func FindFolderById(id int) (*Folder, error) {
 	return Get[Folder](id)
 }
 
-func FindAllFolders() ([]Folder, error) {
-	return Select[Folder](`
-select id,
-       name,
-       parent_id
-from folder
-`)
-}
-
 func FindRootFolders() ([]Folder, error) {
 	return Select[Folder](`
 select id,

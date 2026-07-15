@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
-	"slices"
 	"time"
 
 	"github.com/DerKnerd/gorp"
@@ -52,11 +51,11 @@ type Artist struct {
 	NewDeviceMailEnabled bool       `db:"new_device_mail_enabled"`
 }
 
-func (artist *Artist) PostGet(s gorp.SqlExecutor) error {
+func (artist *Artist) PostGet(_ gorp.SqlExecutor) error {
 	return json.Unmarshal([]byte(artist.RolesPlain), &artist.Roles)
 }
 
-func (artist *Artist) PreInsert(s gorp.SqlExecutor) error {
+func (artist *Artist) PreInsert(_ gorp.SqlExecutor) error {
 	roles, err := json.Marshal(artist.Roles)
 	if err != nil {
 		return err
@@ -67,7 +66,7 @@ func (artist *Artist) PreInsert(s gorp.SqlExecutor) error {
 	return nil
 }
 
-func (artist *Artist) PreUpdate(s gorp.SqlExecutor) error {
+func (artist *Artist) PreUpdate(_ gorp.SqlExecutor) error {
 	roles, err := json.Marshal(artist.Roles)
 	if err != nil {
 		return err
@@ -194,7 +193,8 @@ func (artist *Artist) ValidateDevice(knownDeviceCode string) bool {
 select count(*)
 from users u
          join known_device kd on kd.user_id = u.id
-where u.id = $1`, artist.Id)
+where u.id = $1
+  and kd.device_key = $2`, artist.Id, knownDeviceCode)
 
 	return count > 0
 }
@@ -236,22 +236,6 @@ func (artist *Artist) SetPassword(password string) error {
 	}
 	artist.Password = string(hash)
 	return nil
-}
-
-func CountAdmins() (int, error) {
-	artists, err := FindAllArtists()
-	if err != nil {
-		return 0, err
-	}
-
-	admins := 0
-	for _, artist := range artists {
-		if artist.Enabled && slices.Contains(artist.Roles, "ROLE_ADMIN") {
-			admins++
-		}
-	}
-
-	return admins, nil
 }
 
 func (artist *Artist) RegisterFailedLogin() error {
