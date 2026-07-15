@@ -13,6 +13,7 @@ import (
 	"jinya.de/goji/locate"
 	"jinya.de/goji/logging"
 	"jinya.de/goji/mailing"
+	"jinya.de/goji/theming"
 	"jinya.de/goji/web"
 
 	_ "github.com/joho/godotenv/autoload"
@@ -44,6 +45,16 @@ func main() {
 			slog.Error("Failed to populate ip database", "error", err)
 		} else {
 			slog.Info("Populated ip database")
+		}
+	}()
+
+	go func() {
+		slog.Info("Trigger theme sync")
+		err := theming.SyncThemes()
+		if err != nil {
+			slog.Error("Failed to sync themes", "error", err)
+		} else {
+			slog.Info("Theme sync successful")
 		}
 	}()
 

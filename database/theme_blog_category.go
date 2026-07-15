@@ -20,7 +20,7 @@ func (tbc *ThemeBlogCategory) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (tbc *ThemeBlogCategory) Create() error {
+func (tbc *ThemeBlogCategory) Upsert() error {
 	return Insert(tbc)
 }
 

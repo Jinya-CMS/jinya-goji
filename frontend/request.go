@@ -12,7 +12,7 @@ func getClient() (*http.Client, error) {
 	httpc := http.Client{
 		Transport: &http.Transport{
 			DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
-				return net.Dial("unix", "/var/run/goji-frontend.sock")
+				return net.Dial("unix", "/var/run/goji-compiler.sock")
 			},
 		},
 	}
@@ -26,7 +26,7 @@ func CompileTheme(themeId int) error {
 		return err
 	}
 
-	res, err := client.Post("/compile/"+strconv.Itoa(themeId), "", nil)
+	res, err := client.Post("http://localhost/compile/"+strconv.Itoa(themeId), "", nil)
 	if err != nil {
 		return err
 	}

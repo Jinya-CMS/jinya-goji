@@ -210,7 +210,7 @@
                           <option
                             :selected="selectedThemeData.galleries[galleryLink] === gallery.id"
                             :value="gallery.id"
-                            x-text="gallery.title"
+                            x-text="gallery.name"
                           ></option>
                         </template>
                       </select>
@@ -218,11 +218,11 @@
                   </template>
                 </div>
               </template>
-              <template x-if="selectedThemeData.configurationStructure.links.pages">
+              <template x-if="selectedThemeData.configurationStructure.links.classicPages">
                 <div style="display: contents">
                   <span class="cosmo-input__header" x-localize:design-themes-links-classic_pages></span>
                   <template
-                    x-for="[pageLink, label] in Object.entries(selectedThemeData.configurationStructure.links.pages)"
+                    x-for="[pageLink, label] in Object.entries(selectedThemeData.configurationStructure.links.classicPages)"
                   >
                     <div style="display: contents" x-data="{ id: $id('group') }">
                       <label :for="id" class="cosmo-label" x-text="getValueForCurrentLanguage(label)"></label>
@@ -230,7 +230,7 @@
                         <option :value="null" x-localize:design-themes-links-no_classic_page></option>
                         <template :key="page.id" x-for="page in classicPages">
                           <option
-                            :selected="selectedThemeData.pages[pageLink] === page.id"
+                            :selected="selectedThemeData.classicPages[pageLink] === page.id"
                             :value="page.id"
                             x-text="page.title"
                           ></option>
@@ -252,7 +252,7 @@
                         <option :value="null" x-localize:design-themes-links-no_modern_page></option>
                         <template :key="page.id" x-for="page in modernPages">
                           <option
-                            :selected="selectedThemeData.pages[pageLink] === page.id"
+                            :selected="selectedThemeData.modernPages[pageLink] === page.id"
                             :value="page.id"
                             x-text="page.name"
                           ></option>

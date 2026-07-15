@@ -108,8 +108,8 @@ select add_foreign_key_if_not_exists('theme_gallery', 'theme_id', 'theme', 'id')
 select add_foreign_key_if_not_exists('theme_menu', 'menu_id', 'menu', 'id');
 select add_foreign_key_if_not_exists('theme_menu', 'theme_id', 'theme', 'id');
 
-select add_foreign_key_if_not_exists('theme_page', 'page_id', 'classic_page', 'id');
-select add_foreign_key_if_not_exists('theme_page', 'theme_id', 'theme', 'id');
+select add_foreign_key_if_not_exists('theme_classic_page', 'page_id', 'classic_page', 'id');
+select add_foreign_key_if_not_exists('theme_classic_page', 'theme_id', 'theme', 'id');
 
 select add_foreign_key_if_not_exists('theme_modern_page', 'modern_page_id', 'modern_page', 'id');
 select add_foreign_key_if_not_exists('theme_modern_page', 'theme_id', 'theme', 'id');

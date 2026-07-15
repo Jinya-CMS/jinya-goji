@@ -1,13 +1,13 @@
 package theming
 
 import (
-	"encoding/json"
 	"log/slog"
 	"os"
 	"path"
 	"path/filepath"
 	"slices"
 
+	"gopkg.in/yaml.v3"
 	"jinya.de/goji/database"
 )
 
@@ -25,19 +25,17 @@ func getThemeBasePath() string {
 	return path.Join(wd, themePath)
 }
 
-type ThemeSyncer struct{}
-
-func NewThemeSyncer() *ThemeSyncer {
-	return &ThemeSyncer{}
+func GetThemePath(name string) string {
+	return path.Join(getThemeBasePath(), name)
 }
 
 type themeConfig struct {
-	DisplayName string `json:"displayName"`
-	Description any    `json:"description"`
-	HasApi      bool   `json:"hasApi"`
+	DisplayName string `yaml:"displayName"`
+	Description any    `yaml:"description"`
+	Type        string `yaml:"type"`
 }
 
-func (s *ThemeSyncer) SyncThemes() error {
+func SyncThemes() error {
 	slog.Debug("Sync all themes")
 	allThemes, err := database.FindAllThemes()
 	if err != nil {
@@ -65,15 +63,15 @@ func (s *ThemeSyncer) SyncThemes() error {
 
 	slog.Debug("Iterate of themes and add to database")
 	for _, name := range themes {
-		themePath := filepath.Join(getThemeBasePath(), name)
+		themePath := GetThemePath(name)
 		configFile, err := os.ReadFile(filepath.Join(themePath, "theme.yaml"))
 		if err != nil {
 			continue
 		}
 
 		var config themeConfig
-		if err := json.Unmarshal(configFile, &config); err != nil {
-			slog.Error("Failed to parse theme.json", "theme", name, "error", err)
+		if err := yaml.Unmarshal(configFile, &config); err != nil {
+			slog.Error("Failed to parse theme.yaml", "theme", name, "error", err)
 			continue
 		}
 
@@ -93,11 +91,12 @@ func (s *ThemeSyncer) SyncThemes() error {
 			slog.Debug("Create theme", "theme", name)
 			dbTheme = &database.Theme{
 				Name:          name,
-				Configuration: make(map[string]any),
-				ScssVariables: make(map[string]string),
+				Configuration: map[string]map[string]any{},
+				ScssVariables: map[string]string{},
 				DisplayName:   config.DisplayName,
 				Description:   description,
-				HasApiTheme:   config.HasApi,
+				Type:          config.Type,
+				Path:          themePath,
 			}
 			if dbTheme.DisplayName == "" {
 				dbTheme.DisplayName = name
@@ -113,10 +112,21 @@ func (s *ThemeSyncer) SyncThemes() error {
 				dbTheme.DisplayName = name
 			}
 			dbTheme.Description = description
-			dbTheme.HasApiTheme = config.HasApi
+			dbTheme.Type = config.Type
+			dbTheme.Path = themePath
 			err = dbTheme.Update()
 			if err != nil {
 				slog.Error("Failed to update theme in database", "theme", name, "error", err)
+			}
+		}
+
+		theme, err := NewTheme(dbTheme)
+		if err != nil {
+			slog.Warn("Invalid theme yaml file", "theme", name, "error", err)
+		} else {
+			err = theme.CompileAssetCache()
+			if err != nil {
+				slog.Warn("Failed to compile asset cache", "theme", name, "error", err)
 			}
 		}
 	}

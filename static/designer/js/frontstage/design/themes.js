@@ -31,11 +31,9 @@ import { getMenus } from '../../foundation/api/menus.js';
 import { getBlogCategories } from '../../foundation/api/blog-categories.js';
 import localize from '../../foundation/utils/localize.js';
 import confirm from '../../foundation/ui/confirm.js';
-import { getFileDatabase } from '../../foundation/database/file.js';
 import { getMediaDatabase } from '../../foundation/database/media.js';
 import filePicker from '../../foundation/ui/filePicker.js';
 
-const fileDatabase = getFileDatabase();
 const mediaDatabase = getMediaDatabase();
 
 Alpine.data('themesData', () => ({
@@ -381,6 +379,8 @@ Alpine.data('themesData', () => ({
   async updateTheme() {
     try {
       await updateTheme(this.selectedTheme.id, this.edit.file);
+      const idx = this.themes.findIndex((t) => t.id === this.selectedTheme.id);
+      this.themes[idx] = await getTheme(this.selectedTheme.id);
       this.edit.open = false;
     } catch (e) {
       this.edit.error.hasError = true;

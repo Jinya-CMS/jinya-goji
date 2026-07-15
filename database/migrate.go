@@ -49,13 +49,20 @@ func SetupDatabase() {
 		AddTableWithName[ModernPage]("modern_page")
 		AddTableWithName[ModernPageSection]("modern_page_section")
 		AddTableWithName[Theme]("theme")
-		AddTableWithName[ThemeAsset]("theme_asset")
-		AddTableWithName[ThemeBlogCategory]("theme_blog_category")
-		AddTableWithName[ThemeClassicPage]("theme_page")
-		AddTableWithName[ThemeFile]("theme_file")
-		AddTableWithName[ThemeGallery]("theme_gallery")
-		AddTableWithName[ThemeMenu]("theme_menu")
-		AddTableWithName[ThemeModernPage]("theme_modern_page")
+		AddTableWithName[ThemeAsset]("theme_asset").
+			SetUniqueTogether("theme_id", "name")
+		AddTableWithName[ThemeBlogCategory]("theme_blog_category").
+			SetUniqueTogether("theme_id", "name")
+		AddTableWithName[ThemeClassicPage]("theme_classic_page").
+			SetUniqueTogether("theme_id", "name")
+		AddTableWithName[ThemeFile]("theme_file").
+			SetUniqueTogether("theme_id", "name")
+		AddTableWithName[ThemeGallery]("theme_gallery").
+			SetUniqueTogether("theme_id", "name")
+		AddTableWithName[ThemeMenu]("theme_menu").
+			SetUniqueTogether("theme_id", "name")
+		AddTableWithName[ThemeModernPage]("theme_modern_page").
+			SetUniqueTogether("theme_id", "name")
 		AddTableWithName[UploadingFile]("uploading_file")
 		AddTableWithName[UploadingFileChunk]("uploading_file_chunk")
 		AddTableWithName[JinyaConfiguration]("jinya_configuration").

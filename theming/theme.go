@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -15,11 +16,11 @@ import (
 )
 
 type Theme struct {
-	dbTheme       database.Theme
+	dbTheme       *database.Theme
 	configuration map[string]any
 }
 
-func NewTheme(dbTheme database.Theme) (*Theme, error) {
+func NewTheme(dbTheme *database.Theme) (*Theme, error) {
 	t := &Theme{
 		dbTheme: dbTheme,
 	}
@@ -34,7 +35,7 @@ func NewTheme(dbTheme database.Theme) (*Theme, error) {
 
 func (t *Theme) parseThemeYaml() error {
 	slog.Debug("Parse the theme.yaml file")
-	themeYamlFile := filepath.Join(getThemeBasePath(), t.dbTheme.Name, "theme.json")
+	themeYamlFile := filepath.Join(getThemeBasePath(), t.dbTheme.Name, "theme.yaml")
 	if _, err := os.Stat(themeYamlFile); os.IsNotExist(err) {
 		slog.Error("Could not find theme.yaml", "path", themeYamlFile)
 		return fmt.Errorf("theme.yaml is not found, expecting it here: %s", themeYamlFile)
@@ -65,7 +66,9 @@ func (t *Theme) GetConfigurationStructure() map[string]any {
 
 func (t *Theme) GetPreviewImagePath() string {
 	if preview, ok := t.configuration["previewImage"].(string); ok {
-		return preview
+		basePath := getThemeBasePath()
+
+		return path.Join(basePath, t.dbTheme.Name, preview)
 	}
 	return ""
 }
@@ -153,4 +156,10 @@ func (t *Theme) CompileAssetCache() error {
 	}
 
 	return frontend.CompileTheme(t.dbTheme.Id)
+}
+
+func DeleteTheme(name string) error {
+	basePath := getThemeBasePath()
+	themePath := path.Join(basePath, name)
+	return os.RemoveAll(themePath)
 }

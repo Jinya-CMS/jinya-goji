@@ -296,12 +296,8 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Methods(http.MethodPut)
 	themeRouter.
 		Path("/{id:\\d+}/assets").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeAssets))).
-		Methods(http.MethodGet)
-	themeRouter.
-		Path("/{id:\\d+}/configuration").
-		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(getThemeConfiguration))).
-		Methods(http.MethodGet)
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleReader)(http.HandlerFunc(compileThemeAssets))).
+		Methods(http.MethodPut)
 	themeRouter.
 		Path("/{id:\\d+}/configuration").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(updateThemeConfiguration))).
@@ -545,7 +541,7 @@ func SetupAdminApiRouter(router *mux.Router) {
 	// Theme preview
 	router.
 		Path("/api/theme/{id:\\d+}/preview").
-		Handler(middleware.CheckAuthentication(http.HandlerFunc(GetThemePreview))).
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(getThemePreview))).
 		Methods(http.MethodGet)
 
 	apiRouter.Use(middleware.ContentTypeJson)

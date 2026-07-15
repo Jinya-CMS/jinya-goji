@@ -59,7 +59,7 @@ func FindThemeModernPagesByTheme(themeId int) ([]ThemeModernPage, error) {
 select name,
        theme_id,
        modern_page_id
-from theme_moder_page
+from theme_modern_page
 where theme_id = $1
 `, themeId)
 }
