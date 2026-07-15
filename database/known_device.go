@@ -101,3 +101,16 @@ where device_key = $1
 order by id
 `, hashedKey)
 }
+
+func FindKnownDeviceByHashed(key string) (*KnownDevice, error) {
+	return SelectOne[KnownDevice](`
+select id,
+       user_id,
+       device_key,
+       user_agent,
+       remote_address
+from known_device
+where device_key = $1
+order by id
+`, key)
+}
