@@ -41,34 +41,39 @@ func getArtistById(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(&artist)
 }
 
-type artistBody struct {
-	ArtistName string   `json:"artistName"`
-	Email      string   `json:"email"`
-	Password   string   `json:"password"`
-	Enabled    bool     `json:"enabled"`
-	Roles      []string `json:"roles"`
-}
-
 func createArtist(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
-	body, err := ParseBody[artistBody](r)
+	body, err := BodyFromRequest(r, "email", "artistName", "password")
 	if err != nil {
 		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
 	artist := database.Artist{
-		Email:                body.Email,
-		Enabled:              body.Enabled,
-		Roles:                body.Roles,
-		ArtistName:           body.ArtistName,
 		LoginMailEnabled:     true,
 		NewDeviceMailEnabled: true,
 	}
-	err = artist.SetPassword(body.Password)
-	if err != nil {
-		sendError("Failed to hash password", http.StatusInternalServerError, encoder, w, err)
-		return
+
+	if email, ok := GetFromBody[string](body, "email"); ok {
+		artist.Email = *email
+	}
+	if name, ok := GetFromBody[string](body, "artistName"); ok {
+		artist.ArtistName = *name
+	}
+	if password, ok := GetFromBody[string](body, "password"); ok {
+		err = artist.SetPassword(*password)
+		if err != nil {
+			sendError("Failed to hash password", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+	if enabled, ok := GetFromBody[bool](body, "enabled"); ok {
+		artist.Enabled = *enabled
+	} else {
+		artist.Enabled = false
+	}
+	if roles, ok := GetArrayFromBody[string](body, "roles"); ok {
+		artist.Roles = roles
 	}
 
 	err = artist.Create()
@@ -96,21 +101,32 @@ func updateArtist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ParseBody[artistBody](r)
+	body, err := BodyFromRequest(r)
 	if err != nil {
 		sendError("Invalid body", http.StatusBadRequest, encoder, w, err)
 		return
 	}
 
-	artist.Email = body.Email
-	artist.Roles = body.Roles
-	artist.ArtistName = body.ArtistName
-	if body.Password != "" {
-		err = artist.SetPassword(body.Password)
+	if email, ok := GetFromBody[string](body, "email"); ok {
+		artist.Email = *email
+	}
+	if name, ok := GetFromBody[string](body, "artistName"); ok {
+		artist.ArtistName = *name
+	}
+	if password, ok := GetFromBody[string](body, "password"); ok {
+		err = artist.SetPassword(*password)
 		if err != nil {
 			sendError("Failed to hash password", http.StatusInternalServerError, encoder, w, err)
 			return
 		}
+	}
+	if enabled, ok := GetFromBody[bool](body, "enabled"); ok {
+		artist.Enabled = *enabled
+	} else {
+		artist.Enabled = false
+	}
+	if roles, ok := GetArrayFromBody[string](body, "roles"); ok {
+		artist.Roles = roles
 	}
 
 	err = artist.Update()
