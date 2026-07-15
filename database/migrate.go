@@ -58,7 +58,8 @@ func SetupDatabase() {
 		AddTableWithName[ThemeModernPage]("theme_modern_page")
 		AddTableWithName[UploadingFile]("uploading_file")
 		AddTableWithName[UploadingFileChunk]("uploading_file_chunk")
-		AddTableWithName[JinyaConfiguration]("jinya_configuration")
+		AddTableWithName[JinyaConfiguration]("jinya_configuration").
+			SetUniqueTogether("key", "group")
 
 		err = dbMap.CreateTablesIfNotExists()
 		if err != nil {

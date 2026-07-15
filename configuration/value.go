@@ -9,11 +9,11 @@ import (
 	"jinya.de/goji/database"
 )
 
-func GetConfigurationValue(group, key string, defaultValue any, valueType database.JinyaConfigurationType) any {
+func getConfigurationValue(group, key string, defaultValue any, valueType database.JinyaConfigurationType) any {
 	if database.GetDbMap() != nil {
 		fromDb, err := database.FindJinyaConfiguration(group, key)
 		if err == nil && fromDb != nil {
-			return *fromDb
+			return fromDb.Value
 		}
 	}
 
@@ -36,9 +36,26 @@ func GetConfigurationValue(group, key string, defaultValue any, valueType databa
 }
 
 func GetString(group, key, defaultValue string) string {
-	return GetConfigurationValue(group, key, defaultValue, database.JinyaConfigurationTypeString).(string)
+	return getConfigurationValue(group, key, defaultValue, database.JinyaConfigurationTypeString).(string)
 }
 
 func GetInteger(group, key string, defaultValue int) int {
-	return GetConfigurationValue(group, key, defaultValue, database.JinyaConfigurationTypeInteger).(int)
+	val := getConfigurationValue(group, key, defaultValue, database.JinyaConfigurationTypeInteger)
+	if i, err := strconv.Atoi(val.(string)); err == nil {
+		return i
+	}
+
+	return defaultValue
+}
+
+func SetString(group, key string, value *string) error {
+	if value == nil {
+		return database.RemoveJinyaConfiguration(key, group)
+	}
+
+	return database.SetJinyaConfiguration(key, group, *value, database.JinyaConfigurationTypeString)
+}
+
+func SetInteger(group, key string, value int) error {
+	return database.SetJinyaConfiguration(key, group, strconv.Itoa(value), database.JinyaConfigurationTypeInteger)
 }

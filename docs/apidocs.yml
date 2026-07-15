@@ -4678,6 +4678,10 @@ components:
               - ROLE_ADMIN
         enabled:
           type: boolean
+        loginMailEnabled:
+          type: boolean
+        newDeviceMailEnabled:
+          type: boolean
         id:
           type: integer
         aboutMe:
@@ -5079,27 +5083,6 @@ components:
             - html
       required:
         - position
-    mysql-configuration:
-      title: MySql configuration
-      type: object
-      description: The configuration of mysql
-      properties:
-        database:
-          type: string
-        host:
-          type: string
-        password:
-          type: string
-        port:
-          type: integer
-        user:
-          type: string
-      required:
-        - database
-        - host
-        - password
-        - port
-        - user
     mailer-configuration:
       title: Mailer configuration
       type: object
@@ -5119,8 +5102,6 @@ components:
           type: string
         port:
           type: integer
-        smtp_auth:
-          type: boolean
         username:
           type: string
       required:
@@ -5136,27 +5117,21 @@ components:
       properties:
         api_key_expiry:
           type: integer
-        update_server:
-          type: string
         ip_database_url:
           type: string
       required:
         - api_key_expiry
-        - update_server
         - ip_database_url
     configuration:
       title: Configuration
       type: object
-      description: The configuration contains the configuration of Jinya CMS
+      description: The configuration contains the configuration of Jinya Goji
       properties:
-        mysql:
-          $ref: '#/components/schemas/mysql-configuration'
         mailer:
           $ref: '#/components/schemas/mailer-configuration'
         jinya:
           $ref: '#/components/schemas/jinya-configuration'
       required:
-        - mysql
         - mailer
         - jinya
     folder:
@@ -5379,9 +5354,7 @@ components:
           type: string
         country:
           type: string
-        region:
-          type: string
-        providedBy:
+        poweredBy:
           type: string
     menu-logo:
       title: Menu logo
@@ -5556,8 +5529,6 @@ components:
           type: string
         blogHomePage:
           type: boolean
-        formId:
-          type: integer
         artistId:
           type: integer
         classicPageId:
@@ -5603,12 +5574,9 @@ components:
     otp-app-mode-response:
       type: object
       required:
-        - qrCode
-        - secret
+        - url
       properties:
-        secret:
-          type: string
-        qrCode:
+        url:
           type: string
     verify-otp-mode-app:
       type: object

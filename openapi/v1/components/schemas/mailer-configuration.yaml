@@ -16,8 +16,6 @@ properties:
     type: string
   port:
     type: integer
-  smtp_auth:
-    type: boolean
   username:
     type: string
 required:

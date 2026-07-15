@@ -21,13 +21,6 @@
     <dd x-text="mailerEncryption"></dd>
     <dt x-localize:maintenance-configuration-mailer-from></dt>
     <dd x-text="configuration.mailer.from"></dd>
-    <dt x-localize:maintenance-configuration-mailer-smtp_auth></dt>
-    <template x-if="configuration.mailer.smtp_auth">
-      <dd x-localize:maintenance-configuration-mailer-yes></dd>
-    </template>
-    <template x-if="!configuration.mailer.smtp_auth">
-      <dd x-localize:maintenance-configuration-mailer-no></dd>
-    </template>
   </dl>
   <h3 x-localize:maintenance-configuration-jinya-title></h3>
   <dl class="cosmo-list is--key-value">
@@ -133,15 +126,6 @@
                       <option :selected="update.configuration.mailer.encryption === 'tls'" value="tls">STARTTLS</option>
                       <option :selected="update.configuration.mailer.encryption === 'ssl'" value="ssl">SMTPS</option>
                     </select>
-                    <div class="cosmo-input__group is--checkbox">
-                      <input
-                        class="cosmo-checkbox"
-                        id="mailer_smtp_auth"
-                        type="checkbox"
-                        x-model="update.configuration.mailer.smtp_auth"
-                      />
-                      <label for="mailer_smtp_auth" x-localize:maintenance-configuration-mailer-smtp_auth></label>
-                    </div>
                     <label
                       class="cosmo-label"
                       for="mailer_from"
