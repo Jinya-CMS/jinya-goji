@@ -35,17 +35,6 @@ func (tf *ThemeFile) Delete() error {
 	return Delete(tf)
 }
 
-func FindThemeFileByThemeAndName(themeId int, name string) (*ThemeFile, error) {
-	return SelectOne[ThemeFile](`
-SELECT name,
-       theme_id,
-       file_id
-FROM theme_file
-WHERE theme_id = $1
-  AND name = $2
-`, themeId, name)
-}
-
 func (tf *ThemeFile) GetTheme() (*Theme, error) {
 	return FindThemeById(tf.ThemeId)
 }

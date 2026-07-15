@@ -35,17 +35,6 @@ func (tg *ThemeGallery) Delete() error {
 	return Delete(tg)
 }
 
-func FindThemeGalleryByThemeAndName(themeId int, name string) (*ThemeGallery, error) {
-	return SelectOne[ThemeGallery](`
-select name,
-       theme_id,
-       gallery_id
-from theme_gallery
-where theme_id = $1
-  and name = $2
-`, themeId, name)
-}
-
 func (tg *ThemeGallery) GetTheme() (*Theme, error) {
 	return FindThemeById(tg.ThemeId)
 }

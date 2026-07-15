@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"io"
 	"os"
+	"path"
 )
 
 func getFileHash(reader io.Reader) (string, error) {
@@ -20,10 +21,11 @@ func ensureSavePathExists() error {
 }
 
 func GetStoragePath() string {
-	path := os.Getenv("STORAGE_PATH")
-	if path == "" {
-		path = "jinya-content"
+	storagePath := os.Getenv("STORAGE_PATH")
+	if storagePath == "" {
+		wd, _ := os.Getwd()
+		storagePath = path.Join(wd, "jinya-content")
 	}
 
-	return path
+	return storagePath
 }

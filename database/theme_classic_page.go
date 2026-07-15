@@ -35,17 +35,6 @@ func (tcp *ThemeClassicPage) Delete() error {
 	return Delete(tcp)
 }
 
-func FindThemeClassicPageByThemeAndName(themeId int, name string) (*ThemeClassicPage, error) {
-	return SelectOne[ThemeClassicPage](`
-select name,
-       theme_id,
-       page_id
-from theme_classic_page
-where theme_id = $1
-  and name = $2
-`, themeId, name)
-}
-
 func (tcp *ThemeClassicPage) GetTheme() (*Theme, error) {
 	return FindThemeById(tcp.ThemeId)
 }

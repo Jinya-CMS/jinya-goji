@@ -35,17 +35,6 @@ func (tmp *ThemeModernPage) Delete() error {
 	return Delete(tmp)
 }
 
-func FindThemeModernPageByThemeAndName(themeId int, name string) (*ThemeModernPage, error) {
-	return SelectOne[ThemeModernPage](`
-select name,
-       theme_id,
-       modern_page_id
-from theme_modern_page
-where theme_id = $1
-  and name = $2
-`, themeId, name)
-}
-
 func (tmp *ThemeModernPage) GetTheme() (*Theme, error) {
 	return FindThemeById(tmp.ThemeId)
 }

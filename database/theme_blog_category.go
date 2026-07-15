@@ -32,17 +32,6 @@ func (tbc *ThemeBlogCategory) Delete() error {
 	return Delete(tbc)
 }
 
-func FindThemeBlogCategoryByThemeAndName(themeId int, name string) (*ThemeBlogCategory, error) {
-	return SelectOne[ThemeBlogCategory](`
-select name,
-       theme_id,
-       blog_category_id
-from theme_blog_category
-where theme_id = $1
-  and name = $2
-`, themeId, name)
-}
-
 func (tbc *ThemeBlogCategory) GetTheme() (*Theme, error) {
 	return FindThemeById(tbc.ThemeId)
 }

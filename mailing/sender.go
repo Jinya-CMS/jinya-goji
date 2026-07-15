@@ -14,7 +14,7 @@ import (
 	"github.com/wneessen/go-mail"
 )
 
-func sendEmailByRequest(r *http.Request, plainBody, htmlBody, subject, to string) error {
+func sendEmailByRequest(plainBody, htmlBody, subject, to string) error {
 	slog.Debug("Send email", "to", to, "subject", subject)
 	message := mail.NewMsg()
 	_ = message.To(to)
@@ -116,7 +116,7 @@ func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 		return
 	}
 
-	_ = sendEmailByRequest(r, plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
+	_ = sendEmailByRequest(plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
 }
 
 func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
@@ -153,7 +153,7 @@ func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
 		return
 	}
 
-	_ = sendEmailByRequest(r, plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
+	_ = sendEmailByRequest(plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
 }
 
 func SendTwoFactorCodeMail(r *http.Request, artistName, artistEmail, twoFactorCode string) {
@@ -179,5 +179,5 @@ func SendTwoFactorCodeMail(r *http.Request, artistName, artistEmail, twoFactorCo
 		return
 	}
 
-	_ = sendEmailByRequest(r, plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
+	_ = sendEmailByRequest(plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
 }

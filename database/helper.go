@@ -1,6 +1,8 @@
 package database
 
 import (
+	"log/slog"
+
 	"github.com/DerKnerd/gorp"
 )
 
@@ -41,16 +43,26 @@ func Select[R any](query string, keys ...any) ([]R, error) {
 }
 
 func Insert(value any) error {
-	return dbMap.Insert(value)
+	err := dbMap.Insert(value)
+	if err != nil {
+		slog.Error("Database insert failed", "error", err, "value", value)
+	}
+	return err
 }
 
 func Update(value any) error {
 	_, err := dbMap.Update(value)
+	if err != nil {
+		slog.Error("Database update failed", "error", err, "value", value)
+	}
 	return err
 }
 
 func Delete(value any) error {
 	_, err := dbMap.Delete(value)
+	if err != nil {
+		slog.Error("Database delete failed", "error", err, "value", value)
+	}
 	return err
 }
 

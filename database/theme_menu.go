@@ -35,17 +35,6 @@ func (tm *ThemeMenu) Delete() error {
 	return Delete(tm)
 }
 
-func FindThemeMenuByThemeAndName(themeId int, name string) (*ThemeMenu, error) {
-	return SelectOne[ThemeMenu](`
-SELECT name,
-       theme_id,
-       menu_id
-FROM theme_menu
-WHERE theme_id = $1
-  AND name = $2
-`, themeId, name)
-}
-
 func (tm *ThemeMenu) GetTheme() (*Theme, error) {
 	return FindThemeById(tm.ThemeId)
 }

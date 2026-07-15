@@ -11,12 +11,6 @@ import (
 )
 
 const (
-	ErrorTypeInternalError = "internal-error"
-	ErrorTypeNotFound      = "not-found"
-	ErrorTypeBadRequest    = "bad-request"
-)
-
-const (
 	errorTypeUnique = iota
 	errorTypeReference
 	errorTypeNotNull

@@ -5,14 +5,23 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 )
 
-func getClient() (*http.Client, error) {
+var gojiCompilerSocket = "/var/run/goji-compiler.sock"
+
+func init() {
+	if os.Getenv("ENV") == "dev" {
+		gojiCompilerSocket = "goji-compiler.sock"
+	}
+}
+
+func getCompilerClient() (*http.Client, error) {
 	httpc := http.Client{
 		Transport: &http.Transport{
 			DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
-				return net.Dial("unix", "/var/run/goji-compiler.sock")
+				return net.Dial("unix", gojiCompilerSocket)
 			},
 		},
 	}
@@ -21,7 +30,7 @@ func getClient() (*http.Client, error) {
 }
 
 func CompileTheme(themeId int) error {
-	client, err := getClient()
+	client, err := getCompilerClient()
 	if err != nil {
 		return err
 	}

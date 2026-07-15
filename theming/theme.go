@@ -35,7 +35,7 @@ func NewTheme(dbTheme *database.Theme) (*Theme, error) {
 
 func (t *Theme) parseThemeYaml() error {
 	slog.Debug("Parse the theme.yaml file")
-	themeYamlFile := filepath.Join(getThemeBasePath(), t.dbTheme.Name, "theme.yaml")
+	themeYamlFile := filepath.Join(GetThemeBasePath(), t.dbTheme.Name, "theme.yaml")
 	if _, err := os.Stat(themeYamlFile); os.IsNotExist(err) {
 		slog.Error("Could not find theme.yaml", "path", themeYamlFile)
 		return fmt.Errorf("theme.yaml is not found, expecting it here: %s", themeYamlFile)
@@ -66,7 +66,7 @@ func (t *Theme) GetConfigurationStructure() map[string]any {
 
 func (t *Theme) GetPreviewImagePath() string {
 	if preview, ok := t.configuration["previewImage"].(string); ok {
-		basePath := getThemeBasePath()
+		basePath := GetThemeBasePath()
 
 		return path.Join(basePath, t.dbTheme.Name, preview)
 	}
@@ -84,7 +84,7 @@ func (t *Theme) GetStyleVariables() (map[string]string, error) {
 		return nil, nil
 	}
 
-	absVariablesPath := filepath.Join(getThemeBasePath(), t.dbTheme.Name, variablesPath)
+	absVariablesPath := filepath.Join(GetThemeBasePath(), t.dbTheme.Name, variablesPath)
 	if _, err := os.Stat(absVariablesPath); os.IsNotExist(err) {
 		return nil, nil
 	}
@@ -131,7 +131,7 @@ func (t *Theme) CompileAssetCache() error {
 			continue
 		}
 
-		absAssetPath := filepath.Join(getThemeBasePath(), t.dbTheme.Name, assetPath)
+		absAssetPath := filepath.Join(GetThemeBasePath(), t.dbTheme.Name, assetPath)
 		assetFromDb, err := database.FindThemeAssetByThemeAndName(t.dbTheme.Id, key)
 
 		if _, errStat := os.Stat(absAssetPath); os.IsNotExist(errStat) {
@@ -159,7 +159,7 @@ func (t *Theme) CompileAssetCache() error {
 }
 
 func DeleteTheme(name string) error {
-	basePath := getThemeBasePath()
+	basePath := GetThemeBasePath()
 	themePath := path.Join(basePath, name)
 	return os.RemoveAll(themePath)
 }

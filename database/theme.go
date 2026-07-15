@@ -20,7 +20,7 @@ type Theme struct {
 	Path               string                    `db:"path"`
 }
 
-func (theme *Theme) PreInsert(s gorp.SqlExecutor) error {
+func (theme *Theme) PreInsert(_ gorp.SqlExecutor) error {
 	config, err := json.Marshal(theme.Configuration)
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func (theme *Theme) PreInsert(s gorp.SqlExecutor) error {
 	return nil
 }
 
-func (theme *Theme) PreUpdate(s gorp.SqlExecutor) error {
+func (theme *Theme) PreUpdate(_ gorp.SqlExecutor) error {
 	config, err := json.Marshal(theme.Configuration)
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func (theme *Theme) PreUpdate(s gorp.SqlExecutor) error {
 	return nil
 }
 
-func (theme *Theme) PostGet(s gorp.SqlExecutor) error {
+func (theme *Theme) PostGet(_ gorp.SqlExecutor) error {
 	err := json.Unmarshal([]byte(theme.ConfigurationPlain), &theme.Configuration)
 	if err != nil {
 		return err

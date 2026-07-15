@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -129,7 +130,7 @@ func createTheme(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	slog.Info("Created theme", "id", theme.Id, "name", theme.Name)
 	encoder.Encode(theme)
 }
 
@@ -184,6 +185,7 @@ func deleteTheme(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	slog.Info("Deleted theme", "id", theme.Id, "name", theme.Name)
 	_ = theming.DeleteTheme(theme.Name)
 }
 
@@ -208,6 +210,7 @@ func activateTheme(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	slog.Info("Activated theme", "id", theme.Id, "name", theme.Name)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -238,6 +241,7 @@ func compileThemeAssets(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	slog.Info("Compiled theme assets", "id", theme.Id, "name", theme.Name)
 	w.WriteHeader(http.StatusNoContent)
 }
 

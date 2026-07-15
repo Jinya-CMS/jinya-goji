@@ -11,7 +11,7 @@ import (
 	"jinya.de/goji/database"
 )
 
-func getThemeBasePath() string {
+func GetThemeBasePath() string {
 	themePath := os.Getenv("THEME_PATH")
 	if themePath != "" {
 		return themePath
@@ -26,7 +26,7 @@ func getThemeBasePath() string {
 }
 
 func GetThemePath(name string) string {
-	return path.Join(getThemeBasePath(), name)
+	return path.Join(GetThemeBasePath(), name)
 }
 
 type themeConfig struct {
@@ -42,10 +42,10 @@ func SyncThemes() error {
 		return err
 	}
 
-	entries, err := os.ReadDir(getThemeBasePath())
+	entries, err := os.ReadDir(GetThemeBasePath())
 	if err != nil {
 		if os.IsNotExist(err) {
-			slog.Warn("Theme base path does not exist", "path", getThemeBasePath())
+			slog.Warn("Theme base path does not exist", "path", GetThemeBasePath())
 			return nil
 		}
 		return err
@@ -54,7 +54,7 @@ func SyncThemes() error {
 	var themes []string
 	for _, entry := range entries {
 		if entry.IsDir() {
-			themePath := filepath.Join(getThemeBasePath(), entry.Name())
+			themePath := filepath.Join(GetThemeBasePath(), entry.Name())
 			if _, err := os.Stat(filepath.Join(themePath, "theme.yaml")); err == nil {
 				themes = append(themes, entry.Name())
 			}
