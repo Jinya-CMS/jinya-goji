@@ -128,14 +128,5 @@ go.work.sum
 .idea
 /data/
 /node_modules/
-/cache/29d6555f-c693-4573-9be5-087ec1ed73f2/cache-status.yaml
-/cache/29d6555f-c693-4573-9be5-087ec1ed73f2/helloworld.f6587c1604d4dab0d6ed45b725dc7bec.js
-/cache/jinya-testing-theme/cache-status.yaml
-/cache/jinya-testing-theme/helloworld.f6587c1604d4dab0d6ed45b725dc7bec.js
-/themes/29d6555f-c693-4573-9be5-087ec1ed73f2/assets/fonts/Poppins.latin.regular.woff2
-/themes/29d6555f-c693-4573-9be5-087ec1ed73f2/scripts/helloworld.js
-/themes/29d6555f-c693-4573-9be5-087ec1ed73f2/styles/_variables.scss
-/themes/29d6555f-c693-4573-9be5-087ec1ed73f2/styles/frontend.scss
-/themes/29d6555f-c693-4573-9be5-087ec1ed73f2/Preview.png
-/themes/29d6555f-c693-4573-9be5-087ec1ed73f2/theme.yaml
-/themes/jinya-testing-theme/theme.yaml
+/cache
+/themes
