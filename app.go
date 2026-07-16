@@ -7,20 +7,19 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"os/exec"
 	"os/signal"
-	"path"
 	"syscall"
 	"time"
 
 	"github.com/gorilla/mux"
 	"jinya.de/goji/api"
+	"jinya.de/goji/compiler"
 	"jinya.de/goji/database"
 	"jinya.de/goji/localization"
 	"jinya.de/goji/locate"
 	"jinya.de/goji/logging"
 	"jinya.de/goji/mailing"
-	"jinya.de/goji/storage"
+	"jinya.de/goji/native"
 	"jinya.de/goji/theming"
 	"jinya.de/goji/web"
 
@@ -30,28 +29,27 @@ import (
 var (
 	//go:embed static
 	static embed.FS
-	//go:embed compiler/target/release/compiler
-	themeCompiler []byte
 )
 
 func main() {
+	defer native.Cleanup()
+
 	logging.SetupLogging()
 	slog.Info("Prepared logging")
 
-	slog.Info("Preparing the database")
+	slog.Info("Prepare theme compiler")
+	compiler.SetupCompiler()
+
+	slog.Info("Prepare the database")
 	database.SetupDatabase()
 
+	slog.Info("Prepare localization")
 	localization.SetupLocalization()
 
-	slog.Info("Preparing mailing")
+	slog.Info("Prepare mailing")
 	mailing.SetupMailing()
 
 	defer database.GetDbMap().Db.Close()
-
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
 
 	appCtx, stop := signal.NotifyContext(
 		context.Background(),
@@ -59,73 +57,6 @@ func main() {
 		syscall.SIGTERM,
 	)
 	defer stop()
-
-	themeCompilerPath := ""
-	if os.Getenv("ENV") != "dev" {
-		slog.Info("Create theme compiler binary")
-		tmpFile, err := os.CreateTemp("", "theme-compiler")
-		if err != nil {
-			panic(err)
-		}
-
-		defer tmpFile.Close()
-		defer os.Remove(tmpFile.Name())
-
-		_, err = tmpFile.Write(themeCompiler)
-		if err != nil {
-			panic(err)
-		}
-
-		err = tmpFile.Chmod(0o777)
-		if err != nil {
-			panic(err)
-		}
-
-		err = tmpFile.Close()
-		if err != nil {
-			panic(err)
-		}
-
-		themeCompilerPath = tmpFile.Name()
-
-		slog.Info("Start theme compiler on socket")
-		cmd := exec.CommandContext(appCtx, themeCompilerPath, "/var/run/goji-compiler.sock")
-
-		cachePath := os.Getenv("CACHE_PATH")
-		if cachePath == "" {
-			path.Join(wd, "cache")
-		}
-
-		var rustEnvVars []string
-		rustEnvVars = append(rustEnvVars, "RUST_LOG="+os.Getenv("LOG_LEVEL"))
-		rustEnvVars = append(rustEnvVars, "STORAGE_PATH="+storage.GetStoragePath())
-		rustEnvVars = append(rustEnvVars, "CACHE_PATH="+cachePath)
-		rustEnvVars = append(rustEnvVars, "THEME_PATH="+theming.GetThemeBasePath())
-		rustEnvVars = append(rustEnvVars, "DATABASE_URL="+os.Getenv("DATABASE_URL"))
-
-		cmd.Env = rustEnvVars
-		cmd.Dir = wd
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err = cmd.Start()
-		if err != nil {
-			panic(err)
-		}
-
-		go func() {
-			err := cmd.Wait()
-			if err != nil {
-				if appCtx.Err() != nil {
-					slog.Info("Theme compiler stopped because app is shutting down")
-					return
-				}
-
-				panic(err)
-			}
-
-			slog.Info("Theme compiler stopped")
-		}()
-	}
 
 	go func() {
 		slog.Info("Populate ip database")
@@ -184,7 +115,7 @@ func main() {
 		}
 	}()
 
-	err = server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		panic(err)
 	}

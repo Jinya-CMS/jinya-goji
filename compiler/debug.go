@@ -1,4 +1,4 @@
-package frontend
+package compiler
 
 import (
 	"context"
@@ -29,7 +29,7 @@ func getCompilerClient() (*http.Client, error) {
 	return &httpc, nil
 }
 
-func CompileTheme(themeId int) error {
+func debugCompileTheme(themeId int) error {
 	client, err := getCompilerClient()
 	if err != nil {
 		return err

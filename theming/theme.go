@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
+	"jinya.de/goji/compiler"
 	"jinya.de/goji/database"
-	"jinya.de/goji/frontend"
 )
 
 type Theme struct {
@@ -155,7 +155,7 @@ func (t *Theme) CompileAssetCache() error {
 		}
 	}
 
-	return frontend.CompileTheme(t.dbTheme.Id)
+	return compiler.CompileTheme(t.dbTheme.Id)
 }
 
 func DeleteTheme(name string) error {

@@ -6,7 +6,7 @@ use std::sync::Arc;
 use swc::config::JsMinifyOptions;
 use swc::{BoolOrDataConfig, Compiler, JsMinifyExtras};
 use swc_common::errors::{ColorConfig, Handler};
-use swc_common::{FileName, Globals, SourceMap, GLOBALS};
+use swc_common::{FileName, GLOBALS, Globals, SourceMap};
 
 fn minify_script(source: &str) -> anyhow::Result<String> {
     let cm = Arc::new(SourceMap::default());

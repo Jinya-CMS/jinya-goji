@@ -30,7 +30,6 @@ var serverLangs = []language.Tag{
 var matcher = language.NewMatcher(serverLangs)
 
 func SetupLocalization() {
-	slog.Info("Setting up localization")
 	languageMap = make(map[string]map[string]string)
 	en := make(map[string]string)
 	de := make(map[string]string)

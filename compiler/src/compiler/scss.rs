@@ -1,8 +1,8 @@
 use crate::compiler::Config;
 use grass_compiler::sass_value::QuoteKind;
 use grass_compiler::{
-    sass_value::{ArgumentResult, Value}, Builtin, Options, OutputStyle, Result as SassResult,
-    Visitor,
+    Builtin, Options, OutputStyle, Result as SassResult, Visitor,
+    sass_value::{ArgumentResult, Value},
 };
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};

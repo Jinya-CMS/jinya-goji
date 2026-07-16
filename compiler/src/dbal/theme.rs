@@ -1,4 +1,4 @@
-use crate::dbal::{get_database, Error};
+use crate::dbal::{Error, get_database};
 use sea_orm::entity::prelude::*;
 use std::collections::HashMap;
 

@@ -8,9 +8,9 @@ name = "compiler"
 path = "src/main.rs"
 
 [lib]
-name = "libcompiler"
+name = "compiler"
 path = "src/lib.rs"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1"
