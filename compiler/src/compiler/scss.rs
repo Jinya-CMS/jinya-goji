@@ -7,7 +7,7 @@ use grass_compiler::{
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::ffi::OsStr;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 #[derive(Clone)]
 struct SassCompileContext {
@@ -45,7 +45,7 @@ fn jinya_asset(mut args: ArgumentResult, _: &mut Visitor) -> SassResult<Value> {
 
 async fn compile_file(
     theme_name: &str,
-    theme_path: &PathBuf,
+    theme_path: &Path,
     config: &Config,
     file: &str,
     variables: &HashMap<String, String>,
@@ -53,7 +53,7 @@ async fn compile_file(
     let stylesheet_path = theme_path.join(file);
     let stylesheet = tokio::fs::read_to_string(&stylesheet_path).await?;
     let variables_style = variables
-        .into_iter()
+        .iter()
         .map(|(key, value)| format!("{key}: {value};"))
         .collect::<Vec<_>>()
         .join("\n");
@@ -105,7 +105,7 @@ pub async fn compile_scss(
 
     for file in &config.styles.files {
         let (name, compiled) =
-            compile_file(&theme_name, &theme_path, &config, file, &variables).await?;
+            compile_file(theme_name, &theme_path, config, file, &variables).await?;
         result.insert(name, compiled);
     }
 
