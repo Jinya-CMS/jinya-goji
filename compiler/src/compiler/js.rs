@@ -8,7 +8,7 @@ use swc::{BoolOrDataConfig, Compiler, JsMinifyExtras};
 use swc_common::errors::{ColorConfig, Handler};
 use swc_common::{FileName, Globals, SourceMap, GLOBALS};
 
-async fn minify_script(source: &str) -> anyhow::Result<String> {
+fn minify_script(source: &str) -> anyhow::Result<String> {
     let cm = Arc::new(SourceMap::default());
     let compiler = Compiler::new(cm.clone());
 
@@ -36,13 +36,13 @@ pub async fn minify_js(
 ) -> anyhow::Result<HashMap<String, String>> {
     let mut result = HashMap::new();
     for file in &config.scripts {
-        let full_path = Path::new(&std::env::var("THEME_PATH").unwrap())
+        let full_path = Path::new(&std::env::var("THEME_PATH")?)
             .join(theme_name)
             .join(file);
-        let script = tokio::fs::read_to_string(full_path).await?;
-        let path = Path::new(file);
-        let extension = path.extension().unwrap_or(OsStr::new("js"));
-        let filename = path.file_stem().unwrap_or(OsStr::new(file));
+        let script = tokio::fs::read_to_string(&full_path).await?;
+
+        let extension = full_path.extension().unwrap_or(OsStr::new("js"));
+        let filename = full_path.file_stem().unwrap_or(OsStr::new(file));
         let hash = md5::compute(&script);
 
         let cached_name = format!(
@@ -50,7 +50,11 @@ pub async fn minify_js(
             filename.to_string_lossy(),
             extension.to_string_lossy()
         );
-        result.insert(cached_name, minify_script(&script).await?);
+        let minified = minify_script(&script);
+        if let Err(err) = &minified {
+            log::error!("Failed to minify {file}: {err}");
+        }
+        result.insert(cached_name, minified?);
     }
 
     Ok(result)

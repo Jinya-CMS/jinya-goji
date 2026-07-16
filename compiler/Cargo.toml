@@ -3,9 +3,21 @@ name = "compiler"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "compiler"
+path = "src/main.rs"
+
+[lib]
+name = "libcompiler"
+path = "src/lib.rs"
+crate-type = ["dylib"]
+
 [dependencies]
 anyhow = "1"
 env_logger = "0.11"
+grass = { version = "0.13", features = ["random"] }
+grass_compiler = { version = "0.13", features = ["custom-builtin-fns"] }
+libc = "0.2"
 log = "0.4"
 md5 = "0.8"
 sea-orm = { version = "1", features = ["sqlx-postgres", "runtime-tokio", "macros"] }
