@@ -23,6 +23,7 @@ import (
 	"jinya.de/goji/native"
 	"jinya.de/goji/theming"
 	"jinya.de/goji/web"
+	"jinya.de/goji/web/engine"
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/sgtdi/fswatcher"
@@ -79,6 +80,8 @@ func main() {
 			slog.Info("Theme sync successful")
 		}
 	}()
+
+	engine.StartEngine(appCtx)
 
 	watcher, err := fswatcher.New(
 		fswatcher.WithCooldown(200*time.Millisecond),

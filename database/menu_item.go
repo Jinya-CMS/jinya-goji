@@ -14,9 +14,9 @@ type MenuItem struct {
 	Highlighted   bool       `db:"highlighted"`
 	ArtistId      *int       `db:"artist_id"`
 	GalleryId     *int       `db:"gallery_id"`
-	ModernPageId  *int       `db:"segment_page_id"`
-	ClassicPageId *int       `db:"page_id"`
-	CategoryId    *int       `db:"category_id"`
+	ModernPageId  *int       `db:"modern_page_id"`
+	ClassicPageId *int       `db:"classic_page_id"`
+	CategoryId    *int       `db:"blog_category_id"`
 	BlogHomePage  *bool      `db:"blog_home_page"`
 	Children      []MenuItem `db:"-"`
 }
@@ -128,9 +128,9 @@ select id,
        highlighted,
        artist_id,
        gallery_id,
-       segment_page_id,
-       page_id,
-       category_id,
+       modern_page_id,
+       classic_page_id,
+       blog_category_id,
        blog_home_page
 from menu_item
 where menu_id = $1
@@ -149,9 +149,9 @@ select id,
        highlighted,
        artist_id,
        gallery_id,
-       segment_page_id,
-       page_id,
-       category_id,
+       modern_page_id,
+       classic_page_id,
+       blog_category_id,
        blog_home_page
 from menu_item
 where parent_id = $1
@@ -170,9 +170,9 @@ select id,
        highlighted,
        artist_id,
        gallery_id,
-       segment_page_id,
-       page_id,
-       category_id,
+       modern_page_id,
+       classic_page_id,
+       blog_category_id,
        blog_home_page
 from menu_item
 where route = $1

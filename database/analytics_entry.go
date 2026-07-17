@@ -3,6 +3,7 @@ package database
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -64,24 +65,20 @@ func (e EntityType) String() string {
 }
 
 type AnalyticsEntry struct {
-	Id                     int         `db:"id,primarykey,autoincrement"`
-	Route                  *string     `db:"route"`
-	Timestamp              time.Time   `db:"timestamp"`
-	UniqueVisit            bool        `db:"unique_visit"`
-	OperatingSystem        *string     `db:"operating_system"`
-	OperatingSystemVersion *string     `db:"operating_system_version"`
-	Browser                *string     `db:"browser"`
-	BrowserVersion         *string     `db:"browser_version"`
-	DeviceType             *DeviceType `db:"device_type"`
-	EntityId               *int        `db:"entity_id"`
-	EntityType             *EntityType `db:"entity_type"`
-	Language               *string     `db:"language"`
-	Country                *string     `db:"country"`
-	Device                 *string     `db:"device"`
-	Brand                  *string     `db:"brand"`
-	UserAgent              *string     `db:"user_agent"`
-	Referer                *string     `db:"referer"`
-	Status                 int         `db:"status"`
+	Id              int         `db:"id,primarykey,autoincrement"`
+	Route           *string     `db:"route"`
+	Timestamp       time.Time   `db:"timestamp"`
+	UniqueVisit     bool        `db:"unique_visit"`
+	OperatingSystem *string     `db:"operating_system"`
+	Browser         *string     `db:"browser"`
+	BrowserVersion  *string     `db:"browser_version"`
+	DeviceType      *DeviceType `db:"device_type"`
+	EntityId        *int        `db:"entity_id"`
+	EntityType      *EntityType `db:"entity_type"`
+	Language        *string     `db:"language"`
+	Country         *string     `db:"country"`
+	UserAgent       *string     `db:"user_agent"`
+	Referer         *string     `db:"referer"`
 }
 
 func (entry *AnalyticsEntry) MarshalJSON() ([]byte, error) {
@@ -95,40 +92,40 @@ func (entry *AnalyticsEntry) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(struct {
-		Id                     int     `json:"id"`
-		Route                  *string `json:"route"`
-		Timestamp              string  `json:"timestamp"`
-		UniqueVisit            bool    `json:"uniqueVisit"`
-		OperatingSystem        *string `json:"operatingSystem"`
-		OperatingSystemVersion *string `json:"operatingSystemVersion"`
-		Browser                *string `json:"browser"`
-		BrowserVersion         *string `json:"browserVersion"`
-		DeviceType             *string `json:"deviceType"`
-		EntityId               *int    `json:"entityId"`
-		EntityType             *string `json:"entityType"`
-		Language               *string `json:"language"`
-		Country                *string `json:"country"`
-		Device                 *string `json:"device"`
-		Brand                  *string `json:"brand"`
-		UserAgent              *string `json:"userAgent"`
+		Id              int     `json:"id"`
+		Route           *string `json:"route"`
+		Timestamp       string  `json:"timestamp"`
+		UniqueVisit     bool    `json:"uniqueVisit"`
+		OperatingSystem *string `json:"operatingSystem"`
+		Browser         *string `json:"browser"`
+		BrowserVersion  *string `json:"browserVersion"`
+		DeviceType      *string `json:"deviceType"`
+		EntityId        *int    `json:"entityId"`
+		EntityType      *string `json:"entityType"`
+		Language        *string `json:"language"`
+		Country         *string `json:"country"`
+		UserAgent       *string `json:"userAgent"`
+		Referer         *string `json:"referer"`
 	}{
-		Id:                     entry.Id,
-		Route:                  entry.Route,
-		Timestamp:              entry.Timestamp.Format(time.RFC3339),
-		UniqueVisit:            entry.UniqueVisit,
-		OperatingSystem:        entry.OperatingSystem,
-		OperatingSystemVersion: entry.OperatingSystemVersion,
-		Browser:                entry.Browser,
-		BrowserVersion:         entry.BrowserVersion,
-		DeviceType:             deviceType,
-		EntityId:               entry.EntityId,
-		EntityType:             entityType,
-		Language:               entry.Language,
-		Country:                entry.Country,
-		Device:                 entry.Device,
-		Brand:                  entry.Brand,
-		UserAgent:              entry.UserAgent,
+		Id:              entry.Id,
+		Route:           entry.Route,
+		Timestamp:       entry.Timestamp.Format(time.RFC3339),
+		UniqueVisit:     entry.UniqueVisit,
+		OperatingSystem: entry.OperatingSystem,
+		Browser:         entry.Browser,
+		BrowserVersion:  entry.BrowserVersion,
+		DeviceType:      deviceType,
+		EntityId:        entry.EntityId,
+		EntityType:      entityType,
+		Language:        entry.Language,
+		Country:         entry.Country,
+		UserAgent:       entry.UserAgent,
+		Referer:         entry.Referer,
 	})
+}
+
+func (entry *AnalyticsEntry) Create() error {
+	return Insert(entry)
 }
 
 type AnalyticsPastIntervalResult struct {
@@ -141,8 +138,7 @@ func GetAnalyticsPastInterval(months *int, entityType *EntityType, id *int, uniq
 select count(*) as visits,
        timestamp as "group"
 from analytics
-where status <> 404
-  and timestamp is not null
+where timestamp is not null
 `
 	args := make([]any, 0)
 	if months != nil {
@@ -165,8 +161,6 @@ func GetAnalyticsPastIntervalGrouped(group string, months *int, entityType *Enti
 	switch group {
 	case "os":
 		groupColumns = append(groupColumns, "operating_system")
-	case "os-version":
-		groupColumns = append(groupColumns, "operating_system", "operating_system_version")
 	case "browser-version":
 		groupColumns = append(groupColumns, "browser", "browser_version")
 	case "type":
@@ -186,23 +180,28 @@ func GetAnalyticsPastIntervalGrouped(group string, months *int, entityType *Enti
 
 	query := `
 select count(*) as visits, ` + groupColumnsForName + ` as "group"
-from analytics
-where status <> 404`
+from analytics`
 	args := make([]any, 0)
 
+	whereClauses := make([]string, 0)
 	if months != nil {
-		query += " and timestamp >= date_subtract(current_date, interval '" + strconv.Itoa(*months) + " months')"
+		whereClauses = append(whereClauses, "timestamp >= date_subtract(current_date, interval '"+strconv.Itoa(*months)+" months')")
 	}
 	if uniqueOnly {
-		query += " and unique_visit = true"
+		whereClauses = append(whereClauses, "unique_visit = true")
 	}
 	if entityType != nil && id != nil {
-		query += " and entity_type = $1 and entity_id = $2"
+		whereClauses = append(whereClauses, "entity_type = $1 and entity_id = $2")
 		args = append(args, *entityType, *id)
 	}
 
 	for _, col := range groupColumns {
-		query += " and " + col + " is not null"
+		whereClauses = append(whereClauses, col+" is not null")
+	}
+
+	whereClause := strings.Join(whereClauses, " and ")
+	if whereClause != "" {
+		query += " where " + whereClause
 	}
 
 	query += " group by "
@@ -220,8 +219,7 @@ func GetTotalAnalyticsPastInterval(months *int) (int, error) {
 	query := `
 select count(*) as visits
 from analytics
-where status <> 404
-  and unique_visit = true
+where unique_visit = true
 `
 	args := make([]any, 0)
 	if months != nil {

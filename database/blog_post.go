@@ -198,3 +198,19 @@ where blog_post_id = $1`, post.Id)
 
 	return tx.Commit()
 }
+
+func FindBlogPostBySlug(slug string) (*BlogPost, error) {
+	return SelectOne[BlogPost](`
+select id,
+       title,
+       slug,
+       header_image_id,
+       public,
+       created_at,
+       creator_id,
+       updated_by_id,
+       last_updated_at,
+       category_id
+from blog_post
+where slug = $1`, slug)
+}

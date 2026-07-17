@@ -65,12 +65,12 @@ select add_foreign_key_if_not_exists('known_device', 'user_id', 'users', 'id');
 select add_foreign_key_if_not_exists('menu', 'logo', 'file', 'id');
 
 select add_foreign_key_if_not_exists('menu_item', 'artist_id', 'users', 'id');
-select add_foreign_key_if_not_exists('menu_item', 'category_id', 'blog_category', 'id');
+select add_foreign_key_if_not_exists('menu_item', 'blog_category_id', 'blog_category', 'id');
 select add_foreign_key_if_not_exists('menu_item', 'gallery_id', 'gallery', 'id');
 select add_foreign_key_if_not_exists('menu_item', 'parent_id', 'menu_item', 'id');
 select add_foreign_key_if_not_exists('menu_item', 'menu_id', 'menu', 'id');
-select add_foreign_key_if_not_exists('menu_item', 'page_id', 'classic_page', 'id');
-select add_foreign_key_if_not_exists('menu_item', 'segment_page_id', 'modern_page', 'id');
+select add_foreign_key_if_not_exists('menu_item', 'classic_page_id', 'classic_page', 'id');
+select add_foreign_key_if_not_exists('menu_item', 'modern_page_id', 'modern_page', 'id');
 `)
 	if err != nil {
 		panic(err)
