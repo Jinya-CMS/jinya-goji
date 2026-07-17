@@ -1,8 +1,8 @@
 use crate::compiler::Config;
 use grass_compiler::sass_value::QuoteKind;
 use grass_compiler::{
-    Builtin, Options, OutputStyle, Result as SassResult, Visitor,
-    sass_value::{ArgumentResult, Value},
+    sass_value::{ArgumentResult, Value}, Builtin, Options, OutputStyle, Result as SassResult,
+    Visitor,
 };
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -88,7 +88,7 @@ async fn compile_file(
     let filename = stylesheet_path.file_stem().unwrap_or(OsStr::new(file));
     let hash = md5::compute(&compiled);
 
-    let cached_name = format!("{}.{hash:x}.css", filename.to_string_lossy(),);
+    let cached_name = format!("{}.{hash:x}.css", filename.to_string_lossy(), );
 
     Ok((cached_name, compiled))
 }

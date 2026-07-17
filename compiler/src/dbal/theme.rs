@@ -1,4 +1,5 @@
-use crate::dbal::{Error, get_database};
+use crate::dbal::db;
+use anyhow::anyhow;
 use sea_orm::entity::prelude::*;
 use std::collections::HashMap;
 
@@ -23,12 +24,11 @@ pub struct Theme {
 }
 
 impl TryInto<Theme> for Model {
-    type Error = Error;
+    type Error = anyhow::Error;
 
     fn try_into(self) -> Result<Theme, Self::Error> {
-        let variables = serde_json::from_str(&self.scss_variables).map_err(|err| Error {
-            message: err.to_string(),
-        })?;
+        let variables =
+            serde_json::from_str(&self.scss_variables).map_err(|err| anyhow!(err))?;
 
         Ok(Theme {
             name: self.name,
@@ -36,24 +36,18 @@ impl TryInto<Theme> for Model {
         })
     }
 }
-pub async fn get_theme(theme_id: i32) -> Result<Theme, Error> {
-    let db = get_database().await.map_err(|err| Error {
-        message: err.to_string(),
-    })?;
+pub async fn get_theme(theme_id: i32) -> anyhow::Result<Theme> {
+    let db = db().await.map_err(|err| anyhow!(err))?;
 
     Entity::find_by_id(theme_id)
-        .one(&db)
+        .one(db)
         .await
-        .map_err(|err| Error {
-            message: err.to_string(),
-        })
+        .map_err(|err| anyhow!(err))
         .map(|res| {
             if let Some(m) = res {
                 m.try_into()
             } else {
-                Err(Error {
-                    message: "theme not found".to_string(),
-                })
+                Err(anyhow!("theme not found"))
             }
         })?
 }

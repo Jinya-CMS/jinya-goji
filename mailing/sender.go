@@ -116,7 +116,13 @@ func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 		return
 	}
 
-	_ = sendEmailByRequest(plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
+	tmpl, err := renderMrmlTemplate(mjml)
+	if err != nil {
+		slog.Error("Failed to render template", "error", err)
+		return
+	}
+
+	_ = sendEmailByRequest(plain, tmpl, data.Subject, artistEmail)
 }
 
 func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
@@ -153,7 +159,13 @@ func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
 		return
 	}
 
-	_ = sendEmailByRequest(plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
+	tmpl, err := renderMrmlTemplate(mjml)
+	if err != nil {
+		slog.Error("Failed to render template", "error", err)
+		return
+	}
+
+	_ = sendEmailByRequest(plain, tmpl, data.Subject, artistEmail)
 }
 
 func SendTwoFactorCodeMail(r *http.Request, artistName, artistEmail, twoFactorCode string) {
@@ -179,5 +191,11 @@ func SendTwoFactorCodeMail(r *http.Request, artistName, artistEmail, twoFactorCo
 		return
 	}
 
-	_ = sendEmailByRequest(plain, renderMrmlTemplate(mjml), data.Subject, artistEmail)
+	tmpl, err := renderMrmlTemplate(mjml)
+	if err != nil {
+		slog.Error("Failed to render template", "error", err)
+		return
+	}
+
+	_ = sendEmailByRequest(plain, tmpl, data.Subject, artistEmail)
 }

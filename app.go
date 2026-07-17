@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"slices"
 	"syscall"
 	"time"
 
@@ -24,6 +25,7 @@ import (
 	"jinya.de/goji/web"
 
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/sgtdi/fswatcher"
 )
 
 var (
@@ -78,11 +80,35 @@ func main() {
 		}
 	}()
 
+	watcher, err := fswatcher.New(
+		fswatcher.WithCooldown(200*time.Millisecond),
+		fswatcher.WithPath(os.Getenv("THEME_PATH")),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	slog.Info("Watching for changes in the themes directory")
+	go watcher.Watch(appCtx)
+
+	go func() {
+		typesToReactTo := []fswatcher.EventType{
+			fswatcher.EventCreate,
+			fswatcher.EventRemove,
+			fswatcher.EventRename,
+		}
+
+		for event := range watcher.Events() {
+			if slices.ContainsFunc(event.Types, func(eventType fswatcher.EventType) bool {
+				return slices.Contains(typesToReactTo, eventType)
+			}) {
+				go theming.SyncThemes()
+			}
+		}
+	}()
+
 	slog.Info("Starting server")
 	router := mux.NewRouter()
-
-	api.SetupAdminApiRouter(router)
-	web.SetupWebRouter(router)
 
 	if os.Getenv("ENV") == "dev" {
 		router.PathPrefix("/static/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +121,9 @@ func main() {
 			http.FileServerFS(static).ServeHTTP(w, r)
 		})
 	}
+
+	api.SetupAdminApiRouter(router)
+	web.SetupWebRouter(router)
 
 	slog.Info("Serving at localhost:8090...")
 	server := &http.Server{
@@ -115,7 +144,7 @@ func main() {
 		}
 	}()
 
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		panic(err)
 	}

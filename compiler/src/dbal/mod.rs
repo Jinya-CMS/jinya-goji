@@ -1,9 +1,9 @@
 mod theme;
 
 use sea_orm::entity::prelude::*;
+use sea_orm::Database;
 use std::fmt::{Debug, Display, Formatter};
-
-pub use theme::Theme;
+use anyhow::anyhow;
 pub use theme::get_theme;
 
 #[derive(Debug)]
@@ -19,6 +19,15 @@ impl Display for Error {
 
 impl std::error::Error for Error {}
 
-async fn get_database() -> Result<DatabaseConnection, DbErr> {
-    sea_orm::Database::connect(std::env::var("DATABASE_URL").unwrap()).await
+static DB: tokio::sync::OnceCell<DatabaseConnection> = tokio::sync::OnceCell::const_new();
+
+pub async fn db() -> anyhow::Result<&'static DatabaseConnection> {
+    DB.get_or_try_init(|| async {
+        let database_url = std::env::var("DATABASE_URL")?;
+
+        Database::connect(database_url)
+            .await
+            .map_err(|err| anyhow!(err))
+    })
+    .await
 }

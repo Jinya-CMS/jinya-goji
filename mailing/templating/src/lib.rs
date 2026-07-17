@@ -1,22 +1,54 @@
-use libc::c_char;
-use mrml::prelude::render::RenderOptions;
-use std::ffi::{CStr, CString};
+pub mod render;
 
-fn ptr_to_str(ptr: *const c_char) -> &'static str {
+use crate::render::{render_template, MrmlError};
+use std::ffi::{c_char, c_int, CStr, CString};
+use std::str::Utf8Error;
+use env_logger::Env;
+
+fn ptr_to_str(ptr: *const c_char) -> Result<String, Utf8Error> {
     let c_str = unsafe { CStr::from_ptr(ptr) };
 
-    c_str.to_str().expect("This should not be empty")
+    c_str.to_str().map(|res| res.to_string())
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn render_mrml_template(tmpl: *const c_char) -> *const c_char {
-    let msg = mrml::parse(ptr_to_str(tmpl))
-        .expect("The template should be parseable")
-        .element
-        .render(&RenderOptions::default())
-        .expect("The template is invalid");
+pub extern "C" fn render_mrml_template(tmpl: *const c_char, output: *mut *mut c_char) -> c_int {
+    let env = Env::new().filter("LOG_LEVEL");
 
-    CString::new(msg.as_str())
-        .expect("The message should have been rendered")
-        .into_raw()
+    let _ = env_logger::try_init_from_env(env);
+
+    unsafe {
+        *output = std::ptr::null_mut();
+    }
+
+    let tmpl = if let Ok(tmpl) = ptr_to_str(tmpl) {
+        tmpl
+    } else {
+        return 1;
+    };
+    let result = render_template(&tmpl);
+    match result {
+        Ok(rendered) => {
+            let result = CString::new(rendered.as_str())
+                .expect("This should not happen")
+                .into_raw();
+            unsafe {
+                *output = result;
+            }
+            0
+        }
+        Err(MrmlError::ParseError) => 2,
+        Err(MrmlError::RenderError) => 3,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn free_mrml_string(ptr: *mut c_char) {
+    if ptr.is_null() {
+        return;
+    }
+
+    unsafe {
+        drop(CString::from_raw(ptr));
+    }
 }
