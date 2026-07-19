@@ -200,6 +200,19 @@ interface request {
   is-api-request: func() -> bool;
 }
 
+interface blog {
+  record blog-category-path-entry {
+    route: string,
+    category-title: string,
+    category-id: s32,
+    menu-item-id: s32,
+    menu-item-title: string,
+  }
+
+  get-category-path-for-post: func(post: s32) -> list<blog-category-path-entry>;
+  get-category-path-for-category: func(category: s32) -> list<blog-category-path-entry>;
+}
+
 world goji-theme {
   use types.{
   blog-category,
@@ -218,7 +231,11 @@ world goji-theme {
   menu,
   modern-page-section,
   };
+  use blog.{
+  blog-category-path-entry
+  };
 
+  import blog;
   import db;
   import http;
   import theme;

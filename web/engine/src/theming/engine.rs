@@ -1,6 +1,7 @@
+use crate::models::blog_category::BlogCategoryPath;
 use crate::models::gallery_file_position::GalleryFileWithFile;
 use crate::models::theme::BoolOrString;
-use crate::theming::engine::jinya::goji::{db, http, request, theme, types};
+use crate::theming::engine::jinya::goji::{blog, db, http, request, theme, types};
 use crate::theming::theme::Theme;
 use crate::{dbal, models};
 use std::collections::HashMap;
@@ -204,6 +205,18 @@ impl From<BoolOrString> for theme::BoolOrString {
         match value {
             BoolOrString::Bool(val) => theme::BoolOrString::BoolValue(val),
             BoolOrString::String(val) => theme::BoolOrString::StringValue(val),
+        }
+    }
+}
+
+impl From<BlogCategoryPath> for blog::BlogCategoryPathEntry {
+    fn from(value: BlogCategoryPath) -> Self {
+        Self {
+            route: value.route,
+            category_id: value.category_id,
+            category_title: value.category_name,
+            menu_item_id: value.menu_item_id,
+            menu_item_title: value.menu_item_title,
         }
     }
 }
@@ -454,5 +467,29 @@ impl request::Host for GojiThemeStore {
 
     async fn is_api_request(&mut self) -> bool {
         self.is_api_request
+    }
+}
+
+impl blog::Host for GojiThemeStore {
+    async fn get_category_path_for_post(
+        &mut self,
+        post_id: i32,
+    ) -> Vec<blog::BlogCategoryPathEntry> {
+        dbal::blog_post::get_category_path(post_id)
+            .await
+            .into_iter()
+            .map(Into::into)
+            .collect()
+    }
+
+    async fn get_category_path_for_category(
+        &mut self,
+        category_id: i32,
+    ) -> Vec<blog::BlogCategoryPathEntry> {
+        dbal::blog_category::get_category_path(category_id)
+            .await
+            .into_iter()
+            .map(Into::into)
+            .collect()
     }
 }

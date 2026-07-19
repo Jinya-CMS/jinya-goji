@@ -1,4 +1,5 @@
 use sea_orm::entity::prelude::*;
+use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
@@ -63,3 +64,12 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+#[derive(FromQueryResult)]
+pub struct BlogCategoryPath {
+    pub category_id: i32,
+    pub category_name: String,
+    pub menu_item_id: i32,
+    pub route: String,
+    pub menu_item_title: String,
+}
