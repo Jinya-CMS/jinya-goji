@@ -5,10 +5,10 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_type = "Text", nullable, unique)]
-    pub email: Option<String>,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub artist_name: Option<String>,
+    #[sea_orm(column_type = "Text", unique)]
+    pub email: String,
+    #[sea_orm(column_type = "Text")]
+    pub artist_name: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub profile_picture: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]

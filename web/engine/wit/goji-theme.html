@@ -1,0 +1,667 @@
+<h1><a id="goji_theme"></a>World goji-theme</h1>
+<ul>
+<li>Imports:
+<ul>
+<li>interface <a href="#jinya_goji_types"><code>jinya:goji/types</code></a></li>
+<li>interface <a href="#jinya_goji_db"><code>jinya:goji/db</code></a></li>
+<li>interface <a href="#jinya_goji_http"><code>jinya:goji/http</code></a></li>
+<li>interface <a href="#jinya_goji_theme"><code>jinya:goji/theme</code></a></li>
+<li>type <a href="#blog_category"><code>blog-category</code></a></li>
+<li>type <a href="#blog_post"><code>blog-post</code></a></li>
+<li>type <a href="#gallery"><code>gallery</code></a></li>
+<li>type <a href="#modern_page"><code>modern-page</code></a></li>
+<li>type <a href="#classic_page"><code>classic-page</code></a></li>
+<li>type <a href="#user"><code>user</code></a></li>
+<li>type <a href="#theme_response"><code>theme-response</code></a></li>
+</ul>
+</li>
+<li>Exports:
+<ul>
+<li>function <a href="#handle_blog_category"><code>handle-blog-category</code></a></li>
+<li>function <a href="#handle_blog_post"><code>handle-blog-post</code></a></li>
+<li>function <a href="#handle_blog_homepage"><code>handle-blog-homepage</code></a></li>
+<li>function <a href="#handle_homepage"><code>handle-homepage</code></a></li>
+<li>function <a href="#handle_gallery"><code>handle-gallery</code></a></li>
+<li>function <a href="#handle_modern_page"><code>handle-modern-page</code></a></li>
+<li>function <a href="#handle_classic_page"><code>handle-classic-page</code></a></li>
+<li>function <a href="#handle_profile"><code>handle-profile</code></a></li>
+<li>function <a href="#handle_error"><code>handle-error</code></a></li>
+</ul>
+</li>
+</ul>
+<h2><a id="jinya_goji_types"></a>Import interface jinya:goji/types</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="blog_category"></a><code>record blog-category</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="blog_category.name"></a><code>name</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_category.description"></a><code>description</code>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="gallery_type"></a><code>enum gallery-type</code></h4>
+<h5>Enum Cases</h5>
+<ul>
+<li><a id="gallery_type.masonry"></a><code>masonry</code></li>
+<li><a id="gallery_type.sequence"></a><code>sequence</code></li>
+</ul>
+<h4><a id="gallery_orientation"></a><code>enum gallery-orientation</code></h4>
+<h5>Enum Cases</h5>
+<ul>
+<li><a id="gallery_orientation.horizontal"></a><code>horizontal</code></li>
+<li><a id="gallery_orientation.vertical"></a><code>vertical</code></li>
+</ul>
+<h4><a id="menu_item"></a><code>resource menu-item</code></h4>
+<h4><a id="menu"></a><code>record menu</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="menu.id"></a><code>id</code>: <code>s32</code></li>
+<li><a id="menu.name"></a><code>name</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="menu.logo"></a><code>logo</code>: option&lt;<code>s32</code>&gt;</li>
+<li><a id="menu.items"></a><code>items</code>: list&lt;own&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;&gt;</li>
+</ul>
+<h4><a id="user"></a><code>record user</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="user.email"></a><code>email</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="user.user_name"></a><code>user-name</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="user.profile_picture"></a><code>profile-picture</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="user.about_me"></a><code>about-me</code>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="classic_page"></a><code>record classic-page</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="classic_page.creator"></a><code>creator</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="classic_page.updated_by"></a><code>updated-by</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="classic_page.created_at"></a><code>created-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="classic_page.last_updated_at"></a><code>last-updated-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="classic_page.content"></a><code>content</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="classic_page.title"></a><code>title</code>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="file"></a><code>record file</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="file.id"></a><code>id</code>: <code>s32</code></li>
+<li><a id="file.creator"></a><code>creator</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="file.updated_by"></a><code>updated-by</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="file.created_at"></a><code>created-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="file.last_updated_at"></a><code>last-updated-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="file.path"></a><code>path</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="file.name"></a><code>name</code>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="gallery_file_position"></a><code>record gallery-file-position</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="gallery_file_position.position"></a><code>position</code>: option&lt;<code>s32</code>&gt;</li>
+<li><a id="gallery_file_position.file"></a><a href="#file"><code>file</code></a>: option&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+</ul>
+<h4><a id="gallery"></a><code>record gallery</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="gallery.creator"></a><code>creator</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="gallery.updated_by"></a><code>updated-by</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="gallery.created_at"></a><code>created-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="gallery.last_updated_at"></a><code>last-updated-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="gallery.name"></a><code>name</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="gallery.description"></a><code>description</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="gallery.type"></a><code>type</code>: option&lt;<a href="#gallery_type"><a href="#gallery_type"><code>gallery-type</code></a></a>&gt;</li>
+<li><a id="gallery.orientation"></a><code>orientation</code>: option&lt;<a href="#gallery_orientation"><a href="#gallery_orientation"><code>gallery-orientation</code></a></a>&gt;</li>
+<li><a id="gallery.files"></a><code>files</code>: list&lt;<a href="#gallery_file_position"><a href="#gallery_file_position"><code>gallery-file-position</code></a></a>&gt;</li>
+</ul>
+<h4><a id="blog_post_section"></a><code>record blog-post-section</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="blog_post_section.gallery"></a><a href="#gallery"><code>gallery</code></a>: option&lt;<a href="#gallery"><a href="#gallery"><code>gallery</code></a></a>&gt;</li>
+<li><a id="blog_post_section.file"></a><a href="#file"><code>file</code></a>: option&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+<li><a id="blog_post_section.html"></a><code>html</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_post_section.link"></a><code>link</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_post_section.position"></a><code>position</code>: option&lt;<code>s32</code>&gt;</li>
+</ul>
+<h4><a id="blog_post"></a><code>record blog-post</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="blog_post.title"></a><code>title</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_post.slug"></a><code>slug</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_post.header_image"></a><code>header-image</code>: option&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+<li><a id="blog_post.public"></a><code>public</code>: option&lt;<code>bool</code>&gt;</li>
+<li><a id="blog_post.created_at"></a><code>created-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_post.creator"></a><code>creator</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="blog_post.updated_by"></a><code>updated-by</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="blog_post.last_updated_at"></a><code>last-updated-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="blog_post.blog_category"></a><a href="#blog_category"><code>blog-category</code></a>: option&lt;<a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a>&gt;</li>
+<li><a id="blog_post.sections"></a><code>sections</code>: list&lt;<a href="#blog_post_section"><a href="#blog_post_section"><code>blog-post-section</code></a></a>&gt;</li>
+</ul>
+<h4><a id="modern_page_section"></a><code>record modern-page-section</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="modern_page_section.position"></a><code>position</code>: option&lt;<code>s32</code>&gt;</li>
+<li><a id="modern_page_section.gallery"></a><a href="#gallery"><code>gallery</code></a>: option&lt;<a href="#gallery"><a href="#gallery"><code>gallery</code></a></a>&gt;</li>
+<li><a id="modern_page_section.file"></a><a href="#file"><code>file</code></a>: option&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+<li><a id="modern_page_section.html"></a><code>html</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="modern_page_section.action"></a><code>action</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="modern_page_section.script"></a><code>script</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="modern_page_section.target"></a><code>target</code>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="modern_page"></a><code>record modern-page</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="modern_page.creator"></a><code>creator</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="modern_page.updated_by"></a><code>updated-by</code>: option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+<li><a id="modern_page.created_at"></a><code>created-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="modern_page.last_updated_at"></a><code>last-updated-at</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="modern_page.name"></a><code>name</code>: option&lt;<code>string</code>&gt;</li>
+<li><a id="modern_page.sections"></a><code>sections</code>: list&lt;<a href="#modern_page_section"><a href="#modern_page_section"><code>modern-page-section</code></a></a>&gt;</li>
+</ul>
+<h4><a id="db_value"></a><code>variant db-value</code></h4>
+<h5>Variant Cases</h5>
+<ul>
+<li><a id="db_value.null_value"></a><code>null-value</code></li>
+<li><a id="db_value.bool_value"></a><code>bool-value</code>: <code>bool</code></li>
+<li><a id="db_value.s16_value"></a><code>s16-value</code>: <code>s16</code></li>
+<li><a id="db_value.s32_value"></a><code>s32-value</code>: <code>s32</code></li>
+<li><a id="db_value.s64_value"></a><code>s64-value</code>: <code>s64</code></li>
+<li><a id="db_value.f32_value"></a><code>f32-value</code>: <code>f32</code></li>
+<li><a id="db_value.f64_value"></a><code>f64-value</code>: <code>f64</code></li>
+<li><a id="db_value.string_value"></a><code>string-value</code>: <code>string</code></li>
+<li><a id="db_value.bytes_value"></a><code>bytes-value</code>: list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h4><a id="db_column"></a><code>record db-column</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="db_column.name"></a><code>name</code>: <code>string</code></li>
+<li><a id="db_column.value"></a><code>value</code>: <a href="#db_value"><a href="#db_value"><code>db-value</code></a></a></li>
+</ul>
+<h4><a id="theme_response"></a><code>record theme-response</code></h4>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="theme_response.content"></a><code>content</code>: <code>string</code></li>
+<li><a id="theme_response.status_code"></a><code>status-code</code>: <code>s16</code></li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a id="method_menu_item_position"></a><code>[method]menu-item.position: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_position.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_position.0"></a> option&lt;<code>s32</code>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_title"></a><code>[method]menu-item.title: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_title.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_title.0"></a> option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_route"></a><code>[method]menu-item.route: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_route.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_route.0"></a> option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_highlighted"></a><code>[method]menu-item.highlighted: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_highlighted.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_highlighted.0"></a> option&lt;<code>bool</code>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_artist"></a><code>[method]menu-item.artist: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_artist.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_artist.0"></a> option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_gallery"></a><code>[method]menu-item.gallery: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_gallery.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_gallery.0"></a> option&lt;<a href="#gallery"><a href="#gallery"><code>gallery</code></a></a>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_modern_page"></a><code>[method]menu-item.modern-page: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_modern_page.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_modern_page.0"></a> option&lt;<a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_classic_page"></a><code>[method]menu-item.classic-page: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_classic_page.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_classic_page.0"></a> option&lt;<a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_blog_category"></a><code>[method]menu-item.blog-category: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_blog_category.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_blog_category.0"></a> option&lt;<a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_blog_home_page"></a><code>[method]menu-item.blog-home-page: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_blog_home_page.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_blog_home_page.0"></a> option&lt;<code>bool</code>&gt;</li>
+</ul>
+<h4><a id="method_menu_item_children"></a><code>[method]menu-item.children: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="method_menu_item_children.self"></a><code>self</code>: borrow&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_menu_item_children.0"></a> list&lt;own&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;&gt;</li>
+</ul>
+<h2><a id="jinya_goji_db"></a>Import interface jinya:goji/db</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="blog_category"></a><code>type blog-category</code></h4>
+<p><a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a></p>
+<p>
+<h4><a id="blog_post"></a><code>type blog-post</code></h4>
+<p><a href="#blog_post"><a href="#blog_post"><code>blog-post</code></a></a></p>
+<p>
+<h4><a id="blog_post_section"></a><code>type blog-post-section</code></h4>
+<p><a href="#blog_post_section"><a href="#blog_post_section"><code>blog-post-section</code></a></a></p>
+<p>
+<h4><a id="classic_page"></a><code>type classic-page</code></h4>
+<p><a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a></p>
+<p>
+<h4><a id="db_column"></a><code>type db-column</code></h4>
+<p><a href="#db_column"><a href="#db_column"><code>db-column</code></a></a></p>
+<p>
+<h4><a id="file"></a><code>type file</code></h4>
+<p><a href="#file"><a href="#file"><code>file</code></a></a></p>
+<p>
+<h4><a id="gallery"></a><code>type gallery</code></h4>
+<p><a href="#gallery"><a href="#gallery"><code>gallery</code></a></a></p>
+<p>
+<h4><a id="gallery_file_position"></a><code>type gallery-file-position</code></h4>
+<p><a href="#gallery_file_position"><a href="#gallery_file_position"><code>gallery-file-position</code></a></a></p>
+<p>
+<h4><a id="menu"></a><code>type menu</code></h4>
+<p><a href="#menu"><a href="#menu"><code>menu</code></a></a></p>
+<p>
+<h4><a id="menu_item"></a><code>type menu-item</code></h4>
+<p><a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a></p>
+<p>
+<h4><a id="modern_page"></a><code>type modern-page</code></h4>
+<p><a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a></p>
+<p>
+<h4><a id="modern_page_section"></a><code>type modern-page-section</code></h4>
+<p><a href="#modern_page_section"><a href="#modern_page_section"><code>modern-page-section</code></a></a></p>
+<p>
+<h4><a id="user"></a><code>type user</code></h4>
+<p><a href="#user"><a href="#user"><code>user</code></a></a></p>
+<p>
+<hr />
+<h3>Functions</h3>
+<h4><a id="find_blog_category_by_id"></a><code>find-blog-category-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_blog_category_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_blog_category_by_id.0"></a> option&lt;<a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_blog_post_by_id"></a><code>find-blog-post-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_blog_post_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_blog_post_by_id.0"></a> option&lt;<a href="#blog_post"><a href="#blog_post"><code>blog-post</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_classic_page_by_id"></a><code>find-classic-page-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_classic_page_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_classic_page_by_id.0"></a> option&lt;<a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_file_by_id"></a><code>find-file-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_file_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_file_by_id.0"></a> option&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_gallery_by_id"></a><code>find-gallery-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_gallery_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_gallery_by_id.0"></a> option&lt;<a href="#gallery"><a href="#gallery"><code>gallery</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_menu_by_id"></a><code>find-menu-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_menu_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_menu_by_id.0"></a> option&lt;<a href="#menu"><a href="#menu"><code>menu</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_modern_page_by_id"></a><code>find-modern-page-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_modern_page_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_modern_page_by_id.0"></a> option&lt;<a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_user_by_id"></a><code>find-user-by-id: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_user_by_id.id"></a><code>id</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_user_by_id.0"></a> option&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_blog_categories"></a><code>find-all-blog-categories: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_blog_categories.0"></a> list&lt;<a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_blog_posts"></a><code>find-all-blog-posts: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_blog_posts.0"></a> list&lt;<a href="#blog_post"><a href="#blog_post"><code>blog-post</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_classic_pages"></a><code>find-all-classic-pages: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_classic_pages.0"></a> list&lt;<a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_files"></a><code>find-all-files: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_files.0"></a> list&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_galleries"></a><code>find-all-galleries: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_galleries.0"></a> list&lt;<a href="#gallery"><a href="#gallery"><code>gallery</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_menus"></a><code>find-all-menus: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_menus.0"></a> list&lt;<a href="#menu"><a href="#menu"><code>menu</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_modern_pages"></a><code>find-all-modern-pages: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_modern_pages.0"></a> list&lt;<a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_all_users"></a><code>find-all-users: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_all_users.0"></a> list&lt;<a href="#user"><a href="#user"><code>user</code></a></a>&gt;</li>
+</ul>
+<h4><a id="query_db"></a><code>query-db: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="query_db.query"></a><code>query</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="query_db.0"></a> list&lt;list&lt;<a href="#db_column"><a href="#db_column"><code>db-column</code></a></a>&gt;&gt;</li>
+</ul>
+<h2><a id="jinya_goji_http"></a>Import interface jinya:goji/http</h2>
+<hr />
+<h3>Functions</h3>
+<h4><a id="get"></a><code>get: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="get.url"></a><code>url</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="get.0"></a> <code>string</code></li>
+</ul>
+<h2><a id="jinya_goji_theme"></a>Import interface jinya:goji/theme</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="blog_category"></a><code>type blog-category</code></h4>
+<p><a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a></p>
+<p>
+<h4><a id="classic_page"></a><code>type classic-page</code></h4>
+<p><a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a></p>
+<p>
+<h4><a id="file"></a><code>type file</code></h4>
+<p><a href="#file"><a href="#file"><code>file</code></a></a></p>
+<p>
+<h4><a id="gallery"></a><code>type gallery</code></h4>
+<p><a href="#gallery"><a href="#gallery"><code>gallery</code></a></a></p>
+<p>
+<h4><a id="menu"></a><code>type menu</code></h4>
+<p><a href="#menu"><a href="#menu"><code>menu</code></a></a></p>
+<p>
+<h4><a id="menu_item"></a><code>type menu-item</code></h4>
+<p><a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a></p>
+<p>
+<h4><a id="modern_page"></a><code>type modern-page</code></h4>
+<p><a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a></p>
+<p>
+<hr />
+<h3>Functions</h3>
+<h4><a id="get_theme_config_value"></a><code>get-theme-config-value: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="get_theme_config_value.group"></a><code>group</code>: <code>string</code></li>
+<li><a id="get_theme_config_value.key"></a><code>key</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_theme_config_value.0"></a> option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a id="get_active_menu_item"></a><code>get-active-menu-item: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_active_menu_item.0"></a> option&lt;own&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;&gt;</li>
+</ul>
+<h4><a id="is_menu_item_active"></a><code>is-menu-item-active: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="is_menu_item_active.item"></a><code>item</code>: own&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="is_menu_item_active.0"></a> <code>bool</code></li>
+</ul>
+<h4><a id="is_parent_of_active_menu_item"></a><code>is-parent-of-active-menu-item: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="is_parent_of_active_menu_item.item"></a><code>item</code>: own&lt;<a href="#menu_item"><a href="#menu_item"><code>menu-item</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="is_parent_of_active_menu_item.0"></a> <code>bool</code></li>
+</ul>
+<h4><a id="find_modern_page_by_theme"></a><code>find-modern-page-by-theme: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_modern_page_by_theme.name"></a><code>name</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_modern_page_by_theme.0"></a> option&lt;<a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_classic_page_by_theme"></a><code>find-classic-page-by-theme: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_classic_page_by_theme.name"></a><code>name</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_classic_page_by_theme.0"></a> option&lt;<a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_file_by_theme"></a><code>find-file-by-theme: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_file_by_theme.name"></a><code>name</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_file_by_theme.0"></a> option&lt;<a href="#file"><a href="#file"><code>file</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_menu_by_theme"></a><code>find-menu-by-theme: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_menu_by_theme.name"></a><code>name</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_menu_by_theme.0"></a> option&lt;<a href="#menu"><a href="#menu"><code>menu</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_gallery_by_theme"></a><code>find-gallery-by-theme: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_gallery_by_theme.name"></a><code>name</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_gallery_by_theme.0"></a> option&lt;<a href="#gallery"><a href="#gallery"><code>gallery</code></a></a>&gt;</li>
+</ul>
+<h4><a id="find_blog_category_by_theme"></a><code>find-blog-category-by-theme: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="find_blog_category_by_theme.name"></a><code>name</code>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="find_blog_category_by_theme.0"></a> option&lt;<a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a>&gt;</li>
+</ul>
+<h2>Exported types from world <a href="#goji_theme"><code>goji-theme</code></a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="blog_category"></a><code>type blog-category</code></h4>
+<p><a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a></p>
+<p>
+<h4><a id="blog_post"></a><code>type blog-post</code></h4>
+<p><a href="#blog_post"><a href="#blog_post"><code>blog-post</code></a></a></p>
+<p>
+<h4><a id="gallery"></a><code>type gallery</code></h4>
+<p><a href="#gallery"><a href="#gallery"><code>gallery</code></a></a></p>
+<p>
+<h4><a id="modern_page"></a><code>type modern-page</code></h4>
+<p><a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a></p>
+<p>
+<h4><a id="classic_page"></a><code>type classic-page</code></h4>
+<p><a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a></p>
+<p>
+<h4><a id="user"></a><code>type user</code></h4>
+<p><a href="#user"><a href="#user"><code>user</code></a></a></p>
+<p>
+<h4><a id="theme_response"></a><code>type theme-response</code></h4>
+<p><a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></p>
+<p>
+<h2>Exported functions from world <a href="#goji_theme"><code>goji-theme</code></a></h2>
+<h4><a id="handle_blog_category"></a><code>handle-blog-category: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_blog_category.entity"></a><code>entity</code>: <a href="#blog_category"><a href="#blog_category"><code>blog-category</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_blog_category.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_blog_post"></a><code>handle-blog-post: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_blog_post.entity"></a><code>entity</code>: <a href="#blog_post"><a href="#blog_post"><code>blog-post</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_blog_post.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_blog_homepage"></a><code>handle-blog-homepage: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_blog_homepage.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_homepage"></a><code>handle-homepage: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_homepage.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_gallery"></a><code>handle-gallery: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_gallery.entity"></a><code>entity</code>: <a href="#gallery"><a href="#gallery"><code>gallery</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_gallery.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_modern_page"></a><code>handle-modern-page: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_modern_page.entity"></a><code>entity</code>: <a href="#modern_page"><a href="#modern_page"><code>modern-page</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_modern_page.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_classic_page"></a><code>handle-classic-page: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_classic_page.entity"></a><code>entity</code>: <a href="#classic_page"><a href="#classic_page"><code>classic-page</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_classic_page.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_profile"></a><code>handle-profile: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_profile.entity"></a><code>entity</code>: <a href="#user"><a href="#user"><code>user</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_profile.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>
+<h4><a id="handle_error"></a><code>handle-error: func</code></h4>
+<h5>Params</h5>
+<ul>
+<li><a id="handle_error.status_code"></a><code>status-code</code>: <code>s32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="handle_error.0"></a> <a href="#theme_response"><a href="#theme_response"><code>theme-response</code></a></a></li>
+</ul>

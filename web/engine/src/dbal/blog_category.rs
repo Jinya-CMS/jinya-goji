@@ -1,11 +1,7 @@
-use crate::dbal::db;
-use crate::models;
-use crate::models::BlogCategory;
-use sea_orm::EntityTrait;
+use crate::{find_by_parent, find_by_theme, find_entity};
 
-pub async fn find_by_id(id: i32) -> Option<BlogCategory> {
-    models::blog_category::Entity::find_by_id(id)
-        .one(db().await.ok()?)
-        .await
-        .ok()?
-}
+find_entity!(blog_category, BlogCategory);
+
+find_by_parent!(blog_post, BlogPost, CategoryId, find_posts);
+
+find_by_theme!(blog_category, BlogCategory, theme_blog_category, find_by_theme);

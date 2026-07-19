@@ -1,8 +1,8 @@
 use anyhow::anyhow;
 use sea_orm::entity::prelude::*;
-use std::collections::HashMap;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "theme")]
@@ -27,13 +27,20 @@ pub enum Relation {
 
 impl ActiveModelBehavior for ActiveModel {}
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BoolOrString {
+    Bool(bool),
+    String(String),
+}
+
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Theme {
     pub id: i32,
     pub name: String,
     pub path: String,
     pub scss_variables: HashMap<String, String>,
-    pub configuration: HashMap<String, HashMap<String, String>>,
+    pub configuration: HashMap<String, HashMap<String, BoolOrString>>,
 }
 
 impl TryInto<Theme> for Model {

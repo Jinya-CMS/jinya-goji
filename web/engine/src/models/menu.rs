@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub name: Option<String>,
+    #[sea_orm(column_type = "Text")]
+    pub name: String,
     pub logo: Option<i32>,
 }
 

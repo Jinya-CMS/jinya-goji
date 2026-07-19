@@ -1,11 +1,5 @@
-use crate::dbal::db;
-use crate::models;
-use crate::models::ClassicPage;
-use sea_orm::EntityTrait;
+use crate::{find_by_theme, find_entity};
 
-pub async fn find_by_id(id: i32) -> Option<ClassicPage> {
-    models::classic_page::Entity::find_by_id(id)
-        .one(db().await.ok()?)
-        .await
-        .ok()?
-}
+find_entity!(classic_page, ClassicPage);
+
+find_by_theme!(classic_page, ClassicPage, theme_classic_page, find_by_theme);

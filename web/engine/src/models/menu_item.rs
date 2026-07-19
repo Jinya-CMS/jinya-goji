@@ -6,11 +6,11 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub position: Option<i32>,
+    pub position: i32,
     pub menu_id: Option<i32>,
     pub parent_id: Option<i32>,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub title: Option<String>,
+    #[sea_orm(column_type = "Text")]
+    pub title: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub route: Option<String>,
     pub highlighted: Option<bool>,

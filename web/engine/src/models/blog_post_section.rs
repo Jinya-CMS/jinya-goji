@@ -13,7 +13,7 @@ pub struct Model {
     #[sea_orm(column_type = "Text", nullable)]
     pub link: Option<String>,
     pub blog_post_id: Option<i32>,
-    pub position: Option<i32>,
+    pub position: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

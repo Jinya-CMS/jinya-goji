@@ -1,4 +1,5 @@
 use sea_orm::entity::prelude::*;
+use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
@@ -6,9 +7,9 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub position: Option<i32>,
-    pub gallery_id: Option<i32>,
-    pub file_id: Option<i32>,
+    pub position: i32,
+    pub gallery_id: i32,
+    pub file_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -44,3 +45,11 @@ impl Related<super::gallery::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+#[derive(FromQueryResult)]
+pub struct GalleryFileWithFile {
+    pub id: i32,
+    pub path: String,
+    pub name: String,
+    pub position: i32,
+}

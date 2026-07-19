@@ -8,7 +8,7 @@ pub struct Model {
     pub theme_id: i32,
     #[sea_orm(primary_key, auto_increment = false, column_type = "Text")]
     pub name: String,
-    pub gallery_id: Option<i32>,
+    pub gallery_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

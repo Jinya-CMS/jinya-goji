@@ -1,4 +1,5 @@
 use crate::models;
+use crate::models::theme::BoolOrString;
 use anyhow::anyhow;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -8,12 +9,12 @@ fn is_false() -> bool {
     false
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Theme {
     #[serde(skip)]
     pub db_theme: models::theme::Theme,
     #[serde(rename = "configuration")]
-    pub default_configuration: HashMap<String, HashMap<String, String>>,
+    pub default_configuration: HashMap<String, HashMap<String, BoolOrString>>,
     #[serde(rename = "errorBehavior")]
     pub error_behavior: Option<String>,
     pub assets: HashMap<String, String>,
@@ -60,9 +61,24 @@ impl Theme {
         log::debug!("Load theme.yaml");
 
         let data = tokio::fs::read_to_string(&theme_yaml_file).await?;
-        let mut theme = serde_yaml::from_str::<Theme>(&data)?;
+        let mut theme = yaml_serde::from_str::<Theme>(&data)?;
         theme.db_theme = db_theme;
 
         Ok(theme)
+    }
+
+    pub fn get_config(&self, group: String, key: String) -> Option<BoolOrString> {
+        self.db_theme
+            .configuration
+            .get(&group)
+            .cloned()
+            .unwrap_or(
+                self.default_configuration
+                    .get(&group)
+                    .cloned()
+                    .unwrap_or_default(),
+            )
+            .get(&key)
+            .cloned()
     }
 }

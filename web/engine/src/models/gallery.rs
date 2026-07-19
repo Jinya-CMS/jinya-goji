@@ -6,18 +6,18 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub creator_id: Option<i32>,
-    pub updated_by_id: Option<i32>,
-    pub created_at: Option<DateTimeWithTimeZone>,
-    pub last_updated_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "Text", nullable, unique)]
-    pub name: Option<String>,
+    pub creator_id: i32,
+    pub updated_by_id: i32,
+    pub created_at: DateTimeWithTimeZone,
+    pub last_updated_at: DateTimeWithTimeZone,
+    #[sea_orm(column_type = "Text")]
+    pub name: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub description: Option<String>,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub r#type: Option<String>,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub orientation: Option<String>,
+    #[sea_orm(column_type = "Text")]
+    pub r#type: String,
+    #[sea_orm(column_type = "Text")]
+    pub orientation: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

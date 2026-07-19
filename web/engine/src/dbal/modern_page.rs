@@ -1,11 +1,7 @@
-use crate::dbal::db;
-use crate::models;
-use crate::models::ModernPage;
-use sea_orm::EntityTrait;
+use crate::{find_by_parent, find_by_theme, find_entity};
 
-pub async fn find_by_id(id: i32) -> Option<ModernPage> {
-    models::modern_page::Entity::find_by_id(id)
-        .one(db().await.ok()?)
-        .await
-        .ok()?
-}
+find_entity!(modern_page, ModernPage);
+
+find_by_parent!(modern_page_section, ModernPageSection, PageId, find_sections);
+
+find_by_theme!(modern_page, ModernPage, theme_modern_page, find_by_theme);
