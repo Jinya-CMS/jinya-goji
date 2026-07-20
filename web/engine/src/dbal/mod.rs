@@ -126,9 +126,11 @@ pub async fn select(query: String) -> Vec<HashMap<String, String>> {
         return vec![];
     }
 
+    let stmt = Statement::from_string(DbBackend::Postgres, &query);
+
     if let Ok(db) = db().await
         && let Ok(rows) = db
-            .query_all(Statement::from_string(DbBackend::Postgres, &query))
+            .query_all_raw(stmt)
             .await
         {
             return rows

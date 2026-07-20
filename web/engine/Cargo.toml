@@ -3,18 +3,27 @@ name = "engine"
 version = "1.0.0"
 edition = "2024"
 
+[[bin]]
+path = "src/main.rs"
+name = "engine"
+
+[lib]
+name = "engine"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
 [dependencies]
 actix-web = "4"
 anyhow = "1"
 env_logger = "0.11"
 log = "0.4"
 reqwest = "0.13"
-sea-orm = { version = "1", features = ["runtime-tokio", "serde_json", "sqlx-postgres"] }
+sea-orm = { version = "2", features = ["runtime-tokio", "serde_json", "sqlx-postgres"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sql_query_analyzer = "0.16"
-sqlx = "0.9"
 tokio = { version = "1", features = ["full"] }
-wasmtime = { version = "46", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
-wasmtime-wasi = "46"
+wasmtime = { version = "47", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
+wasmtime-wasi = "47"
 yaml_serde = "0.10"
+url = "2"

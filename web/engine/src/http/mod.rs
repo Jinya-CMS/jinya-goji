@@ -1,13 +1,12 @@
-use crate::dbal::db;
+use crate::dbal;
 use crate::models::{BlogCategory, BlogPost, ClassicPage, Gallery, ModernPage, User};
 use crate::theming::engine::{GojiTheme, GojiThemeStore};
 use crate::theming::theme::Theme;
-use crate::{dbal, models};
 use actix_web::body::BoxBody;
 use actix_web::http::StatusCode;
 use actix_web::{HttpRequest, HttpResponse};
-use sea_orm::{ColumnTrait, Condition, EntityTrait, QueryFilter};
 use std::path::Path;
+use url::Url;
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Engine, Store};
 use wasmtime_wasi::WasiCtx;
@@ -25,46 +24,19 @@ enum RequestEntity {
 }
 
 pub async fn frontend_router(req: HttpRequest) -> HttpResponse {
-    let theme = if let Ok(theme) = dbal::theme::get_active_theme().await {
-        theme
-    } else {
-        return HttpResponse::InternalServerError().finish();
-    };
-    let theme = if let Ok(theme) = Theme::new(theme).await {
-        theme
-    } else {
-        return HttpResponse::InternalServerError().finish();
-    };
-
     let is_json_request = req.headers().get("Accept").is_some_and(|accept| {
         accept
             .to_str()
             .is_ok_and(|accept| accept.starts_with("application/json"))
     });
 
-    let request_entity = if req.path() == "" || req.path() == "/" {
-        RequestEntity::HomePage
-    } else if let Some(post) = get_blog_post(req.path()).await {
-        RequestEntity::BlogPost(post)
-    } else if let Some(request_entity) = get_request_entity(req.path()).await {
-        request_entity
-    } else {
-        RequestEntity::Error(StatusCode::NOT_FOUND)
-    };
+    let (status_code, content) = handle_request(&req.uri().to_string(), is_json_request).await;
 
-    handle_request(request_entity, theme, theme.has_api && is_json_request, req).await
+    HttpResponse::new(status_code).set_body(BoxBody::new(content))
 }
 
 async fn get_request_entity(path: &str) -> Option<RequestEntity> {
-    let menu_item = models::menu_item::Entity::find()
-        .filter(
-            Condition::any()
-                .add(models::menu_item::Column::Route.eq(path))
-                .add(models::menu_item::Column::Route.eq(path.strip_prefix("/"))),
-        )
-        .one(db().await.ok()?)
-        .await
-        .ok()??;
+    let menu_item = dbal::menu_item::get_item_by_path(path.to_string()).await?;
 
     if let Some(id) = menu_item.artist_id
         && let Some(user) = dbal::user::find_by_id(id).await
@@ -128,12 +100,35 @@ async fn get_blog_post(path: &str) -> Option<BlogPost> {
     dbal::blog_post::find_by_slug(&slug).await
 }
 
-async fn handle_request(
-    request_entity: RequestEntity,
-    theme: &Theme,
-    is_api: bool,
-    req: HttpRequest,
-) -> HttpResponse {
+pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
+    let theme = if let Ok(theme) = dbal::theme::get_active_theme().await {
+        theme
+    } else {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    };
+    let theme = if let Ok(theme) = Theme::new(theme).await {
+        theme
+    } else {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    };
+
+    let url = Url::parse(uri);
+    if let Err(err) = url {
+        log::error!("Failed to parse url: {err}");
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    }
+
+    let url = url.unwrap();
+    let request_entity = if url.path() == "" || url.path() == "/" {
+        RequestEntity::HomePage
+    } else if let Some(post) = get_blog_post(url.path()).await {
+        RequestEntity::BlogPost(post)
+    } else if let Some(request_entity) = get_request_entity(url.path()).await {
+        request_entity
+    } else {
+        RequestEntity::Error(StatusCode::NOT_FOUND)
+    };
+
     let engine = Engine::default();
     let mut linker = Linker::new(&engine);
     if let Err(err) = wasmtime_wasi::p2::add_to_linker_async(&mut linker) {
@@ -141,7 +136,7 @@ async fn handle_request(
             "Failed to append wasip2 for theme {}: {err}",
             theme.db_theme.name
         );
-        return HttpResponse::InternalServerError().finish();
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     }
 
     let wasi_ctx = WasiCtx::builder().inherit_stdio().inherit_args().build();
@@ -150,9 +145,9 @@ async fn handle_request(
         &engine,
         GojiThemeStore {
             theme: theme.clone(),
-            uri: req.uri().to_string(),
-            path: req.path().to_string(),
-            is_api_request: is_api,
+            uri: uri.to_string(),
+            path: url.path().to_string(),
+            is_api_request: is_api && theme.has_api,
             wasi_ctx,
             resource_table: ResourceTable::new(),
         },
@@ -170,7 +165,7 @@ async fn handle_request(
                 "Failed to build component for theme {}: {err}",
                 theme.db_theme.name
             );
-            return HttpResponse::InternalServerError().finish();
+            return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
         }
     };
 
@@ -181,7 +176,7 @@ async fn handle_request(
             "Failed to add goji theme {} to linker: {err}",
             theme.db_theme.name
         );
-        return HttpResponse::InternalServerError().finish();
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     }
 
     let goji_theme = match GojiTheme::instantiate_async(&mut store, &component, &linker).await {
@@ -191,7 +186,7 @@ async fn handle_request(
                 "Failed to instantiate goji theme {}: {err}",
                 theme.db_theme.name
             );
-            return HttpResponse::InternalServerError().finish();
+            return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
         }
     };
 
@@ -252,16 +247,16 @@ async fn handle_request(
         }
     };
     match response {
-        Ok((response, ..)) => HttpResponse::new(
+        Ok((response, ..)) => (
             StatusCode::from_u16(response.status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR),
-        )
-        .set_body(BoxBody::new(response.content)),
+            response.content,
+        ),
         Err(err) => {
             log::error!(
                 "Failed to rendering goji theme {}: {err}",
                 theme.db_theme.name
             );
-            HttpResponse::InternalServerError().finish()
+            (StatusCode::INTERNAL_SERVER_ERROR, "".to_string())
         }
     }
 }

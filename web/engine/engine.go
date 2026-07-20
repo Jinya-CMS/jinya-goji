@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 
 	"jinya.de/goji/analytics"
 )
@@ -19,7 +20,7 @@ var engine []byte
 const gojiEngineSocket = "/tmp/goji-frontend-engine.sock"
 
 func StartEngine(ctx context.Context) {
-	slog.Info("Starting frontend engine")
+	slog.Info("Preparing frontend engine")
 
 	frontendEnginePath := ""
 	if os.Getenv("ENV") != "dev" {
@@ -116,42 +117,58 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) int {
 		return 0
 	}
 
-	engineReq := r.Clone(r.Context())
-	engineReq.URL.Scheme = "http"
-	engineReq.URL.Host = r.Host
-	engineReq.RequestURI = ""
+	var body []byte
+	var statusCode int
 
-	res, err := client.Do(engineReq)
-	if err != nil {
-		slog.Error("Failed to send request to frontend engine", "error", err)
-		http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
-		return 0
-	}
-	defer res.Body.Close()
+	if os.Getenv("ENV") == "dev" {
+		engineReq := r.Clone(r.Context())
+		engineReq.URL.Scheme = "http"
+		engineReq.URL.Host = r.Host
+		engineReq.RequestURI = ""
 
-	for key, values := range res.Header {
-		for _, value := range values {
-			w.Header().Add(key, value)
+		res, err := client.Do(engineReq)
+		if err != nil {
+			slog.Error("Failed to send request to frontend engine", "error", err)
+			http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
+			return http.StatusInternalServerError
 		}
-	}
+		defer res.Body.Close()
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		slog.Error("Failed to read body from frontend engine", "error", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return 0
+		for key, values := range res.Header {
+			for _, value := range values {
+				w.Header().Add(key, value)
+			}
+		}
+
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			slog.Error("Failed to read body from frontend engine", "error", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return http.StatusInternalServerError
+		}
+
+		statusCode = res.StatusCode
+	} else {
+		uri := r.URL
+		uri.Host = r.Host
+		if r.TLS != nil {
+			uri.Scheme = "https"
+		} else {
+			uri.Scheme = "http"
+		}
+		body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
 	}
 
 	contentType := http.DetectContentType(body)
 
 	w.Header().Set("Content-Type", contentType)
-	w.WriteHeader(res.StatusCode)
+	w.WriteHeader(statusCode)
 
 	if _, err = w.Write(body); err != nil {
 		slog.Error("Failed to write response from frontend engine", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		return 0
+		return http.StatusInternalServerError
 	}
 
-	return res.StatusCode
+	return statusCode
 }
