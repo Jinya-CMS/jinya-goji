@@ -1,12 +1,23 @@
 use crate::dbal::db;
 use crate::models::blog_category::BlogCategoryPath;
 use crate::models::BlogPost;
-use crate::{find_by_parent, find_entity, models};
+use crate::{find_by_parent, models};
 use sea_orm::{ColumnTrait, EntityTrait, FromQueryResult};
 use sea_orm::{DbBackend, QueryFilter, Statement};
 
-find_entity!(blog_post, BlogPost);
-
+pub async fn find_by_id(id: i32) -> Option<BlogPost> {
+    models::blog_post::Entity::find_by_id(id)
+        .one(db().await.ok()?)
+        .await
+        .ok()?
+}
+pub async fn find_all() -> Option<Vec<BlogPost>> {
+    models::blog_post::Entity::find()
+        .filter(models::blog_post::Column::Public.eq(true))
+        .all(db().await.ok()?)
+        .await
+        .ok()
+}
 pub async fn find_by_slug(slug: &str) -> Option<BlogPost> {
     models::blog_post::Entity::find()
         .filter(models::blog_post::Column::Slug.eq(slug))

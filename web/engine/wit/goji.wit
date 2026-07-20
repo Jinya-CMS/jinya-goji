@@ -231,9 +231,6 @@ world goji-theme {
   menu,
   modern-page-section,
   };
-  use blog.{
-  blog-category-path-entry
-  };
 
   import blog;
   import db;

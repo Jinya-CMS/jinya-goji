@@ -135,10 +135,21 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) int {
 		}
 	}
 
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		slog.Error("Failed to read body from frontend engine", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return 0
+	}
+
+	contentType := http.DetectContentType(body)
+
+	w.Header().Set("Content-Type", contentType)
 	w.WriteHeader(res.StatusCode)
 
-	if _, err = io.Copy(w, res.Body); err != nil {
+	if _, err = w.Write(body); err != nil {
 		slog.Error("Failed to write response from frontend engine", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return 0
 	}
 
