@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: "/"
+    schedule:
+      interval: daily
+  - package-ecosystem: bun
+    directory: "/"
+    schedule:
+      interval: daily
+  - package-ecosystem: cargo
+    directory: "/mailing/templating"
+    schedule:
+      interval: daily
+  - package-ecosystem: cargo
+    directory: "/web/engine"
+    schedule:
+      interval: daily
+  - package-ecosystem: cargo
+    directory: "/compiler"
+    schedule:
+      interval: daily
