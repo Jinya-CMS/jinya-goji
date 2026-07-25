@@ -9,9 +9,11 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 
 	"jinya.de/goji/analytics"
+	"jinya.de/goji/database"
 )
 
 //go:embed target/release/engine
@@ -110,63 +112,92 @@ func ForwardStandardRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func forwardRequest(w http.ResponseWriter, r *http.Request) int {
-	client, err := getEngineClient()
-	if err != nil {
-		slog.Error("Failed to get engine client", "error", err)
-		http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
-		return 0
-	}
+	callEngine := func(uriPath, uriQuery string) ([]byte, int) {
+		var (
+			statusCode int
+			body       []byte
+		)
 
-	var body []byte
-	var statusCode int
-
-	if os.Getenv("ENV") == "dev" {
-		engineReq := r.Clone(r.Context())
-		engineReq.URL.Scheme = "http"
-		engineReq.URL.Host = r.Host
-		engineReq.RequestURI = ""
-
-		res, err := client.Do(engineReq)
-		if err != nil {
-			slog.Error("Failed to send request to frontend engine", "error", err)
-			http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
-			return http.StatusInternalServerError
-		}
-		defer res.Body.Close()
-
-		for key, values := range res.Header {
-			for _, value := range values {
-				w.Header().Add(key, value)
+		if os.Getenv("ENV") == "dev" {
+			client, err := getEngineClient()
+			if err != nil {
+				slog.Error("Failed to get engine client", "error", err)
+				http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
+				return nil, http.StatusInternalServerError
 			}
-		}
 
-		body, err = io.ReadAll(res.Body)
-		if err != nil {
-			slog.Error("Failed to read body from frontend engine", "error", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return http.StatusInternalServerError
-		}
+			engineReq := r.Clone(r.Context())
+			engineReq.URL.Scheme = "http"
+			engineReq.URL.Host = r.Host
+			engineReq.URL.Path = uriPath
+			engineReq.URL.RawQuery = uriQuery
+			engineReq.RequestURI = ""
 
-		statusCode = res.StatusCode
-	} else {
-		uri := r.URL
-		uri.Host = r.Host
-		if r.TLS != nil {
-			uri.Scheme = "https"
+			res, err := client.Do(engineReq)
+			if err != nil {
+				slog.Error("Failed to send request to frontend engine", "error", err)
+				http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
+				return nil, http.StatusInternalServerError
+			}
+			defer res.Body.Close()
+
+			for key, values := range res.Header {
+				for _, value := range values {
+					w.Header().Add(key, value)
+				}
+			}
+
+			body, err = io.ReadAll(res.Body)
+			if err != nil {
+				slog.Error("Failed to read body from frontend engine", "error", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return nil, http.StatusInternalServerError
+			}
+
+			statusCode = res.StatusCode
 		} else {
-			uri.Scheme = "http"
+			uri := r.URL
+			uri.Host = r.Host
+			if r.TLS != nil {
+				uri.Scheme = "https"
+			} else {
+				uri.Scheme = "http"
+			}
+			body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
 		}
-		body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
+
+		return body, statusCode
 	}
 
+	callEngineError := func(statusCode int) {
+		activeTheme, err := database.GetActiveTheme()
+		if err != nil {
+			w.WriteHeader(statusCode)
+			return
+		}
+
+		if activeTheme.ErrorBehavior == "homepage" {
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		} else {
+			callEngine("/internal/error-handler", "error="+strconv.Itoa(statusCode))
+			w.WriteHeader(statusCode)
+		}
+	}
+
+	body, statusCode := callEngine(r.URL.Path, r.URL.RawQuery)
 	contentType := http.DetectContentType(body)
+
+	if statusCode > 300 {
+		callEngineError(http.StatusInternalServerError)
+		return statusCode
+	}
 
 	w.Header().Set("Content-Type", contentType)
 	w.WriteHeader(statusCode)
 
-	if _, err = w.Write(body); err != nil {
+	if _, err := w.Write(body); err != nil {
 		slog.Error("Failed to write response from frontend engine", "error", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		callEngineError(http.StatusInternalServerError)
 		return http.StatusInternalServerError
 	}
 

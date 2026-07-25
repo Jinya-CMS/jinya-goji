@@ -1,5 +1,5 @@
-use crate::http::frontend_router;
-use actix_web::{web, App, HttpServer};
+use crate::http::{error_route, frontend_router};
+use actix_web::{App, HttpServer, web};
 use env_logger::Env;
 
 pub mod dbal;
@@ -16,8 +16,12 @@ async fn main() -> std::io::Result<()> {
 
     let uds_path = std::env::args().nth(1).expect("usage: engine <uds-path>");
 
-    HttpServer::new(|| App::new().default_service(web::to(frontend_router)))
-        .bind_uds(uds_path)?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .route("/internal/error-handler", web::to(error_route))
+            .default_service(web::to(frontend_router))
+    })
+    .bind_uds(uds_path)?
+    .run()
+    .await
 }

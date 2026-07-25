@@ -16,7 +16,7 @@ type Theme struct {
 	DisplayName        string                    `db:"display_name"`
 	ScssVariablesPlain string                    `db:"scss_variables"`
 	ScssVariables      map[string]string         `db:"-"`
-	Type               string                    `db:"type"`
+	ErrorBehavior      string                    `db:"error_behavior"`
 	Path               string                    `db:"path"`
 }
 
@@ -102,7 +102,6 @@ func (theme *Theme) MarshalJSON() ([]byte, error) {
 		DisplayName   string                    `json:"displayName"`
 		ScssVariables map[string]string         `json:"scssVariables"`
 		Id            int                       `json:"id"`
-		Type          string                    `json:"type"`
 	}{
 		Configuration: configuration,
 		Description:   theme.Description,
@@ -110,7 +109,6 @@ func (theme *Theme) MarshalJSON() ([]byte, error) {
 		DisplayName:   theme.DisplayName,
 		ScssVariables: scssVariables,
 		Id:            theme.Id,
-		Type:          theme.Type,
 	})
 }
 
@@ -138,7 +136,7 @@ select id,
        description,
        scss_variables,
        configuration,
-       type
+       error_behavior
 from theme
 where name = $1
 `, name)
@@ -152,7 +150,7 @@ select id,
        description,
        scss_variables,
        configuration,
-       type
+       error_behavior
 from theme
 order by id
 `)
@@ -166,7 +164,7 @@ select t.id,
        t.description,
        t.scss_variables,
        t.configuration,
-       t.type
+       t.error_behavior
 from theme t
          join configuration c on c.current_frontend_theme_id = t.id
 `)

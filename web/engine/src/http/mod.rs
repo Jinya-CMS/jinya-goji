@@ -6,6 +6,8 @@ use actix_web::body::BoxBody;
 use actix_web::http::StatusCode;
 use actix_web::{HttpRequest, HttpResponse};
 use std::path::Path;
+use actix_web::web::Query;
+use serde::Deserialize;
 use url::Url;
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Engine, Store};
@@ -21,6 +23,23 @@ enum RequestEntity {
     ClassicPage(ClassicPage),
     Profile(User),
     Error(StatusCode),
+}
+
+#[derive(Deserialize)]
+pub struct ErrorQuery {
+    pub error: u16
+}
+
+pub async fn error_route(req: HttpRequest, query: Query<ErrorQuery>) -> HttpResponse {
+    let is_json_request = req.headers().get("Accept").is_some_and(|accept| {
+        accept
+            .to_str()
+            .is_ok_and(|accept| accept.starts_with("application/json"))
+    });
+
+    let (status_code, content) = handle_error(&req.uri().to_string(), is_json_request, query.error).await;
+
+    HttpResponse::new(status_code).set_body(BoxBody::new(content))
 }
 
 pub async fn frontend_router(req: HttpRequest) -> HttpResponse {
@@ -129,6 +148,48 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
         RequestEntity::Error(StatusCode::NOT_FOUND)
     };
 
+    call_theme(uri, is_api, &theme, url, request_entity).await
+}
+
+pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusCode, String) {
+    let theme = if let Ok(theme) = dbal::theme::get_active_theme().await {
+        theme
+    } else {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    };
+    let theme = if let Ok(theme) = Theme::new(theme).await {
+        theme
+    } else {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    };
+
+    let url = Url::parse(uri);
+    if let Err(err) = url {
+        log::error!("Failed to parse url: {err}");
+        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    }
+
+    let url = url.unwrap();
+
+    call_theme(
+        uri,
+        is_api,
+        theme,
+        url,
+        RequestEntity::Error(
+            StatusCode::from_u16(status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR),
+        ),
+    )
+    .await
+}
+
+async fn call_theme(
+    uri: &str,
+    is_api: bool,
+    theme: &Theme,
+    url: Url,
+    request_entity: RequestEntity,
+) -> (StatusCode, String) {
     let engine = Engine::default();
     let mut linker = Linker::new(&engine);
     if let Err(err) = wasmtime_wasi::p2::add_to_linker_async(&mut linker) {

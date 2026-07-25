@@ -30,9 +30,9 @@ func GetThemePath(name string) string {
 }
 
 type themeConfig struct {
-	DisplayName string `yaml:"displayName"`
-	Description any    `yaml:"description"`
-	Type        string `yaml:"type"`
+	DisplayName   string `yaml:"displayName"`
+	Description   any    `yaml:"description"`
+	ErrorBehavior string `yaml:"errorBehavior"`
 }
 
 func SyncThemes() error {
@@ -95,7 +95,7 @@ func SyncThemes() error {
 				ScssVariables: map[string]string{},
 				DisplayName:   config.DisplayName,
 				Description:   description,
-				Type:          config.Type,
+				ErrorBehavior: config.ErrorBehavior,
 				Path:          themePath,
 			}
 			if dbTheme.DisplayName == "" {
@@ -112,7 +112,7 @@ func SyncThemes() error {
 				dbTheme.DisplayName = name
 			}
 			dbTheme.Description = description
-			dbTheme.Type = config.Type
+			dbTheme.ErrorBehavior = config.ErrorBehavior
 			dbTheme.Path = themePath
 			err = dbTheme.Update()
 			if err != nil {
