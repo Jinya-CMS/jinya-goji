@@ -4,4 +4,4 @@ find_entity!(menu, Menu);
 
 find_by_parent!(menu_item, MenuItem, MenuId, find_menu_items);
 
-find_by_theme!(menu, Menu, theme_menu, find_by_theme);
+find_by_theme!(menu, Menu, theme_menu, ThemeMenu, find_by_theme);

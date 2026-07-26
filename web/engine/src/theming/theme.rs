@@ -15,8 +15,6 @@ pub struct Theme {
     pub db_theme: models::theme::Theme,
     #[serde(rename = "configuration")]
     pub default_configuration: HashMap<String, HashMap<String, BoolOrString>>,
-    #[serde(rename = "errorBehavior")]
-    pub error_behavior: Option<String>,
     pub assets: HashMap<String, String>,
     #[serde(rename = "hasApi", default = "is_false")]
     pub has_api: bool,

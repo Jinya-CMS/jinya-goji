@@ -23,7 +23,7 @@ fn ptr_to_str(ptr: *const c_char) -> Result<String, Utf8Error> {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn handle_request(
+pub unsafe extern "C" fn handle_request(
     api_request: bool,
     url: *mut c_char,
     output: *mut *mut c_char,
@@ -56,7 +56,7 @@ pub extern "C" fn handle_request(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn handle_error(
+pub unsafe extern "C" fn handle_error(
     api_request: bool,
     url: *mut c_char,
     status_code: c_ushort,
@@ -90,7 +90,7 @@ pub extern "C" fn handle_error(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn free_engine_string(ptr: *mut c_char) {
+pub unsafe extern "C" fn free_engine_string(ptr: *mut c_char) {
     if ptr.is_null() {
         return;
     }

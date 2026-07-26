@@ -33,11 +33,11 @@ fn jinya_asset(mut args: ArgumentResult, _: &mut Visitor) -> SassResult<Value> {
 
         Ok(Value::String(
             format!(
-                "/jinya-content/theme/{}/asset/{asset_name}",
+                "url('/jinya-content/themes/{}/asset/{asset_name}')",
                 context.theme_name
             ),
             QuoteKind::Quoted,
-        ))
+        ).unquote())
     } else {
         Err(std::io::Error::other("Asset name not given").into())
     }

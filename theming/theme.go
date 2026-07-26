@@ -132,7 +132,7 @@ func (t *Theme) CompileAssetCache() error {
 		}
 
 		absAssetPath := filepath.Join(GetThemeBasePath(), t.dbTheme.Name, assetPath)
-		assetFromDb, err := database.FindThemeAssetByThemeAndName(t.dbTheme.Id, key)
+		assetFromDb, err := database.FindThemeAssetByThemeAndName(t.dbTheme.Name, key)
 
 		if _, errStat := os.Stat(absAssetPath); os.IsNotExist(errStat) {
 			if err == nil && assetFromDb != nil {

@@ -4,10 +4,10 @@ use crate::theming::engine::{GojiTheme, GojiThemeStore};
 use crate::theming::theme::Theme;
 use actix_web::body::BoxBody;
 use actix_web::http::StatusCode;
-use actix_web::{HttpRequest, HttpResponse};
-use std::path::Path;
 use actix_web::web::Query;
+use actix_web::{HttpRequest, HttpResponse};
 use serde::Deserialize;
+use std::path::Path;
 use url::Url;
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Engine, Store};
@@ -27,7 +27,7 @@ enum RequestEntity {
 
 #[derive(Deserialize)]
 pub struct ErrorQuery {
-    pub error: u16
+    pub error: u16,
 }
 
 pub async fn error_route(req: HttpRequest, query: Query<ErrorQuery>) -> HttpResponse {
@@ -37,7 +37,8 @@ pub async fn error_route(req: HttpRequest, query: Query<ErrorQuery>) -> HttpResp
             .is_ok_and(|accept| accept.starts_with("application/json"))
     });
 
-    let (status_code, content) = handle_error(&req.uri().to_string(), is_json_request, query.error).await;
+    let (status_code, content) =
+        handle_error(&req.uri().to_string(), is_json_request, query.error).await;
 
     HttpResponse::new(status_code).set_body(BoxBody::new(content))
 }
@@ -132,8 +133,8 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
     };
 
     let url = Url::parse(uri);
-    if let Err(err) = url {
-        log::error!("Failed to parse url: {err}");
+    if url.is_err() {
+        log::error!("Failed to parse url");
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     }
 
@@ -148,7 +149,7 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
         RequestEntity::Error(StatusCode::NOT_FOUND)
     };
 
-    call_theme(uri, is_api, &theme, url, request_entity).await
+    call_theme(uri, is_api, theme, url, request_entity).await
 }
 
 pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusCode, String) {
@@ -164,8 +165,8 @@ pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusC
     };
 
     let url = Url::parse(uri);
-    if let Err(err) = url {
-        log::error!("Failed to parse url: {err}");
+    if url.is_err() {
+        log::error!("Failed to parse url");
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     }
 
@@ -223,7 +224,7 @@ async fn call_theme(
         Ok(component) => component,
         Err(err) => {
             log::error!(
-                "Failed to build component for theme {}: {err}",
+                "Failed to build component for theme {}: {err:#?}",
                 theme.db_theme.name
             );
             return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
@@ -255,13 +256,13 @@ async fn call_theme(
         RequestEntity::BlogCategory(cat) => {
             goji_theme
                 .func_handle_blog_category()
-                .call_async(&mut store, (&cat.into(),))
+                .call_async(&mut store, (cat.into(),))
                 .await
         }
         RequestEntity::BlogPost(post) => {
             goji_theme
                 .func_handle_blog_post()
-                .call_async(&mut store, (&post.into(),))
+                .call_async(&mut store, (post.into(),))
                 .await
         }
         RequestEntity::BlogHomePage => {
@@ -279,25 +280,25 @@ async fn call_theme(
         RequestEntity::Gallery(gallery) => {
             goji_theme
                 .func_handle_gallery()
-                .call_async(&mut store, (&gallery.into(),))
+                .call_async(&mut store, (gallery.into(),))
                 .await
         }
         RequestEntity::ModernPage(page) => {
             goji_theme
                 .func_handle_modern_page()
-                .call_async(&mut store, (&page.into(),))
+                .call_async(&mut store, (page.into(),))
                 .await
         }
         RequestEntity::ClassicPage(page) => {
             goji_theme
                 .func_handle_classic_page()
-                .call_async(&mut store, (&page.into(),))
+                .call_async(&mut store, (page.into(),))
                 .await
         }
         RequestEntity::Profile(user) => {
             goji_theme
                 .func_handle_profile()
-                .call_async(&mut store, (&user.into(),))
+                .call_async(&mut store, (user.into(),))
                 .await
         }
         RequestEntity::Error(status) => {

@@ -15,6 +15,9 @@ func SetupWebRouter(router *mux.Router) {
 		Path("/jinya-content/themes/{themeName}/asset/{assetName}").
 		HandlerFunc(themeAsset)
 	router.
+		Path("/jinya-content/themes/cache/{themeName}/{file}").
+		HandlerFunc(themeCache)
+	router.
 		Path("/jinya-content/{hash}").
 		HandlerFunc(jinyaContent)
 	router.

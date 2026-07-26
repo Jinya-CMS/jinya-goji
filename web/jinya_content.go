@@ -150,19 +150,27 @@ func imagePhp(w http.ResponseWriter, r *http.Request) {
 
 func themeAsset(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	themeId, err := strconv.Atoi(vars["themeName"])
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-
+	themeName := vars["themeName"]
 	assetName := vars["assetName"]
 
-	asset, err := database.FindThemeAssetByThemeAndName(themeId, assetName)
+	asset, err := database.FindThemeAssetByThemeAndName(themeName, assetName)
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
 
 	http.ServeFile(w, r, asset.Path)
+}
+
+func themeCache(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	theme := vars["themeName"]
+	file := vars["file"]
+	if file == "cache-status.yaml" {
+		http.NotFound(w, r)
+		return
+	}
+
+	fullPath := path.Join(os.Getenv("CACHE_PATH"), theme, file)
+	http.ServeFile(w, r, fullPath)
 }

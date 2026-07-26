@@ -4,8 +4,9 @@ use crate::models::theme::BoolOrString;
 use crate::theming::engine::jinya::goji::{blog, db, http, request, theme, types};
 use crate::theming::theme::Theme;
 use crate::{dbal, models};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use wasmtime::component::{bindgen, HasData, ResourceTable};
+use wasmtime::component::{HasData, ResourceTable, bindgen};
 use wasmtime_wasi::{WasiCtx, WasiCtxView, WasiView};
 
 bindgen!({
@@ -182,13 +183,21 @@ impl From<models::MenuItem> for MenuItem {
 
 impl From<MenuItem> for models::MenuItem {
     fn from(val: MenuItem) -> Self {
+        let route = val.route.map(|route| {
+            if !route.starts_with("/") {
+                format!("/{route}")
+            } else {
+                route
+            }
+        });
+
         models::MenuItem {
             id: val.id,
             position: val.position,
             menu_id: None,
             parent_id: None,
             title: val.title,
-            route: val.route,
+            route,
             highlighted: val.highlighted,
             artist_id: val.artist_id,
             gallery_id: val.gallery_id,
@@ -255,6 +264,24 @@ impl db::Host for GojiThemeStore {
 
     async fn find_blog_post_sections(&mut self, blog_post_id: i32) -> Vec<db::BlogPostSection> {
         dbal::blog_post::find_sections(blog_post_id)
+            .await
+            .unwrap_or_default()
+            .into_iter()
+            .map(Into::into)
+            .collect()
+    }
+
+    async fn find_menu_items_by_menu(&mut self, id: i32) -> Vec<db::MenuItem> {
+        dbal::menu::find_menu_items(id)
+            .await
+            .unwrap_or_default()
+            .into_iter()
+            .map(Into::into)
+            .collect()
+    }
+
+    async fn find_menu_items_by_menu_item(&mut self, id: i32) -> Vec<db::MenuItem> {
+        dbal::menu_item::find_menu_items(id)
             .await
             .unwrap_or_default()
             .into_iter()
@@ -383,6 +410,17 @@ impl db::Host for GojiThemeStore {
     }
 }
 
+#[derive(Debug, Deserialize)]
+pub struct Styles {
+    pub files: Vec<String>,
+}
+
+#[derive(Default, Serialize, Deserialize)]
+struct CacheFile {
+    styles: Vec<String>,
+    scripts: Vec<String>,
+}
+
 impl theme::Host for GojiThemeStore {
     async fn get_theme_config_value(
         &mut self,
@@ -399,11 +437,12 @@ impl theme::Host for GojiThemeStore {
     }
 
     async fn is_menu_item_active(&mut self, item: theme::MenuItem) -> bool {
-        item.route
-            .unwrap_or_default()
-            .strip_prefix("/")
-            .unwrap_or_default()
-            == self.path.strip_prefix("/").unwrap_or_default()
+        let route = item.route.clone().unwrap_or_default();
+        let route = route.strip_prefix("/").unwrap_or(route.as_str());
+
+        let path = self.path.strip_prefix("/").unwrap_or(self.path.as_str());
+
+        route == path
     }
 
     async fn is_parent_of_active_menu_item(&mut self, item: theme::MenuItem) -> bool {
@@ -416,31 +455,91 @@ impl theme::Host for GojiThemeStore {
     }
 
     async fn find_modern_page_by_theme(&mut self, name: String) -> Option<theme::ModernPage> {
-        dbal::modern_page::find_by_theme(name).await.map(Into::into)
+        dbal::modern_page::find_by_theme(name, self.theme.db_theme.id)
+            .await
+            .map(Into::into)
     }
 
     async fn find_classic_page_by_theme(&mut self, name: String) -> Option<theme::ClassicPage> {
-        dbal::classic_page::find_by_theme(name)
+        dbal::classic_page::find_by_theme(name, self.theme.db_theme.id)
             .await
             .map(Into::into)
     }
 
     async fn find_file_by_theme(&mut self, name: String) -> Option<theme::File> {
-        dbal::file::find_by_theme(name).await.map(Into::into)
+        dbal::file::find_by_theme(name, self.theme.db_theme.id)
+            .await
+            .map(Into::into)
     }
 
     async fn find_menu_by_theme(&mut self, name: String) -> Option<theme::Menu> {
-        dbal::menu::find_by_theme(name).await.map(Into::into)
+        dbal::menu::find_by_theme(name, self.theme.db_theme.id)
+            .await
+            .map(Into::into)
     }
 
     async fn find_gallery_by_theme(&mut self, name: String) -> Option<theme::Gallery> {
-        dbal::gallery::find_by_theme(name).await.map(Into::into)
+        dbal::gallery::find_by_theme(name, self.theme.db_theme.id)
+            .await
+            .map(Into::into)
     }
 
     async fn find_blog_category_by_theme(&mut self, name: String) -> Option<theme::BlogCategory> {
-        dbal::blog_category::find_by_theme(name)
+        dbal::blog_category::find_by_theme(name, self.theme.db_theme.id)
             .await
             .map(Into::into)
+    }
+
+    async fn styles(&mut self) -> String {
+        let cache_status = self.parse_cache_file().await;
+        cache_status
+            .styles
+            .into_iter()
+            .map(|file| format!(
+                r#"<link rel="stylesheet" type="text/css" href="/jinya-content/themes/cache/{}/{file}">"#,
+                self.theme.db_theme.name
+            ))
+            .collect::<Vec<_>>()
+            .join("\n")
+            .to_string()
+    }
+
+    async fn scripts(&mut self) -> String {
+        let cache_status = self.parse_cache_file().await;
+        cache_status
+            .scripts
+            .into_iter()
+            .map(|file| {
+                format!(
+                    r#"<script src="/jinya-content/themes/cache/{}/{file}"></script>"#,
+                    self.theme.db_theme.name
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n")
+            .to_string()
+    }
+
+    async fn asset_path(&mut self, name: String) -> String {
+        format!(
+            "/jinya-content/themes/{}/asset/{name}",
+            self.theme.db_theme.id
+        )
+    }
+}
+
+impl GojiThemeStore {
+    async fn parse_cache_file(&mut self) -> CacheFile {
+        yaml_serde::from_str(
+            &tokio::fs::read_to_string(
+                std::path::Path::new(&std::env::var("CACHE_PATH").unwrap_or_default())
+                    .join(&self.theme.db_theme.name)
+                    .join("cache-status.yaml"),
+            )
+            .await
+            .unwrap_or_default(),
+        )
+        .unwrap_or_default()
     }
 }
 

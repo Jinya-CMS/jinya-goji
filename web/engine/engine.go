@@ -112,7 +112,7 @@ func ForwardStandardRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func forwardRequest(w http.ResponseWriter, r *http.Request) int {
-	callEngine := func(uriPath, uriQuery string) ([]byte, int) {
+	callEngine := func(uriPath, uriQuery string, isError bool, errorStatusCode int) ([]byte, int) {
 		var (
 			statusCode int
 			body       []byte
@@ -163,7 +163,12 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) int {
 			} else {
 				uri.Scheme = "http"
 			}
-			body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
+
+			if isError {
+				body, statusCode = handleError(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String(), errorStatusCode)
+			} else {
+				body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
+			}
 		}
 
 		return body, statusCode
@@ -179,17 +184,26 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) int {
 		if activeTheme.ErrorBehavior == "homepage" {
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		} else {
-			callEngine("/internal/error-handler", "error="+strconv.Itoa(statusCode))
+			callEngine("/internal/error-handler", "error="+strconv.Itoa(statusCode), true, statusCode)
 			w.WriteHeader(statusCode)
 		}
 	}
 
-	body, statusCode := callEngine(r.URL.Path, r.URL.RawQuery)
+	body, statusCode := callEngine(r.URL.Path, r.URL.RawQuery, false, 0)
 	contentType := http.DetectContentType(body)
 
 	if statusCode > 300 {
 		callEngineError(http.StatusInternalServerError)
 		return statusCode
+	}
+
+	bodyAsString := string(body)
+	if strings.HasPrefix(contentType, "text/plain") {
+		if strings.HasPrefix(bodyAsString, "<") {
+			contentType = "text/html"
+		} else if (strings.HasPrefix(bodyAsString, "[") && strings.HasSuffix(bodyAsString, "]")) || strings.HasPrefix(bodyAsString, "{") && strings.HasSuffix(bodyAsString, "}") {
+			contentType = "application/json"
+		}
 	}
 
 	w.Header().Set("Content-Type", contentType)

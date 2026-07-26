@@ -83,24 +83,17 @@ macro_rules! find_by_parent {
 
 #[macro_export]
 macro_rules! find_by_theme {
-    ($name:ident,$type:ident,$theme_type:ident,$fn_name:ident) => {
-        pub async fn $fn_name(name: String) -> Option<$crate::models::$type> {
+    ($name:ident,$type:ident,$theme_name:ident,$theme_type:ident,$fn_name:ident) => {
+        pub async fn $fn_name(name: String, theme_id: i32) -> Option<$crate::models::$type> {
             use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QuerySelect, RelationTrait};
 
             $crate::models::$name::Entity::find()
                 .join(
                     sea_orm::JoinType::InnerJoin,
-                    $crate::models::$theme_type::Relation::$type.def(),
+                    $crate::models::$name::Relation::$theme_type.def(),
                 )
-                .join(
-                    sea_orm::JoinType::InnerJoin,
-                    $crate::models::$theme_type::Relation::Theme.def(),
-                )
-                .join(
-                    sea_orm::JoinType::InnerJoin,
-                    $crate::models::theme::Relation::Configuration.def(),
-                )
-                .filter($crate::models::$theme_type::Column::Name.eq(name))
+                .filter($crate::models::$theme_name::Column::Name.eq(name))
+                .filter($crate::models::$theme_name::Column::ThemeId.eq(theme_id))
                 .one($crate::dbal::db().await.ok()?)
                 .await
                 .ok()?

@@ -5,7 +5,7 @@ use sea_orm::{ColumnTrait, EntityTrait, JoinType, QueryFilter, QuerySelect, Rela
 
 find_entity!(gallery, Gallery);
 
-find_by_theme!(gallery, Gallery, theme_gallery, find_by_theme);
+find_by_theme!(gallery, Gallery, theme_gallery, ThemeGallery, find_by_theme);
 
 pub async fn find_files(gallery_id: i32) -> Option<Vec<GalleryFileWithFile>> {
     models::gallery_file_position::Entity::find()

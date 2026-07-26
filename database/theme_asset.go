@@ -28,15 +28,16 @@ func (asset *ThemeAsset) Delete() error {
 	return Delete(asset)
 }
 
-func FindThemeAssetByThemeAndName(themeId int, name string) (*ThemeAsset, error) {
+func FindThemeAssetByThemeAndName(themeName, name string) (*ThemeAsset, error) {
 	return SelectOne[ThemeAsset](`
-select name,
-       theme_id,
-       path
-from theme_asset
-where theme_id = $1
-  and name = $2
-`, themeId, name)
+select ta.name,
+       ta.theme_id,
+       ta.path
+from theme_asset ta
+         join theme t on t.id = ta.theme_id
+where t.name = $1
+  and ta.name = $2
+`, themeName, name)
 }
 
 func (asset *ThemeAsset) GetTheme() (*Theme, error) {

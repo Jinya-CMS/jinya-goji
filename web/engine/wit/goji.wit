@@ -138,6 +138,8 @@ interface db {
   find-gallery-files: func(gallery-id: s32) -> list<gallery-file>;
   find-blog-post-sections: func(blog-post-id: s32) -> list<blog-post-section>;
   find-modern-page-sections: func(modern-page-id: s32) -> list<modern-page-section>;
+  find-menu-items-by-menu: func(id: s32) -> list<menu-item>;
+  find-menu-items-by-menu-item: func(id: s32) -> list<menu-item>;
 
   find-blog-category-by-id: func(id: s32) -> option<blog-category>;
   find-blog-post-by-id: func(id: s32) -> option<blog-post>;
@@ -192,6 +194,11 @@ interface theme {
   find-menu-by-theme: func(name: string) -> option<menu>;
   find-gallery-by-theme: func(name: string) -> option<gallery>;
   find-blog-category-by-theme: func(name: string) -> option<blog-category>;
+
+  scripts: func() -> string;
+  styles: func() -> string;
+
+  asset-path: func(name: string) -> string;
 }
 
 interface request {
@@ -238,13 +245,13 @@ world goji-theme {
   import theme;
   import request;
 
-  export handle-blog-category: func(entity: blog-category) -> theme-response;
-  export handle-blog-post: func(entity: blog-post) -> theme-response;
-  export handle-blog-homepage: func() -> theme-response;
-  export handle-homepage: func() -> theme-response;
-  export handle-gallery: func(entity: gallery) -> theme-response;
-  export handle-modern-page: func(entity: modern-page) -> theme-response;
-  export handle-classic-page: func(entity: classic-page) -> theme-response;
-  export handle-profile: func(entity: user) -> theme-response;
-  export handle-error: func(status-code: u16) -> theme-response;
+  export handle-blog-category: async func(entity: blog-category) -> theme-response;
+  export handle-blog-post: async func(entity: blog-post) -> theme-response;
+  export handle-blog-homepage: async func() -> theme-response;
+  export handle-homepage: async func() -> theme-response;
+  export handle-gallery: async func(entity: gallery) -> theme-response;
+  export handle-modern-page: async func(entity: modern-page) -> theme-response;
+  export handle-classic-page: async func(entity: classic-page) -> theme-response;
+  export handle-profile: async func(entity: user) -> theme-response;
+  export handle-error: async func(status-code: u16) -> theme-response;
 }

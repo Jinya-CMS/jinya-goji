@@ -11,6 +11,7 @@ find_by_theme!(
     blog_category,
     BlogCategory,
     theme_blog_category,
+    ThemeBlogCategory,
     find_by_theme
 );
 
