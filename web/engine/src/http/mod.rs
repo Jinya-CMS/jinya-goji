@@ -121,10 +121,12 @@ async fn get_blog_post(path: &str) -> Option<BlogPost> {
 }
 
 pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
-    let theme = if let Ok(theme) = dbal::theme::get_active_theme().await {
-        theme
-    } else {
-        return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+    let theme = match dbal::theme::get_active_theme().await {
+        Ok(theme) => theme,
+        Err(err) => {
+            log::error!("{err}");
+            return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
+        }
     };
     let theme = if let Ok(theme) = Theme::new(theme).await {
         theme
@@ -132,7 +134,13 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     };
 
-    let url = Url::parse(uri);
+    let uri = if std::env::var("ENV").unwrap_or("prod".to_string()) == "dev" {
+        format!("http://localhost/{uri}")
+    } else {
+        uri.to_string()
+    };
+
+    let url = Url::parse(&uri);
     if url.is_err() {
         log::error!("Failed to parse url");
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
@@ -149,7 +157,7 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
         RequestEntity::Error(StatusCode::NOT_FOUND)
     };
 
-    call_theme(uri, is_api, theme, url, request_entity).await
+    call_theme(&uri, is_api, theme, url, request_entity).await
 }
 
 pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusCode, String) {

@@ -271,6 +271,14 @@ func updateThemeConfiguration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for key, group := range body.Configuration {
+		for itemKey, item := range group {
+			if item == nil {
+				delete(body.Configuration[key], itemKey)
+			}
+		}
+	}
+
 	theme.Configuration = body.Configuration
 	err = theme.Update()
 	if err != nil {

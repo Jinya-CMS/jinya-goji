@@ -38,6 +38,7 @@ interface types {
   record file {
     id: s32,
     path: string,
+    file-type: string,
     name: string,
   }
 
@@ -140,6 +141,7 @@ interface db {
   find-modern-page-sections: func(modern-page-id: s32) -> list<modern-page-section>;
   find-menu-items-by-menu: func(id: s32) -> list<menu-item>;
   find-menu-items-by-menu-item: func(id: s32) -> list<menu-item>;
+  find-menu-item-by-route: func(route: string) -> option<menu-item>;
 
   find-blog-category-by-id: func(id: s32) -> option<blog-category>;
   find-blog-post-by-id: func(id: s32) -> option<blog-post>;
@@ -201,6 +203,10 @@ interface theme {
   asset-path: func(name: string) -> string;
 }
 
+interface image {
+  image-size: func(file-id: s32) -> tuple<s32, s32>;
+}
+
 interface request {
   get-path: func() -> string;
   get-url: func() -> string;
@@ -242,6 +248,7 @@ world goji-theme {
   import blog;
   import db;
   import http;
+  import image;
   import theme;
   import request;
 

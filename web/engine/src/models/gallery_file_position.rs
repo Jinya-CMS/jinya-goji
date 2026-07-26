@@ -51,5 +51,6 @@ pub struct GalleryFileWithFile {
     pub id: i32,
     pub path: String,
     pub name: String,
+    pub r#type: String,
     pub position: i32,
 }

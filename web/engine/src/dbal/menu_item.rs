@@ -44,3 +44,17 @@ pub async fn is_parent_of_active_menu_item(item_id: i32, item_path: &str, path: 
 
     false
 }
+
+pub async fn find_menu_item_by_route(route: String) -> Option<MenuItem> {
+    models::menu_item::Entity::find()
+        .filter(
+            Condition::any()
+                .add(models::menu_item::Column::Route.eq(&route))
+                .add(
+                    models::menu_item::Column::Route.eq(route.strip_prefix("/").unwrap_or(&route)),
+                ),
+        )
+        .one(db().await.ok()?)
+        .await
+        .unwrap_or_default()
+}

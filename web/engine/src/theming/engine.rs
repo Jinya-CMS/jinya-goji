@@ -1,11 +1,12 @@
 use crate::models::blog_category::BlogCategoryPath;
 use crate::models::gallery_file_position::GalleryFileWithFile;
 use crate::models::theme::BoolOrString;
-use crate::theming::engine::jinya::goji::{blog, db, http, request, theme, types};
+use crate::theming::engine::jinya::goji::{blog, db, http, image, request, theme, types};
 use crate::theming::theme::Theme;
 use crate::{dbal, models};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::path::Path;
 use wasmtime::component::{HasData, ResourceTable, bindgen};
 use wasmtime_wasi::{WasiCtx, WasiCtxView, WasiView};
 
@@ -36,6 +37,7 @@ impl From<models::File> for File {
             id: file.id,
             path: file.path,
             name: file.name,
+            file_type: file.r#type,
         }
     }
 }
@@ -109,6 +111,7 @@ impl From<GalleryFileWithFile> for GalleryFile {
                 id: value.id,
                 path: value.path,
                 name: value.name,
+                file_type: value.r#type,
             },
         }
     }
@@ -299,6 +302,12 @@ impl db::Host for GojiThemeStore {
             .into_iter()
             .map(Into::into)
             .collect()
+    }
+
+    async fn find_menu_item_by_route(&mut self, route: String) -> Option<db::MenuItem> {
+        dbal::menu_item::find_menu_item_by_route(route)
+            .await
+            .map(Into::into)
     }
 
     async fn find_blog_category_by_id(&mut self, id: i32) -> Option<db::BlogCategory> {
@@ -523,7 +532,7 @@ impl theme::Host for GojiThemeStore {
     async fn asset_path(&mut self, name: String) -> String {
         format!(
             "/jinya-content/themes/{}/asset/{name}",
-            self.theme.db_theme.id
+            self.theme.db_theme.name
         )
     }
 }
@@ -590,5 +599,22 @@ impl blog::Host for GojiThemeStore {
             .into_iter()
             .map(Into::into)
             .collect()
+    }
+}
+
+impl image::Host for GojiThemeStore {
+    async fn image_size(&mut self, file_id: i32) -> (i32, i32) {
+        if let Some(file) = dbal::file::find_by_id(file_id).await {
+            if let Ok(size) = imagesize::size(
+                Path::new(&std::env::var("STORAGE_PATH").unwrap_or("data".to_string()))
+                    .join(file.path),
+            ) {
+                (size.width as i32, size.height as i32)
+            } else {
+                (-1, -1)
+            }
+        } else {
+            (-1, -1)
+        }
     }
 }

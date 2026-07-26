@@ -16,6 +16,7 @@ crate-type = ["cdylib"]
 actix-web = "4"
 anyhow = "1"
 env_logger = "0.11"
+imagesize = "0.15"
 log = "0.4"
 reqwest = "0.13"
 sea-orm = { version = "2", features = ["runtime-tokio", "serde_json", "sqlx-postgres"] }
