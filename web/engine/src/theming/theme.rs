@@ -66,17 +66,21 @@ impl Theme {
     }
 
     pub fn get_config(&self, group: String, key: String) -> Option<BoolOrString> {
-        self.db_theme
-            .configuration
-            .get(&group)
-            .cloned()
-            .unwrap_or(
-                self.default_configuration
-                    .get(&group)
-                    .cloned()
-                    .unwrap_or_default(),
-            )
-            .get(&key)
-            .cloned()
+        let config_group = self.db_theme.configuration.get(&group).cloned().unwrap_or(
+            self.default_configuration
+                .get(&group)
+                .cloned()
+                .unwrap_or_default(),
+        );
+        let value = config_group.get(&key).cloned();
+        if value.is_none() {
+            self.default_configuration
+                .get(&group)
+                .cloned()?
+                .get(&key)
+                .cloned()
+        } else {
+            value
+        }
     }
 }
