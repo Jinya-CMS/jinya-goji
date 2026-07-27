@@ -18,6 +18,7 @@ pub async fn find_files(gallery_id: i32) -> Option<Vec<GalleryFileWithFile>> {
         .column(models::gallery_file_position::Column::Position)
         .column(models::file::Column::Path)
         .column(models::file::Column::Name)
+        .column(models::file::Column::Type)
         .column(models::file::Column::Id)
         .into_model::<GalleryFileWithFile>()
         .all(db().await.ok()?)
