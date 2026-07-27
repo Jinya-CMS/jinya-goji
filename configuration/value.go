@@ -41,7 +41,13 @@ func GetString(group, key, defaultValue string) string {
 
 func GetInteger(group, key string, defaultValue int) int {
 	val := getConfigurationValue(group, key, defaultValue, database.JinyaConfigurationTypeInteger)
-	if i, err := strconv.Atoi(val.(string)); err == nil {
+	if s, ok := val.(string); ok {
+		if i, err := strconv.Atoi(s); err == nil {
+			return i
+		}
+	}
+
+	if i, ok := val.(int); ok {
 		return i
 	}
 

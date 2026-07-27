@@ -151,6 +151,12 @@ func request2fa(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		err = artist.Update()
+		if err != nil {
+			sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
+			return
+		}
+
 		go mailing.SendTwoFactorCodeMail(r, artist.ArtistName, artist.Email, *artist.TwoFactorToken)
 		w.WriteHeader(http.StatusNoContent)
 		return
