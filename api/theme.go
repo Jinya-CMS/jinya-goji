@@ -463,7 +463,16 @@ func getThemeBlogCategories(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	encoder.Encode(categories)
+	result := map[string]*database.BlogCategory{}
+	for _, cat := range categories {
+		result[cat.Name], err = cat.GetBlogCategory()
+		if err != nil {
+			sendError("Failed to get blog categories", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+
+	encoder.Encode(result)
 }
 
 func updateThemeBlogCategory(w http.ResponseWriter, r *http.Request) {
@@ -530,7 +539,16 @@ func getThemeClassicPages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	encoder.Encode(pages)
+	result := map[string]*database.ClassicPage{}
+	for _, page := range pages {
+		result[page.Name], err = page.GetClassicPage()
+		if err != nil {
+			sendError("Failed to get classic pages", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+
+	encoder.Encode(result)
 }
 
 func updateThemeClassicPage(w http.ResponseWriter, r *http.Request) {
@@ -591,13 +609,22 @@ func getThemeFiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pages, err := theme.GetFiles()
+	files, err := theme.GetFiles()
 	if err != nil {
 		sendError("Failed to get files", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
-	encoder.Encode(pages)
+	result := map[string]*database.File{}
+	for _, file := range files {
+		result[file.Name], err = file.GetFile()
+		if err != nil {
+			sendError("Failed to get files", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+
+	encoder.Encode(result)
 }
 
 func updateThemeFile(w http.ResponseWriter, r *http.Request) {
@@ -658,13 +685,22 @@ func getThemeGalleries(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pages, err := theme.GetGalleries()
+	galleries, err := theme.GetGalleries()
 	if err != nil {
 		sendError("Failed to get galleries", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
-	encoder.Encode(pages)
+	result := map[string]*database.Gallery{}
+	for _, gallery := range galleries {
+		result[gallery.Name], err = gallery.GetGallery()
+		if err != nil {
+			sendError("Failed to get galleries", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+
+	encoder.Encode(result)
 }
 
 func updateThemeGallery(w http.ResponseWriter, r *http.Request) {
@@ -725,17 +761,25 @@ func getThemeMenus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pages, err := theme.GetMenus()
+	menus, err := theme.GetMenus()
 	if err != nil {
 		sendError("Failed to get menus", http.StatusInternalServerError, encoder, w, err)
 		return
 	}
 
-	encoder.Encode(pages)
+	result := map[string]*database.Menu{}
+	for _, menu := range menus {
+		result[menu.Name], err = menu.GetMenu()
+		if err != nil {
+			sendError("Failed to get menus", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+
+	encoder.Encode(result)
 }
 
 func updateThemeMenu(w http.ResponseWriter, r *http.Request) {
-
 	encoder := json.NewEncoder(w)
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -799,7 +843,16 @@ func getThemeModernPages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	encoder.Encode(pages)
+	result := map[string]*database.ModernPage{}
+	for _, page := range pages {
+		result[page.Name], err = page.GetModernPage()
+		if err != nil {
+			sendError("Failed to get modern pages", http.StatusInternalServerError, encoder, w, err)
+			return
+		}
+	}
+
+	encoder.Encode(result)
 }
 
 func updateThemeModernPage(w http.ResponseWriter, r *http.Request) {
