@@ -29,6 +29,9 @@ build-go:
 
 build: build-rust build-go
 
+start: build-rust
+    go run app.go
+
 compile-themes:
 	for theme in themes/*; do \
 		if [ -f "$$theme/Cargo.toml" ]; then \
