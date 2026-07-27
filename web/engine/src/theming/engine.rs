@@ -94,7 +94,7 @@ impl From<models::Gallery> for Gallery {
             } else {
                 GalleryType::Sequence
             },
-            orientation: if gallery.r#type == "masonry" {
+            orientation: if gallery.r#type == "horizontal" {
                 GalleryOrientation::Horizontal
             } else {
                 GalleryOrientation::Vertical

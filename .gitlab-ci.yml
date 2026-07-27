@@ -21,7 +21,7 @@ stages:
   variables:
     RUSTFLAGS: "-C target-feature=-crt-static"
   before_script:
-    - apk add just
+    - apk add just vips
 
 lint-js:
   image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/oven/bun:latest
