@@ -97,7 +97,8 @@
     cursor: pointer;
     font-family: var(--font-family);
     font-size: var(--font-size);
-    padding: var(--button-padding-top) var(--button-padding-right) var(--button-padding-bottom) var(--button-padding-left);
+    padding: var(--button-padding-top) var(--button-padding-right) var(--button-padding-bottom)
+      var(--button-padding-left);
     box-sizing: border-box;
     border: var(--button-border-width) solid var(--button-border-color);
     background: var(--button-background);
@@ -112,9 +113,10 @@
     align-items: center;
     white-space: nowrap;
     min-width: unset;
-    transition: background-color var(--transition-duration),
-    color var(--transition-duration),
-    border-color var(--transition-duration);
+    transition:
+      background-color var(--transition-duration),
+      color var(--transition-duration),
+      border-color var(--transition-duration);
 
     &:focus:not([disabled]) {
       outline: unset;
@@ -258,9 +260,10 @@
     align-items: center;
     white-space: nowrap;
     border-radius: 0;
-    transition: background-color var(--transition-duration),
-    color var(--transition-duration),
-    border-color var(--transition-duration);
+    transition:
+      background-color var(--transition-duration),
+      color var(--transition-duration),
+      border-color var(--transition-duration);
 
     &:hover:not([disabled]),
     &:focus:not([disabled]) {
@@ -315,7 +318,8 @@
         border-radius: var(--border-radius);
         line-height: var(--line-height);
         border: var(--input-border-width) solid var(--control-border-color);
-        padding: var(--input-padding-top) var(--input-padding-right) var(--input-padding-bottom) var(--input-padding-left);
+        padding: var(--input-padding-top) var(--input-padding-right) var(--input-padding-bottom)
+          var(--input-padding-left);
         border-bottom: var(--input-border-bottom-width) solid var(--border-indicator-color);
 
         &:focus {
@@ -350,8 +354,9 @@
 
         &::after,
         &::before {
-          transition: border-color var(--transition-duration),
-          background-color var(--transition-duration);
+          transition:
+            border-color var(--transition-duration),
+            background-color var(--transition-duration);
         }
 
         &::before {
@@ -542,7 +547,8 @@
 
   .jodit-dialog__header {
     padding: 0;
-    margin: var(--modal-title-margin-top) var(--modal-title-margin-right) var(--modal-title-margin-bottom) var(--modal-title-margin-left);
+    margin: var(--modal-title-margin-top) var(--modal-title-margin-right) var(--modal-title-margin-bottom)
+      var(--modal-title-margin-left);
     text-transform: uppercase;
     font-size: var(--modal-title-font-size);
     line-height: var(--modal-title-font-size);
@@ -625,7 +631,8 @@
         border-radius: var(--border-radius);
         line-height: var(--line-height);
         border: var(--input-border-width) solid var(--control-border-color);
-        padding: var(--input-padding-top) var(--input-padding-right) var(--input-padding-bottom) var(--input-padding-left);
+        padding: var(--input-padding-top) var(--input-padding-right) var(--input-padding-bottom)
+          var(--input-padding-left);
         border-bottom: var(--input-border-bottom-width) solid var(--border-indicator-color);
 
         &:focus {
@@ -681,8 +688,9 @@
 
         &::after,
         &::before {
-          transition: border-color var(--transition-duration),
-          background-color var(--transition-duration);
+          transition:
+            border-color var(--transition-duration),
+            background-color var(--transition-duration);
         }
 
         &::before {

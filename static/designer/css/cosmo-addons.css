@@ -1,7 +1,6 @@
 :root {
   --selection-color: var(--white);
 
-
   @media screen and (prefers-color-scheme: dark) {
     --selection-color: var(--black);
   }
@@ -41,7 +40,6 @@
   width: 1.25rem;
 }
 
-
 .cosmo-button.is--icon.is--circle svg {
   stroke: currentcolor;
 }
@@ -50,11 +48,11 @@
   stroke: currentcolor;
 
   &.is--negative {
-    stroke: var(--negative-color)
+    stroke: var(--negative-color);
   }
 
   &.is--positive {
-    stroke: var(--positive-color)
+    stroke: var(--positive-color);
   }
 }
 

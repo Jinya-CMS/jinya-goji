@@ -13,15 +13,17 @@
   },
   "type": "module",
   "scripts": {
-    "designer:prettier": "prettier static/designer/js static/designer/templates --check",
+    "designer:prettier": "prettier static/designer/js static/designer/css static/designer/templates --check",
     "designer:eslint": "eslint -c eslint.config.cjs static/designer/js/ static/designer/lang/",
     "designer:stylelint": "stylelint static/designer/**/*.css",
-    "designer:format": "prettier static/designer/js static/designer/templates --write",
+    "designer:format": "prettier static/designer/js static/designer/css static/designer/templates --write",
     "designer:lint": "bun run designer:prettier && bun run designer:eslint && bun run designer:stylelint",
     "installer:prettier": "prettier static/installer --check",
     "installer:eslint": "eslint -c eslint.config.cjs static/installer/",
     "installer:stylelint": "stylelint static/installer/**/*.css --fix",
-    "installer:format": "prettier static/installer --write"
+    "installer:format": "prettier static/installer --write",
+    "installer:lint": "bun run installer:prettier && bun run installer:eslint && bun run installer:stylelint",
+    "lint": "bun run designer:lint && bun run installer:lint"
   },
   "homepage": "https://jinya.de",
   "devDependencies": {

@@ -5,13 +5,29 @@ update:
 	cd web/engine && cargo update
 	cd compiler && cargo update
 
+lint-rust:
+	cd mailing/templating && cargo clippy --release
+	cd web/engine && cargo clippy --release
+	cd compiler && cargo clippy --release
+
+lint-go:
+    go vet .
+
+lint-frontend:
+    bun run designer:lint
+    bun run installer:lint
+
+lint: lint-rust lint-go lint-frontend
+
 build-rust:
 	cd mailing/templating && cargo build --release
 	cd web/engine && cargo build --release
 	cd compiler && cargo build --release
 
-build: build-rust
-	go build -o jinya-cms-goji app.go
+build-go:
+    go build -o jinya-cms-goji app.go
+
+build: build-rust build-go
 
 compile-themes:
 	for theme in themes/*; do \

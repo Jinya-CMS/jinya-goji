@@ -1,7 +1,7 @@
 .jinya-designer {
   display: grid;
   grid-template-rows: [header] 2.75rem 1.25rem [toolbar] 2rem 2rem [content] 1fr;
-  grid-template-areas: "header" "gap1" "toolbar" "gap2" "content";
+  grid-template-areas: 'header' 'gap1' 'toolbar' 'gap2' 'content';
 }
 
 .jinya-designer__title {

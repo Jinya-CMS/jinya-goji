@@ -118,7 +118,7 @@
 
 figcaption.jinya-section-editor__caption.is--file {
   display: grid;
-  grid-template: "title title" auto "label link" auto / auto 1fr;
+  grid-template: 'title title' auto 'label link' auto / auto 1fr;
   align-content: start;
   gap: 1rem;
 }
