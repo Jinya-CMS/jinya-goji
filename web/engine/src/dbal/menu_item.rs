@@ -1,7 +1,9 @@
 use crate::dbal::db;
 use crate::models::MenuItem;
 use crate::{find_by_parent, find_entity, models};
-use sea_orm::{ColumnTrait, Condition, EntityTrait, QueryFilter};
+use sea_orm::{
+    ColumnTrait, Condition, ConnectionTrait, DbBackend, EntityTrait, QueryFilter, Statement,
+};
 
 find_entity!(menu, Menu);
 
@@ -19,30 +21,42 @@ pub async fn get_item_by_path(path: String) -> Option<MenuItem> {
         .ok()?
 }
 
-pub async fn is_parent_of_active_menu_item(item_id: i32, item_path: &str, path: &str) -> bool {
-    let normalized_path = path.strip_prefix("/").unwrap_or(path);
+pub async fn is_parent_of_active_menu_item(item_id: i32, path: &str) -> bool {
+    //language=postgresql
+    let query = r#"
+with recursive menu_item_path as (select mi.*, 0 as depth
+                                  from menu_item mi
+                                  where mi.route = $1
+                                     or mi.route = $2
 
-    if item_path.strip_prefix("/").unwrap_or(item_path) == normalized_path {
-        return true;
+                                  union all
+
+                                  -- recursive step: walk up to the parent
+                                  select mi2.*, mip.depth + 1
+                                  from menu_item_path mip
+                                           inner join menu_item mi2 on mi2.id = mip.parent_id)
+select *
+from menu_item_path
+where id = $3
+limit 1
+    "#;
+    if let Ok(db) = db().await {
+        db.query_one_raw(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            query,
+            vec![
+                sea_orm::Value::String(Some(path.to_string())),
+                sea_orm::Value::String(Some(path.strip_prefix("/").unwrap_or(path).to_string())),
+                sea_orm::Value::Int(Some(item_id)),
+            ],
+        ))
+        .await
+        .ok()
+        .unwrap_or_default()
+        .is_some()
+    } else {
+        false
     }
-
-    let mut stack = vec![item_id];
-
-    while let Some(parent_id) = stack.pop() {
-        let children = find_menu_items(parent_id).await.unwrap_or_default();
-
-        for item in children {
-            let item_route = item.route.unwrap_or_default();
-
-            if item_route.strip_prefix("/").unwrap_or(&item_route) == normalized_path {
-                return true;
-            }
-
-            stack.push(item.id);
-        }
-    }
-
-    false
 }
 
 pub async fn find_menu_item_by_route(route: String) -> Option<MenuItem> {

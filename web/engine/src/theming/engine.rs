@@ -457,7 +457,6 @@ impl theme::Host for GojiThemeStore {
     async fn is_parent_of_active_menu_item(&mut self, item: theme::MenuItem) -> bool {
         dbal::menu_item::is_parent_of_active_menu_item(
             item.id,
-            &item.route.unwrap_or_default(),
             &self.path,
         )
         .await

@@ -172,7 +172,13 @@ pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusC
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     };
 
-    let url = Url::parse(uri);
+    let uri = if std::env::var("ENV").unwrap_or("prod".to_string()) == "dev" {
+        format!("http://localhost/{uri}")
+    } else {
+        uri.to_string()
+    };
+
+    let url = Url::parse(&uri);
     if url.is_err() {
         log::error!("Failed to parse url");
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
@@ -181,7 +187,7 @@ pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusC
     let url = url.unwrap();
 
     call_theme(
-        uri,
+        &uri,
         is_api,
         theme,
         url,

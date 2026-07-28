@@ -48,6 +48,8 @@ build:
   stage: build
   script:
     - just build
+    - mkdir -p $CI_PROJECT_DIR/$ARCH/
+    - mv jinya-cms-goji $CI_PROJECT_DIR/$ARCH/jinya-cms-goji
   artifacts:
     paths:
       - $CI_PROJECT_DIR/$ARCH/jinya-cms-goji
