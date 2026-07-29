@@ -2,13 +2,16 @@ package jinya:goji;
 
 interface types {
   record blog-category {
+    id: s32,
     name: string,
     description: string,
   }
 
   record blog-post {
+    id: s32,
     title: string,
     slug: string,
+    link: string,
     header-image-id: option<s32>,
     public: bool,
     creator-id: s32,
@@ -77,6 +80,8 @@ interface types {
 
   record menu-item {
     id: s32,
+    menu-id: option<s32>,
+    parent-id: option<s32>,
     position: s32,
     title: string,
     route: option<string>,
@@ -138,6 +143,7 @@ interface db {
 
   find-gallery-files: func(gallery-id: s32) -> list<gallery-file>;
   find-blog-post-sections: func(blog-post-id: s32) -> list<blog-post-section>;
+  find-blog-posts-by-category: func(blog-category-id: s32, with-children: bool) -> list<blog-post>;
   find-modern-page-sections: func(modern-page-id: s32) -> list<modern-page-section>;
   find-menu-items-by-menu: func(id: s32) -> list<menu-item>;
   find-menu-items-by-menu-item: func(id: s32) -> list<menu-item>;

@@ -34,23 +34,24 @@ find_by_parent!(
 );
 
 pub async fn get_category_path(post_id: i32) -> Vec<BlogCategoryPath> {
+    //language=postgresql
     let query = r#"
-with recursive category_path as (
-    select bc.*, 0 as depth
-    from blog_category bc
-    where bc.id = (select category_id
-                   from blog_post
-                   where id = $1)
+with recursive category_path as (select bc.*, 0 as depth
+                                 from blog_category bc
+                                 where bc.id = (select category_id from blog_post where id = $1)
 
-    union all
+                                 union all
 
-    -- recursive step: walk up to the parent
-    select bc2.*, cp.depth + 1
-    from category_path cp
-             inner join blog_category bc2 on bc2.id = cp.parent_id)
-select cp2.id as category_id, cp2.name as category_name, mi.id as menu_item_id, mi.route as route, mi.title as menu_item_title
+                                 select bc2.*, cp.depth + 1
+                                 from category_path cp
+                                          inner join blog_category bc2 on bc2.id = cp.parent_id)
+select cp2.id   as category_id,
+       cp2.name as category_name,
+       mi.id    as menu_item_id,
+       mi.route as route,
+       mi.title as menu_item_title
 from category_path cp2
-         join menu_item mi on mi.category_id = cp2.id
+         join menu_item mi on mi.blog_category_id = cp2.id
 order by depth desc;
 "#;
 

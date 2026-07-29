@@ -45,6 +45,7 @@ impl From<models::File> for File {
 impl From<models::BlogCategory> for BlogCategory {
     fn from(category: models::BlogCategory) -> Self {
         Self {
+            id: category.id,
             name: category.name,
             description: category.description,
         }
@@ -54,7 +55,13 @@ impl From<models::BlogCategory> for BlogCategory {
 impl From<models::BlogPost> for BlogPost {
     fn from(blog_post: models::BlogPost) -> Self {
         Self {
+            id: blog_post.id,
             title: blog_post.title,
+            link: format!(
+                "/{}/{}",
+                blog_post.created_at.format("%Y/%m/%d"),
+                blog_post.slug
+            ),
             slug: blog_post.slug,
             header_image_id: blog_post.header_image_id,
             public: blog_post.public,
@@ -170,6 +177,8 @@ impl From<models::MenuItem> for MenuItem {
     fn from(value: models::menu_item::Model) -> Self {
         Self {
             id: value.id,
+            menu_id: value.menu_id,
+            parent_id: value.parent_id,
             position: value.position,
             title: value.title,
             route: value.route,
@@ -285,6 +294,19 @@ impl db::Host for GojiThemeStore {
 
     async fn find_menu_items_by_menu_item(&mut self, id: i32) -> Vec<db::MenuItem> {
         dbal::menu_item::find_menu_items(id)
+            .await
+            .unwrap_or_default()
+            .into_iter()
+            .map(Into::into)
+            .collect()
+    }
+
+    async fn find_blog_posts_by_category(
+        &mut self,
+        blog_category_id: i32,
+        with_children: bool,
+    ) -> Vec<db::BlogPost> {
+        dbal::blog_category::find_posts(blog_category_id, with_children)
             .await
             .unwrap_or_default()
             .into_iter()
@@ -455,11 +477,7 @@ impl theme::Host for GojiThemeStore {
     }
 
     async fn is_parent_of_active_menu_item(&mut self, item: theme::MenuItem) -> bool {
-        dbal::menu_item::is_parent_of_active_menu_item(
-            item.id,
-            &self.path,
-        )
-        .await
+        dbal::menu_item::is_parent_of_active_menu_item(item.id, &self.path).await
     }
 
     async fn find_modern_page_by_theme(&mut self, name: String) -> Option<theme::ModernPage> {
