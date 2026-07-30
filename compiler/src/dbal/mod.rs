@@ -1,7 +1,7 @@
 mod theme;
 
 use sea_orm::entity::prelude::*;
-use sea_orm::Database;
+use sea_orm::{ConnectOptions, Database};
 use std::fmt::{Debug, Display, Formatter};
 use anyhow::anyhow;
 pub use theme::get_theme;
@@ -24,8 +24,10 @@ static DB: tokio::sync::OnceCell<DatabaseConnection> = tokio::sync::OnceCell::co
 pub async fn db() -> anyhow::Result<&'static DatabaseConnection> {
     DB.get_or_try_init(|| async {
         let database_url = std::env::var("DATABASE_URL")?;
+        let mut opt = ConnectOptions::new(database_url);
+        opt.sqlx_logging(false);
 
-        Database::connect(database_url)
+        Database::connect(opt)
             .await
             .map_err(|err| anyhow!(err))
     })

@@ -11,7 +11,7 @@ pub mod user;
 
 use anyhow::anyhow;
 use sea_orm::entity::prelude::*;
-use sea_orm::{Database, DbBackend, Statement};
+use sea_orm::{ConnectOptions, Database, DbBackend, Statement};
 use sql_query_analyzer::query::{QueryType, SqlDialect};
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};
@@ -34,8 +34,10 @@ static DB: tokio::sync::OnceCell<DatabaseConnection> = tokio::sync::OnceCell::co
 pub async fn db() -> anyhow::Result<&'static DatabaseConnection> {
     DB.get_or_try_init(|| async {
         let database_url = std::env::var("DATABASE_URL")?;
+        let mut opt = ConnectOptions::new(database_url);
+        opt.sqlx_logging(false);
 
-        Database::connect(database_url).await.map_err(|err| {
+        Database::connect(opt).await.map_err(|err| {
             log::error!("Failed to connect to database: {err}");
             anyhow!(err)
         })
