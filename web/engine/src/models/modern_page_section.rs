@@ -15,8 +15,6 @@ pub struct Model {
     #[sea_orm(column_type = "Text", nullable)]
     pub action: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]
-    pub script: Option<String>,
-    #[sea_orm(column_type = "Text", nullable)]
     pub target: Option<String>,
 }
 
