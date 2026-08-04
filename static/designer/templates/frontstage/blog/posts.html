@@ -114,7 +114,7 @@
                   <span class="cosmo-message__header" x-text="message.title"></span>
                   <p class="cosmo-message__message" x-text="message.content"></p>
                 </div>
-                <template :key="index" x-for="(section, index) in sections">
+                <template :key="section.uniqueId" x-for="(section, index) in sections">
                   <div style="display: contents">
                     <div
                       class="jinya-section-editor__button is--add"

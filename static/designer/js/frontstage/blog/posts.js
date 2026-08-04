@@ -86,6 +86,7 @@ Alpine.data('postsData', () => ({
   },
   cleanSections(sections, postId = null) {
     return sections.map((item) => ({
+      uniqueId: crypto.randomUUID(),
       postId: postId ?? item.postId,
       gallery: item.gallery ? Alpine.raw(item.gallery) : null,
       file: item.file ? Alpine.raw(item.file) : null,
