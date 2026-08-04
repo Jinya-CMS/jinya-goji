@@ -13,6 +13,7 @@ use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Engine, Store};
 use wasmtime_wasi::WasiCtx;
 
+#[derive(Debug)]
 enum RequestEntity {
     BlogCategory(BlogCategory),
     BlogPost(BlogPost),
