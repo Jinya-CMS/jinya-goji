@@ -12,7 +12,7 @@ put:
     '204':
       description: Successfully activated the user
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -42,7 +42,7 @@ delete:
     '204':
       description: Successfully deactivated the user
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

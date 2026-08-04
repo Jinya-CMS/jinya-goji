@@ -12,7 +12,7 @@ put:
     '204':
       description: Successfully updated the theme configuration
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

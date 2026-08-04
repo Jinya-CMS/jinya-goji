@@ -10,7 +10,7 @@ put:
           schema:
             $ref: ../components/schemas/otp-app-mode-response.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

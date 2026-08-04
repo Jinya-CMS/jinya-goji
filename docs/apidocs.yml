@@ -1,26 +1,26 @@
 openapi: 3.1.0
 info:
-  title: Jinya CMS API
-  version: 26.0.0
+  title: Jinya Goji API
+  version: 1.0.0
   contact:
     name: Jinya Developers
-    url: https://github.com/Jinya-CMS/Jinya-CMS
+    url: https://github.com/Jinya-CMS/Jinya-Goji
     email: developers@jinya.de
   license:
     name: MIT
-    url: https://github.com/Jinya-CMS/Jinya-CMS/blob/main/LICENSE
-  description: This API docs specifies the Jinya CMS API for version 26.0.0
+    url: https://github.com/Jinya-CMS/Jinya-Goji/blob/main/LICENSE
+  description: This API docs specifies the Jinya Goji API for version 1.0.0
   x-logo:
-    url: https://raw.githubusercontent.com/Jinya-CMS/jinya-cms/main/public/designer/favicons/favicon-light.png
+    url: https://raw.githubusercontent.com/Jinya-CMS/jinya-goji/main/public/designer/favicons/favicon-light.png
     backgroundColor: '#FFFFFF'
     altText: Jinya logo
 servers:
   - url: https://{yourServer}
-    description: Your server of Jinya CMS
+    description: Your server of Jinya Goji
     variables:
       yourServer:
-        default: localhost:8080
-        description: The server your Jinya CMS instance is installed on
+        default: localhost:8090
+        descriptions: The server your Jinya Goji instance is installed on
 tags:
   - name: authentication
     description: User authentication
@@ -46,9 +46,6 @@ tags:
   - name: modern-pages
     description: Modern page management
     x-displayName: Modern page management
-  - name: forms
-    description: Form management
-    x-displayName: Form management
   - name: blog-posts
     description: Blog post management
     x-displayName: Blog post management
@@ -98,13 +95,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/api-key'
         '401':
-          description: Api Key is missing
+          description: Authentication is missing
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
         '403':
-          description: Invalid api key
+          description: Invalid authentication
           content:
             application/json:
               schema:
@@ -128,7 +125,101 @@ paths:
         '204':
           description: Succesfully deleted the api key
         '401':
-          description: Api Key is missing or invalid
+          description: Authentication is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        '404':
+          description: The specified api key was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+      tags:
+        - active-sessions
+      security:
+        - header-auth: []
+        - cookie-auth: []
+      description: Deletes the api key given in the request path
+  /api/api-token:
+    get:
+      summary: List api tokens
+      tags:
+        - active-sessions
+      responses:
+        '200':
+          description: Successfully got all api tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/api-token'
+        '401':
+          description: Authentication is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        '403':
+          description: Invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+      operationId: get_all_api_tokens
+      description: Gets all currently valid api tokens
+      security:
+        - header-auth: []
+        - cookie-auth: []
+    post:
+      summary: Create persistent api token
+      tags:
+        - active-sessions
+      requestBody:
+        $ref: '#/components/requestBodies/create-api-token-request'
+      responses:
+        '201':
+          description: Successfully created the api token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/api-token'
+        '401':
+          description: Authentication is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+        '403':
+          description: Invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+      operationId: create_api_token
+      description: Creates a new api token with the given name and expiry date
+      security:
+        - header-auth: []
+        - cookie-auth: []
+  /api/api-token/{token}:
+    parameters:
+      - name: token
+        schema:
+          type: string
+        in: path
+        required: true
+    delete:
+      summary: Delete api token
+      operationId: delete_api_token
+      responses:
+        '204':
+          description: Succesfully deleted the api token
+        '401':
+          description: Authentication is missing
           content:
             application/json:
               schema:
@@ -158,7 +249,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/user'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -192,7 +283,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -234,7 +325,7 @@ paths:
         '204':
           description: Successfully updated user
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -275,7 +366,7 @@ paths:
         '204':
           description: User successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -309,7 +400,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/user'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -348,7 +439,7 @@ paths:
         '204':
           description: Successfully activated the user
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -378,7 +469,7 @@ paths:
         '204':
           description: Successfully deactivated the user
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -421,7 +512,7 @@ paths:
         '204':
           description: Successfully reset totp for the given user
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -456,7 +547,7 @@ paths:
         '204':
           description: Successfully updated users profile picture
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -516,7 +607,7 @@ paths:
         '204':
           description: Users profile picture successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -575,7 +666,7 @@ paths:
                 type: string
                 format: binary
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -639,7 +730,7 @@ paths:
         '204':
           description: Api Key is valid
         '401':
-          description: Api key is invalid
+          description: Authentication is invalid
       operationId: check_api_key
       description: Check if the api key provided in the header is still valid.
       security:
@@ -739,7 +830,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/blog-category'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -773,7 +864,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -815,7 +906,7 @@ paths:
         '204':
           description: Successfully updated blog category
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -856,7 +947,7 @@ paths:
         '204':
           description: Blog category successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -890,7 +981,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/blog-category'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -931,7 +1022,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/blog-post-list'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -968,7 +1059,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/blog-post'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1002,7 +1093,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1044,7 +1135,7 @@ paths:
         '204':
           description: Successfully updated blog post
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1085,7 +1176,7 @@ paths:
         '204':
           description: Blog post successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1119,7 +1210,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/user'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1162,7 +1253,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/blog-post-section'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1198,7 +1289,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1242,7 +1333,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/configuration'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1266,7 +1357,7 @@ paths:
         '204':
           description: Successfully updated the configuration values
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1300,7 +1391,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/root-folder'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1335,7 +1426,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1377,7 +1468,7 @@ paths:
         '204':
           description: Successfully updated folder
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1418,7 +1509,7 @@ paths:
         '204':
           description: Folder successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1459,7 +1550,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1501,7 +1592,7 @@ paths:
         '204':
           description: Successfully updated file
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1542,7 +1633,7 @@ paths:
         '204':
           description: File successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1579,7 +1670,7 @@ paths:
         '204':
           description: Successfully started the file upload
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1614,7 +1705,7 @@ paths:
                 type: string
                 format: binary
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1656,7 +1747,7 @@ paths:
         '204':
           description: Successfully uploaded the chunk
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1693,7 +1784,7 @@ paths:
         '204':
           description: Successfully finished the upload
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1734,7 +1825,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1776,7 +1867,7 @@ paths:
         '204':
           description: Successfully updated file tag
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1817,7 +1908,7 @@ paths:
         '204':
           description: File tag successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1854,7 +1945,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/gallery'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1888,7 +1979,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1930,7 +2021,7 @@ paths:
         '204':
           description: Successfully updated gallery
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -1971,7 +2062,7 @@ paths:
         '204':
           description: Gallery successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2005,7 +2096,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/gallery'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2048,7 +2139,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/gallery-file-position'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2082,7 +2173,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/gallery-file-position'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2129,7 +2220,7 @@ paths:
         '204':
           description: Successfully deleted the file
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2165,7 +2256,7 @@ paths:
         '204':
           description: Successfully updated the gallery file
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2207,13 +2298,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/known-device'
         '401':
-          description: Api Key missing
+          description: Authentication is missing
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
         '403':
-          description: Invalid api key
+          description: Invalid authentication
           content:
             application/json:
               schema:
@@ -2250,13 +2341,13 @@ paths:
         '204':
           description: Successfully deleted api key
         '401':
-          description: Api Key missing
+          description: Authentication is missing
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/exception'
         '403':
-          description: Invalid API Key
+          description: Invalid authentication
           content:
             application/json:
               schema:
@@ -2292,7 +2383,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ip-location'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2321,7 +2412,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/menu'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2349,7 +2440,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/menu'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2391,7 +2482,7 @@ paths:
         '204':
           description: Successfully updated menu
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2432,7 +2523,7 @@ paths:
         '204':
           description: Menu successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2466,7 +2557,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/menu'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2511,7 +2602,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/menu-item'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2545,7 +2636,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2588,7 +2679,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/user'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2613,7 +2704,7 @@ paths:
         '204':
           description: Successfully changed about me data
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2643,7 +2734,7 @@ paths:
         '204':
           description: Successfully changed the preferred color scheme
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2677,7 +2768,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/otp-app-mode-response'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2708,7 +2799,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2736,7 +2827,7 @@ paths:
         '204':
           description: Successfully updated current users profile picture
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2793,7 +2884,7 @@ paths:
         '204':
           description: Successfully changed the preferences
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2827,7 +2918,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/classic-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2855,7 +2946,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/classic-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2897,7 +2988,7 @@ paths:
         '204':
           description: Successfully updated classic page
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2938,7 +3029,7 @@ paths:
         '204':
           description: Classic page successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -2974,7 +3065,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/classic-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3009,7 +3100,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/modern-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3037,7 +3128,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/modern-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3079,7 +3170,7 @@ paths:
         '204':
           description: Successfully updated modern page
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3120,7 +3211,7 @@ paths:
         '204':
           description: Modern page successfully deleted
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3156,7 +3247,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/modern-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3199,7 +3290,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/modern-page-section'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3233,7 +3324,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/exception'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3276,7 +3367,7 @@ paths:
                 type: object
                 additionalProperties: true
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3326,7 +3417,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/grouped-visits'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3376,7 +3467,7 @@ paths:
               schema:
                 type: integer
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3411,7 +3502,7 @@ paths:
               schema:
                 type: integer
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3447,7 +3538,7 @@ paths:
                 type: object
                 additionalProperties: true
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3501,7 +3592,7 @@ paths:
                 type: object
                 additionalProperties: true
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3558,7 +3649,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/theme'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3586,7 +3677,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/theme'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3627,7 +3718,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/theme'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3657,7 +3748,7 @@ paths:
         '204':
           description: Successfully updated the theme
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3700,7 +3791,7 @@ paths:
         '204':
           description: Successfully activated the theme
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3737,7 +3828,7 @@ paths:
         '204':
           description: Successfully compiled the themes assets
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3780,7 +3871,7 @@ paths:
                 additionalProperties:
                   type: string
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3810,7 +3901,7 @@ paths:
         '204':
           description: Successfully updated the variables and compiled the theme
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3858,7 +3949,7 @@ paths:
                 additionalProperties:
                   $ref: '#/components/schemas/blog-category'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3900,7 +3991,7 @@ paths:
         '204':
           description: Successfully updated the theme blog category
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3948,7 +4039,7 @@ paths:
                 additionalProperties:
                   $ref: '#/components/schemas/file'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -3990,7 +4081,7 @@ paths:
         '204':
           description: Successfully updated the theme file
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4038,7 +4129,7 @@ paths:
                 additionalProperties:
                   $ref: '#/components/schemas/gallery'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4080,7 +4171,7 @@ paths:
         '204':
           description: Successfully updated the theme gallery
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4128,7 +4219,7 @@ paths:
                 additionalProperties:
                   $ref: '#/components/schemas/menu'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4170,7 +4261,7 @@ paths:
         '204':
           description: Successfully updated the theme menu
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4218,7 +4309,7 @@ paths:
                 additionalProperties:
                   $ref: '#/components/schemas/classic-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4260,7 +4351,7 @@ paths:
         '204':
           description: Successfully updated the theme classic page
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4308,7 +4399,7 @@ paths:
                 additionalProperties:
                   $ref: '#/components/schemas/modern-page'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4350,7 +4441,7 @@ paths:
         '204':
           description: Successfully updated the theme modern page
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4392,7 +4483,7 @@ paths:
         '204':
           description: Successfully updated the theme configuration
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4442,7 +4533,7 @@ paths:
                     - type: string
                     - type: boolean
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4483,7 +4574,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/theme-configuration-structure'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4549,7 +4640,7 @@ paths:
                 type: string
                 format: binary
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4582,7 +4673,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/version-information'
         '401':
-          description: Api key missing
+          description: Authentication missing
           content:
             application/json:
               schema:
@@ -4656,6 +4747,21 @@ components:
       required:
         - error
         - success
+    api-token:
+      title: Api token
+      type: object
+      description: The api token is used to authenticate a user against the Jinya API. They differ from api keys in being persistent
+      properties:
+        name:
+          type: string
+        token:
+          type: string
+        expiryDate:
+          type: string
+          format: date-time
+      required:
+        - name
+        - token
     user:
       title: Artist
       type: object
@@ -5882,6 +5988,19 @@ components:
       required:
         - currentVersion
         - mostRecentVersion
+  requestBodies:
+    create-api-token-request:
+      title: Create api token
+      type: object
+      description: Can create a new api persistent api token
+      properties:
+        name:
+          type: string
+        expiryDate:
+          type: string
+          format: date-time
+      required:
+        - name
 x-tagGroups:
   - name: authentication
     description: User authentication

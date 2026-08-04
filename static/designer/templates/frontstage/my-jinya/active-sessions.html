@@ -1,31 +1,121 @@
-<table class="cosmo-table" x-data="sessionsData">
-  <thead>
-    <tr>
-      <th x-localize:my_jinya-sessions-table-valid_since></th>
-      <th x-localize:my_jinya-sessions-table-browser></th>
-      <th x-localize:my_jinya-sessions-table-device></th>
-      <th x-localize:my_jinya-sessions-table-place></th>
-      <th x-localize:my_jinya-sessions-table-ip></th>
-      <th x-localize:my_jinya-sessions-table-actions></th>
-    </tr>
-  </thead>
-  <tbody>
-    <template :key="session.key" x-for="session in sessions">
+<div class="cosmo-tab" x-data="sessionsData">
+  <div class="cosmo-tab__links">
+    <a
+      href="#"
+      @click.prevent="activeTab = 'logins'"
+      class="cosmo-tab__link"
+      :class="{ 'is--active': activeTab === 'logins' }"
+      x-localize:my_jinya-sessions-logins
+    ></a>
+    <a
+      href="#"
+      @click.prevent="activeTab = 'tokens'"
+      class="cosmo-tab__link"
+      :class="{ 'is--active': activeTab === 'tokens' }"
+      x-localize:my_jinya-sessions-tokens
+    ></a>
+  </div>
+  <template x-if="activeTab === 'logins'">
+    <table class="cosmo-table">
+      <thead>
       <tr>
-        <td x-text="getValidSince(session.validSince)"></td>
-        <td x-text="getBrowser(session.userAgent)"></td>
-        <td x-text="getDevice(session.userAgent)"></td>
-        <td x-text="getLocation(session.remoteAddress)"></td>
-        <td x-text="session.remoteAddress"></td>
-        <td>
-          <button
-            :disabled="currentApiKey === session.key"
-            @click="logout(session.key)"
-            class="cosmo-button"
-            x-localize:my_jinya-sessions-action-logout
-          ></button>
-        </td>
+        <th x-localize:my_jinya-sessions-table-valid_since></th>
+        <th x-localize:my_jinya-sessions-table-browser></th>
+        <th x-localize:my_jinya-sessions-table-device></th>
+        <th x-localize:my_jinya-sessions-table-place></th>
+        <th x-localize:my_jinya-sessions-table-ip></th>
+        <th x-localize:my_jinya-sessions-table-actions></th>
       </tr>
-    </template>
-  </tbody>
-</table>
+      </thead>
+      <tbody>
+      <template :key="session.key" x-for="session in sessions">
+        <tr>
+          <td x-text="formatDate(session.validSince)"></td>
+          <td x-text="getBrowser(session.userAgent)"></td>
+          <td x-text="getDevice(session.userAgent)"></td>
+          <td x-text="getLocation(session.remoteAddress)"></td>
+          <td x-text="session.remoteAddress"></td>
+          <td>
+            <button
+              :disabled="currentApiKey === session.key"
+              @click="logout(session.key)"
+              class="cosmo-button"
+              x-localize:my_jinya-sessions-action-logout
+            ></button>
+          </td>
+        </tr>
+      </template>
+      </tbody>
+    </table>
+  </template>
+  <template x-if="activeTab === 'tokens'">
+    <div style="display: contents">
+      <div class="cosmo-toolbar">
+        <div class="cosmo-toolbar__group">
+          <button @click="openNewApiToken" class="cosmo-button" x-localize:my_jinya-sessions-action-new_token></button>
+        </div>
+      </div>
+      <table class="cosmo-table">
+        <thead>
+        <tr>
+          <th x-localize:my_jinya-sessions-table-name></th>
+          <th x-localize:my_jinya-sessions-table-expiry_date></th>
+          <th x-localize:my_jinya-sessions-table-actions></th>
+        </tr>
+        </thead>
+        <tbody>
+        <template :key="token.token" x-for="token in tokens">
+          <tr>
+            <td x-text="token.name"></td>
+            <template x-if="token.expiryDate">
+              <td x-text="formatDate(token.expiryDate)"></td>
+            </template>
+            <template x-if="!token.expiryDate">
+              <td x-localize:my_jinya-sessions-table-no_expiry></td>
+            </template>
+            <td>
+              <button
+                @click="deleteToken(token.token)"
+                class="cosmo-button"
+                x-localize:my_jinya-sessions-action-delete_token
+              ></button>
+            </td>
+          </tr>
+        </template>
+        </tbody>
+      </table>
+    </div>
+  </template>
+  <template x-if="newToken.open">
+    <form @submit.prevent="createApiToken" class="cosmo-modal__container">
+      <div class="cosmo-modal">
+        <h1 class="cosmo-modal__title" x-localize:my_jinya-sessions-create-title></h1>
+        <div class="cosmo-modal__content">
+          <div class="cosmo-input__group" x-data="{ expires: false }">
+            <label class="cosmo-label" for="name" x-localize:my_jinya-sessions-create-name></label>
+            <input class="cosmo-input" id="name" required type="text" x-model="newToken.name"/>
+            <div class="cosmo-input__group is--switch">
+              <input class="cosmo-switch" id="expires" type="checkbox" x-model="expires"/>
+              <label for="expires" x-localize:my_jinya-sessions-create-expires></label>
+            </div>
+            <template x-if="expires">
+              <div style="display: contents">
+                <label class="cosmo-label" for="expiryDate" x-localize:my_jinya-sessions-create-expiry_date></label>
+                <input class="cosmo-input" id="expiryDate" required type="date" x-model="newToken.expiryDate"/>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="cosmo-modal__button-bar">
+          <button
+            @click="newToken.open = false"
+            class="cosmo-button"
+            type="button"
+            x-localize:my_jinya-sessions-create-discard
+          ></button>
+          <button class="cosmo-button" type="submit" x-localize:my_jinya-sessions-create-create></button>
+        </div>
+      </div>
+    </form>
+  </template>
+</div>

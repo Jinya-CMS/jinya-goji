@@ -378,6 +378,21 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(deleteApiKey))).
 		Methods(http.MethodDelete)
 
+	// API Key
+	apiTokenRouter := apiRouter.PathPrefix("/api-token").Subrouter()
+	apiTokenRouter.
+		Path("").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(getAllApiTokens))).
+		Methods(http.MethodGet)
+	apiTokenRouter.
+		Path("").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(createApiToken))).
+		Methods(http.MethodPost)
+	apiTokenRouter.
+		Path("/{token}").
+		Handler(middleware.CheckAuthentication(http.HandlerFunc(deleteApiToken))).
+		Methods(http.MethodDelete)
+
 	// Configuration
 	configurationRouter := apiRouter.PathPrefix("/configuration").Subrouter()
 	configurationRouter.

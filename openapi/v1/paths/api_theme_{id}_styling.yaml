@@ -18,7 +18,7 @@ get:
             additionalProperties:
               type: string
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -48,7 +48,7 @@ put:
     '204':
       description: Successfully updated the variables and compiled the theme
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

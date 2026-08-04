@@ -17,7 +17,7 @@ delete:
     '204':
       description: Successfully deleted the file
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -53,7 +53,7 @@ put:
     '204':
       description: Successfully updated the gallery file
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

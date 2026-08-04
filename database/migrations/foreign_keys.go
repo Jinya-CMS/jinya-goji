@@ -14,6 +14,14 @@ select add_foreign_key_if_not_exists('api_key', 'user_id', 'users', 'id');
 		panic(err)
 	}
 
+	slog.Info("Add foreign keys for api token")
+	_, err = conn.Exec(`
+select add_foreign_key_if_not_exists('api_token', 'user_id', 'users', 'id');
+`)
+	if err != nil {
+		panic(err)
+	}
+
 	slog.Info("Add foreign keys for blog")
 	_, err = conn.Exec(`
 select add_foreign_key_if_not_exists('blog_category', 'parent_id', 'blog_category', 'id');

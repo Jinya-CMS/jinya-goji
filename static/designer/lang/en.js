@@ -1380,12 +1380,41 @@ export default {
       },
     },
     sessions: {
+      logins: 'Logins',
+      tokens: 'Api tokens',
       locating: 'Locating IP…',
       browser: '{browser} on {os}',
       device: '{vendor} {model}',
       unknown_device: 'Unknown device',
       action: {
         logout: 'Logout',
+        delete_token: 'Delete',
+        new_token: 'Create new token',
+      },
+      error: {
+        title: 'Create failed',
+        message: 'Failed to create the api token',
+        close: 'Close',
+      },
+      create: {
+        title: 'New api token',
+        name: 'Name',
+        expiry_date: 'Expiry date',
+        expires: 'Expires',
+        discard: 'Discard',
+        create: 'Create api token',
+      },
+      delete_token: {
+        title: 'Delete token',
+        message: 'Are you sure you want to delete the api token {name}?',
+        decline: "Don't delete",
+        approve: 'Delete token',
+      },
+      created: {
+        title: 'Api token created',
+        message:
+          'The api token was created successfully. Please copy it to your clipboard, it will not be accessible again.<br><pre>{token}</pre>',
+        ok: 'Okay',
       },
       unknown: 'Unknown location',
       table: {
@@ -1394,6 +1423,9 @@ export default {
         device: 'Device',
         valid_since: 'Valid since',
         place: 'Place',
+        name: 'Name',
+        expiry_date: 'Expiry date',
+        no_expiry: 'Does not expire',
         actions: 'Actions',
       },
     },
@@ -1452,21 +1484,6 @@ export default {
           title: 'Error saving',
           message: 'The configuration could not be saved, please check the logs',
         },
-      },
-    },
-  },
-  database: {
-    menu: {
-      title: 'Database',
-      query_tool: 'Query tool',
-    },
-    query_tool: {
-      execute: 'Execute queries',
-      no_result: 'No results were returned for the query',
-      rows_affected: '{count} rows were affected by the query',
-      error: {
-        title: 'Error executing',
-        message: 'There was an error executing the queries, please check the server logs',
       },
     },
   },

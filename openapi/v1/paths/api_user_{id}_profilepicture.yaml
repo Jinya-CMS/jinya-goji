@@ -10,7 +10,7 @@ put:
     '204':
       description: Successfully updated users profile picture
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -70,7 +70,7 @@ delete:
     '204':
       description: Users profile picture successfully deleted
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -129,7 +129,7 @@ get:
             type: string
             format: binary
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

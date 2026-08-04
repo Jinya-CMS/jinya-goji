@@ -11,7 +11,7 @@ delete:
     '204':
       description: Succesfully deleted the api key
     '401':
-      description: Api Key is missing or invalid
+      description: Authentication is missing
       content:
         application/json:
           schema:

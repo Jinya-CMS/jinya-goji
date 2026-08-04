@@ -12,7 +12,7 @@ get:
             items:
               $ref: ../components/schemas/theme.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -40,7 +40,7 @@ post:
           schema:
             $ref: ../components/schemas/theme.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

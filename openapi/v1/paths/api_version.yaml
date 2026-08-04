@@ -8,7 +8,7 @@ get:
           schema:
             $ref: ../components/schemas/version-information.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

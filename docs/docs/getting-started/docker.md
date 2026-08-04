@@ -20,36 +20,34 @@ Create a new directory for your Jinya CMS installation and create a `docker-comp
 ```yaml
 services:
   database:
-    image: mariadb:11
+    image: postgres:18-alpine
     restart: always
     environment:
-      MARIADB_DATABASE: jinya
-      MARIADB_USER: jinya
-      MARIADB_PASSWORD: jinya_password
-      MARIADB_ROOT_PASSWORD: root_password
+      POSTGRES_DB: jinya
+      POSTGRES_PASSWORD: jinya
+      POSTGRES_ROOT_PASSWORD: jinya
+      POSTGRES_USER: jinya
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgres
 
-  jinya-cms:
-    image: jinyacms/jinya-cms:latest
+  jinya-goji:
+    image: jinyacms/jinya-goji:latest
     restart: always
     ports:
-      - "8080:80"
+      - "8090:8090"
     environment:
-      MYSQL_HOST: database
-      MYSQL_DATABASE: jinya
-      MYSQL_USER: jinya
-      MYSQL_PASSWORD: jinya_password
+      DATABASE_URL: postgres://jinya:jinya@database:5432/jinya
+      STORAGE_PATH: /var/data/storage
+      THEME_PATH: /var/data/themes
+      CACHE_PATH: /var/data/cache
     volumes:
-      - jinya_data:/var/www/html/var
-      - jinya_public:/var/www/html/public
+      - jinya_data:/var
     depends_on:
       - database
 
 volumes:
   db_data:
   jinya_data:
-  jinya_public:
 ```
 
 ### Start the Containers
@@ -62,32 +60,9 @@ docker compose up -d
 
 ### Run the Installer
 
-Once the containers are started, navigate to `http://localhost:8080` in your web browser. Jinya CMS includes a web-based installer that will guide you through the remaining steps:
+Once the containers are started, navigate to `http://localhost:8090` in your web browser. Jinya CMS includes a web-based installer that will guide you through the remaining steps:
 
-- Database configuration (use `database` as host, and the credentials from your `docker-compose.yml`)
 - Administrative user creation
 - Initial site setup
 
 Follow the on-screen instructions to complete your installation.
-
-## Environment Variables
-
-The Jinya CMS Docker image can be configured using environment variables. Here are the most important ones:
-
-| Variable         | Description                               |
-|------------------|-------------------------------------------|
-| `MYSQL_HOST`     | The hostname of your MySQL/MariaDB server |
-| `MYSQL_DATABASE` | The name of the database                  |
-| `MYSQL_USER`     | The database user                         |
-| `MYSQL_PASSWORD` | The database password                     |
-| `MYSQL_PORT`     | The database port (default: 3306)         |
-
-## Persistence
-
-The example `docker-compose.yml` uses named volumes to persist your data:
-
-- `db_data`: Persists the database content.
-- `jinya_data`: Persists the `var/` directory (logs, cache, etc.).
-- `jinya_public`: Persists the `public/` directory (uploaded media).
-
-It is important to keep these volumes to ensure your data is not lost when containers are recreated.

@@ -16,7 +16,7 @@ get:
           schema:
             $ref: ../components/schemas/theme-configuration-structure.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

@@ -4,7 +4,7 @@ put:
     '204':
       description: Successfully updated current users profile picture
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

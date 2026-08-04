@@ -40,7 +40,7 @@ head:
     '204':
       description: Api Key is valid
     '401':
-      description: Api key is invalid
+      description: Authentication is invalid
   operationId: check_api_key
   description: Check if the api key provided in the header is still valid.
   security:
