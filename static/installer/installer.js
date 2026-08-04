@@ -10,47 +10,44 @@ Alpine.data('data', () => ({
     from: '',
     authRequired: true,
   },
-  error: {
-    message: '',
-    hasError: false,
-  },
   firstAdmin: {
     artistName: '',
     email: '',
     password: '',
   },
+  error: {
+    message: '',
+    hasError: false,
+  },
   state: 'configuration',
   loading: false,
   async saveConfiguration() {
     this.loading = true;
-    const data = {
-      mailing: this.mailing,
-      mysql: this.mysql,
-    };
-    const result = await fetch('/api/install/configuration', {
+    const data = new FormData();
+    for (const key of Object.keys(this.mailing)) {
+      data.append(key, this.mailing[key]);
+    }
+    const result = await fetch('/installer/mailer', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
     if (!result.ok || result.status !== 204) {
       this.error.hasError = true;
       this.error.message = await result.text();
     } else {
-      this.state = 'database';
+      this.state = 'first-admin';
     }
     this.loading = false;
   },
   async createFirstAdmin() {
     this.loading = true;
-    const data = this.firstAdmin;
-    const result = await fetch('/api/install/admin', {
+    const data = new FormData();
+    for (const key of Object.keys(this.firstAdmin)) {
+      data.append(key, this.firstAdmin[key]);
+    }
+    const result = await fetch('/installer/admin', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
     if (!result.ok || result.status !== 204) {
       this.error.hasError = true;

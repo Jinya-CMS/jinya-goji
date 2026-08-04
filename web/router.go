@@ -1,11 +1,15 @@
 package web
 
 import (
+	"embed"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"jinya.de/goji/web/engine"
 )
+
+//go:embed tmpl
+var tmplFs embed.FS
 
 func SetupWebRouter(router *mux.Router) {
 	router.
@@ -22,7 +26,16 @@ func SetupWebRouter(router *mux.Router) {
 		HandlerFunc(jinyaContent)
 	router.
 		PathPrefix("/designer").
-		HandlerFunc(designerPage)
+		Handler(installedCheck(designerPage))
+	router.
+		Path("/installer").
+		HandlerFunc(installer)
+	router.
+		Path("/installer/mailer").
+		HandlerFunc(installerMailer)
+	router.
+		Path("/installer/admin").
+		HandlerFunc(installerFirstAdmin)
 
 	router.
 		Path("/{year:\\d{4}}/{month:\\d{2}}/{day:\\d{2}}/{slug:\\S+}").
