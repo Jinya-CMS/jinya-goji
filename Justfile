@@ -46,3 +46,7 @@ build-documentation:
 
 serve-documentation:
     cd docs && bun start
+
+deploy-documentation: build-documentation
+    cd docs && bun run build
+    mv docs/build public

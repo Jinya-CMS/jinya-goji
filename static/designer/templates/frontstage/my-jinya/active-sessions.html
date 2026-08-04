@@ -18,33 +18,33 @@
   <template x-if="activeTab === 'logins'">
     <table class="cosmo-table">
       <thead>
-      <tr>
-        <th x-localize:my_jinya-sessions-table-valid_since></th>
-        <th x-localize:my_jinya-sessions-table-browser></th>
-        <th x-localize:my_jinya-sessions-table-device></th>
-        <th x-localize:my_jinya-sessions-table-place></th>
-        <th x-localize:my_jinya-sessions-table-ip></th>
-        <th x-localize:my_jinya-sessions-table-actions></th>
-      </tr>
+        <tr>
+          <th x-localize:my_jinya-sessions-table-valid_since></th>
+          <th x-localize:my_jinya-sessions-table-browser></th>
+          <th x-localize:my_jinya-sessions-table-device></th>
+          <th x-localize:my_jinya-sessions-table-place></th>
+          <th x-localize:my_jinya-sessions-table-ip></th>
+          <th x-localize:my_jinya-sessions-table-actions></th>
+        </tr>
       </thead>
       <tbody>
-      <template :key="session.key" x-for="session in sessions">
-        <tr>
-          <td x-text="formatDate(session.validSince)"></td>
-          <td x-text="getBrowser(session.userAgent)"></td>
-          <td x-text="getDevice(session.userAgent)"></td>
-          <td x-text="getLocation(session.remoteAddress)"></td>
-          <td x-text="session.remoteAddress"></td>
-          <td>
-            <button
-              :disabled="currentApiKey === session.key"
-              @click="logout(session.key)"
-              class="cosmo-button"
-              x-localize:my_jinya-sessions-action-logout
-            ></button>
-          </td>
-        </tr>
-      </template>
+        <template :key="session.key" x-for="session in sessions">
+          <tr>
+            <td x-text="formatDate(session.validSince)"></td>
+            <td x-text="getBrowser(session.userAgent)"></td>
+            <td x-text="getDevice(session.userAgent)"></td>
+            <td x-text="getLocation(session.remoteAddress)"></td>
+            <td x-text="session.remoteAddress"></td>
+            <td>
+              <button
+                :disabled="currentApiKey === session.key"
+                @click="logout(session.key)"
+                class="cosmo-button"
+                x-localize:my_jinya-sessions-action-logout
+              ></button>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </template>
@@ -57,31 +57,31 @@
       </div>
       <table class="cosmo-table">
         <thead>
-        <tr>
-          <th x-localize:my_jinya-sessions-table-name></th>
-          <th x-localize:my_jinya-sessions-table-expiry_date></th>
-          <th x-localize:my_jinya-sessions-table-actions></th>
-        </tr>
+          <tr>
+            <th x-localize:my_jinya-sessions-table-name></th>
+            <th x-localize:my_jinya-sessions-table-expiry_date></th>
+            <th x-localize:my_jinya-sessions-table-actions></th>
+          </tr>
         </thead>
         <tbody>
-        <template :key="token.token" x-for="token in tokens">
-          <tr>
-            <td x-text="token.name"></td>
-            <template x-if="token.expiryDate">
-              <td x-text="formatDate(token.expiryDate)"></td>
-            </template>
-            <template x-if="!token.expiryDate">
-              <td x-localize:my_jinya-sessions-table-no_expiry></td>
-            </template>
-            <td>
-              <button
-                @click="deleteToken(token.token)"
-                class="cosmo-button"
-                x-localize:my_jinya-sessions-action-delete_token
-              ></button>
-            </td>
-          </tr>
-        </template>
+          <template :key="token.token" x-for="token in tokens">
+            <tr>
+              <td x-text="token.name"></td>
+              <template x-if="token.expiryDate">
+                <td x-text="formatDate(token.expiryDate)"></td>
+              </template>
+              <template x-if="!token.expiryDate">
+                <td x-localize:my_jinya-sessions-table-no_expiry></td>
+              </template>
+              <td>
+                <button
+                  @click="deleteToken(token.token)"
+                  class="cosmo-button"
+                  x-localize:my_jinya-sessions-action-delete_token
+                ></button>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -93,15 +93,15 @@
         <div class="cosmo-modal__content">
           <div class="cosmo-input__group" x-data="{ expires: false }">
             <label class="cosmo-label" for="name" x-localize:my_jinya-sessions-create-name></label>
-            <input class="cosmo-input" id="name" required type="text" x-model="newToken.name"/>
+            <input class="cosmo-input" id="name" required type="text" x-model="newToken.name" />
             <div class="cosmo-input__group is--switch">
-              <input class="cosmo-switch" id="expires" type="checkbox" x-model="expires"/>
+              <input class="cosmo-switch" id="expires" type="checkbox" x-model="expires" />
               <label for="expires" x-localize:my_jinya-sessions-create-expires></label>
             </div>
             <template x-if="expires">
               <div style="display: contents">
                 <label class="cosmo-label" for="expiryDate" x-localize:my_jinya-sessions-create-expiry_date></label>
-                <input class="cosmo-input" id="expiryDate" required type="date" x-model="newToken.expiryDate"/>
+                <input class="cosmo-input" id="expiryDate" required type="date" x-model="newToken.expiryDate" />
               </div>
             </template>
           </div>
