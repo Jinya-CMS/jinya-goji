@@ -13,7 +13,6 @@ import isEqual from '../../../lib/lodash/isEqual.js';
 import filePicker from '../../foundation/ui/filePicker.js';
 import alert from '../../foundation/ui/alert.js';
 import { getGalleries } from '../../foundation/api/galleries.js';
-import { getFiles } from '../../foundation/api/files.js';
 import { getClassicPages } from '../../foundation/api/classic-pages.js';
 import { getModernPages } from '../../foundation/api/modern-pages.js';
 import { getBlogCategories } from '../../foundation/api/blog-categories.js';
@@ -83,6 +82,7 @@ Alpine.data('menusData', () => ({
     return items
       .map((item) => {
         const res = {
+          uniqueId: crypto.randomUUID(),
           title: item.title,
           highlighted: item.highlighted,
           artistId: item.artistId ?? item.artist?.id,

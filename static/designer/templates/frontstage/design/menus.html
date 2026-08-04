@@ -37,7 +37,7 @@
           <span class="cosmo-message__header" x-text="updateItems.message.title"></span>
           <p class="cosmo-message__message" x-text="updateItems.message.content"></p>
         </div>
-        <template :key="index" x-for="(item, index) in items">
+        <template :key="item.uniqueId" x-for="(item, index) in items">
           <div style="display: contents">
             <button @click="openAddItemDialog(index)" class="cosmo-button is--circle is--primary is--add is--menu">
               <svg
