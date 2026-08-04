@@ -115,7 +115,7 @@ Alpine.data('menusData', () => ({
       await this.selectMenu(this.menus[0]);
     }
 
-    const [galleries, files, classicPages, modernPages, blogCategories, artists] = await Promise.all([
+    const [galleries, classicPages, modernPages, blogCategories, artists] = await Promise.all([
       getGalleries(),
       getClassicPages(),
       getModernPages(),

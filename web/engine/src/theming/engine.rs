@@ -477,6 +477,9 @@ impl theme::Host for GojiThemeStore {
     }
 
     async fn is_parent_of_active_menu_item(&mut self, item: theme::MenuItem) -> bool {
+        if self.path.is_empty() || self.path == "/" {
+            return false
+        }
         dbal::menu_item::is_parent_of_active_menu_item(item.id, &self.path).await
     }
 

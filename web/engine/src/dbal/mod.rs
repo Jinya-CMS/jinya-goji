@@ -72,10 +72,11 @@ macro_rules! find_entity {
 macro_rules! find_by_parent {
     ($name:ident,$type:ident,$parent_column:ident,$fn_name:ident) => {
         pub async fn $fn_name(id: i32) -> Option<Vec<$crate::models::$type>> {
-            use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+            use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder};
 
             $crate::models::$name::Entity::find()
                 .filter($crate::models::$name::Column::$parent_column.eq(id))
+                .order_by_asc($crate::models::$name::Column::Position)
                 .all($crate::dbal::db().await.ok()?)
                 .await
                 .ok()
