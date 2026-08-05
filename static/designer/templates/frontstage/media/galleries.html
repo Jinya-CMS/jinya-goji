@@ -1,6 +1,11 @@
 <div class="cosmo-side-list" x-data="galleriesData">
   <nav class="cosmo-side-list__items">
-    <input x-model="searchTerm" type="search" class="cosmo-input is--sidelist-search" x-localize:search-placeholder.placeholder>
+    <input
+      x-model="searchTerm"
+      type="search"
+      class="cosmo-input is--sidelist-search"
+      x-localize:search-placeholder.placeholder
+    />
     <template :key="gallery.id" x-for="gallery in filteredGalleries">
       <a
         :class="{ 'is--active': selectedGallery?.id === gallery.id }"

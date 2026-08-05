@@ -13,6 +13,7 @@ import { getClassicPageDatabase } from '../../foundation/database/classic-page.j
 
 import '../../foundation/ui/components/toolbar-editor.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
+import { filterArray } from '../../foundation/utils/search.js';
 
 const classicPageDatabase = getClassicPageDatabase();
 
@@ -24,6 +25,10 @@ Alpine.data('classicPagesData', () => ({
   messageTitle: '',
   messageContent: '',
   messageError: false,
+  searchTerm: '',
+  get filteredPages() {
+    return filterArray(this.pages, this.searchTerm, ['title', 'content']);
+  },
   get title() {
     return `#${this.selectedPage.id} ${this.selectedPage.title}`;
   },

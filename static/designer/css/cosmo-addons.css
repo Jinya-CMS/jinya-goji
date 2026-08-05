@@ -84,9 +84,9 @@
 }
 
 .cosmo-input.is--sidelist-search {
-    width: 100%;
-    min-width: unset;
-    position: sticky;
-    margin-bottom: 0.5rem;
-    top: 0;
+  width: 100%;
+  min-width: unset;
+  position: sticky;
+  margin-bottom: 0.5rem;
+  top: 0;
 }
