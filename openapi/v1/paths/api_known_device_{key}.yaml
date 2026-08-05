@@ -24,13 +24,13 @@ delete:
     '204':
       description: Successfully deleted api key
     '401':
-      description: Api Key missing
+      description: Authentication is missing
       content:
         application/json:
           schema:
             $ref: ../components/schemas/exception.yaml
     '403':
-      description: Invalid API Key
+      description: Invalid authentication
       content:
         application/json:
           schema:

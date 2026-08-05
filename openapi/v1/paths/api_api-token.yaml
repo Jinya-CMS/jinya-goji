@@ -1,0 +1,62 @@
+get:
+  summary: List api tokens
+  tags:
+    - active-sessions
+  responses:
+    '200':
+      description: Successfully got all api tokens
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/api-token.yaml
+    '401':
+      description: Authentication is missing
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/exception.yaml
+    '403':
+      description: Invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/exception.yaml
+  operationId: get_all_api_tokens
+  description: Gets all currently valid api tokens
+  security:
+    - header-auth: [ ]
+    - cookie-auth: [ ]
+post:
+  summary: Create persistent api token
+  tags:
+    - active-sessions
+  requestBody:
+    $ref: ../components/schemas/create-api-token-request.yaml
+  responses:
+    '201':
+      description: Successfully created the api token
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/api-token.yaml
+    '401':
+      description: Authentication is missing
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/exception.yaml
+    '403':
+      description: Invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/exception.yaml
+  operationId: create_api_token
+  description: Creates a new api token with the given name and expiry date
+  security:
+    - header-auth: [ ]
+    - cookie-auth: [ ]

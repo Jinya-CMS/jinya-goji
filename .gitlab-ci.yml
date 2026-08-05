@@ -139,7 +139,20 @@ merge-manifests:
     - buildah manifest push --all $FQ_IMAGE_NAME
   parallel:
     matrix:
+      - FQ_IMAGE_NAME: jinyacms/jinya-goji:latest
+      - FQ_IMAGE_NAME: jinyacms/jinya-goji:$CI_COMMIT_TAG
       - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:latest
       - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
+
+pages:
+  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/oven/bun:alpine
+  stage: deploy
+  before_script:
+    - apk add just npm
+  script:
+    - just deploy-documentation
+  artifacts:
+    paths:
+      - public

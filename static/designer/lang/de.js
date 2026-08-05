@@ -1397,12 +1397,41 @@ export default {
       },
     },
     sessions: {
+      logins: 'Logins',
+      tokens: 'Api Tokens',
       locating: 'IP wird geortet…',
       browser: '{browser} auf {os}',
       device: '{vendor} {model}',
       unknown_device: 'Unbekanntes Gerät',
       action: {
         logout: 'Abmelden',
+        delete_token: 'Löschen',
+        new_token: 'Neues Token erstellen',
+      },
+      error: {
+        title: 'Erstellen fehlgeschlagen',
+        message: 'Das Api Token konnte nicht erstellt werden',
+        close: 'Schließen',
+      },
+      create: {
+        title: 'Neues Api Token',
+        name: 'Name',
+        expiry_date: 'Ablaufdatum',
+        expires: 'Läuft ab',
+        discard: 'Verwerfen',
+        create: 'Api token erstellen',
+      },
+      delete_token: {
+        title: 'Token löschen',
+        message: 'Bist du sicher, dass du das Api Token {name} löschen willst?',
+        decline: 'Nicht löschen',
+        approve: 'Token löschen',
+      },
+      created: {
+        title: 'Api Token erstellt',
+        message:
+          'Das ApiToken wurde erfolgreich erstellt. Bitte kopier es dir, es ist nicht möglich es nachträglich anzuzeigen.<br><pre>{token}</pre>',
+        ok: 'Okay',
       },
       unknown: 'Unbekannter Ort',
       table: {
@@ -1411,6 +1440,9 @@ export default {
         device: 'Gerät',
         valid_since: 'Gültig seit',
         place: 'Ort',
+        name: 'Name',
+        expiry_date: 'Ablaufdatum',
+        no_expiry: 'Läuft nicht ab',
         actions: 'Aktionen',
       },
     },
@@ -1469,21 +1501,6 @@ export default {
           title: 'Fehler beim Speichern',
           message: 'Die Konfiguration konnte nicht gespeichert werden, bitte prüfe die Protokolle',
         },
-      },
-    },
-  },
-  database: {
-    menu: {
-      title: 'Datenbank',
-      query_tool: 'Query tool',
-    },
-    query_tool: {
-      execute: 'Queries ausführen',
-      no_result: 'Für diese Query gibt es keine Ergebnisse',
-      rows_affected: '{count} Zeilen waren von der Query betroffen',
-      error: {
-        title: 'Queries ausführen fehlgeschlagen',
-        message: 'Es gab einen Fehler beim Ausführen der Queries',
       },
     },
   },

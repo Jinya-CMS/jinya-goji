@@ -18,7 +18,7 @@ get:
             items:
               $ref: ../components/schemas/modern-page-section.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -52,7 +52,7 @@ put:
           schema:
             $ref: ../components/schemas/exception.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

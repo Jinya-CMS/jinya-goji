@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const ApiKeyPrefix = "jinya-api-token"
+
 type ApiKey struct {
 	ApiKey        string    `db:"api_key,primarykey,unique"`
 	UserId        int       `db:"user_id"`
@@ -89,7 +91,7 @@ func (apiKey *ApiKey) SetApiKey() (string, error) {
 	if _, err := rand.Read(bytes); err != nil {
 		return "", err
 	}
-	plainKey := fmt.Sprintf("jinya-api-token-%d-%s", apiKey.UserId, hex.EncodeToString(bytes))
+	plainKey := fmt.Sprintf("%s-%d-%s", ApiKeyPrefix, apiKey.UserId, hex.EncodeToString(bytes))
 	hash := sha512.Sum512([]byte(plainKey))
 	apiKey.ApiKey = hex.EncodeToString(hash[:])
 	return plainKey, nil

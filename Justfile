@@ -38,3 +38,15 @@ compile-themes:
 			cd "$$theme" && cargo build --target wasm32-wasip2 --release; \
 		fi \
 	done
+
+build-documentation:
+    bunx @redocly/cli bundle openapi/v1/openapi.yaml > docs/apidocs.yml
+    rm -rf docs/api
+    cd docs && bun docusaurus gen-api-docs all
+
+serve-documentation:
+    cd docs && bun start
+
+deploy-documentation: build-documentation
+    cd docs && bun run build
+    mv docs/build public

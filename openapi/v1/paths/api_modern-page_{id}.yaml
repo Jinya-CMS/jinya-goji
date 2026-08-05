@@ -10,7 +10,7 @@ put:
     '204':
       description: Successfully updated modern page
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -51,7 +51,7 @@ delete:
     '204':
       description: Modern page successfully deleted
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:
@@ -87,7 +87,7 @@ get:
           schema:
             $ref: ../components/schemas/modern-page.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

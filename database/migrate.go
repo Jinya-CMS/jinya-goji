@@ -31,6 +31,7 @@ func SetupDatabase() {
 
 		AddTableWithName[AnalyticsEntry]("analytics")
 		AddTableWithName[ApiKey]("api_key")
+		AddTableWithName[ApiToken]("api_token")
 		AddTableWithName[Artist]("users")
 		AddTableWithName[BlogCategory]("blog_category")
 		AddTableWithName[BlogPost]("blog_post")

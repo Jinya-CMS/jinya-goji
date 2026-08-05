@@ -12,13 +12,13 @@ get:
             items:
               $ref: ../components/schemas/api-key.yaml
     '401':
-      description: Api Key is missing
+      description: Authentication is missing
       content:
         application/json:
           schema:
             $ref: ../components/schemas/exception.yaml
     '403':
-      description: Invalid api key
+      description: Invalid authentication
       content:
         application/json:
           schema:

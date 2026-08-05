@@ -14,7 +14,7 @@ get:
           schema:
             $ref: ../components/schemas/blog-post-list.yaml
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

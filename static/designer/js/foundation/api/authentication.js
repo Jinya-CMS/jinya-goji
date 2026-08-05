@@ -60,6 +60,21 @@ export async function deleteApiKey(apiKey) {
   await httpDelete(`/api/api-key/${apiKey}`);
 }
 
+export function getApiTokens() {
+  return get('/api/api-token');
+}
+
+export async function createApiToken(name, expiryDate = null) {
+  return await post(`/api/api-token`, {
+    name,
+    expiryDate,
+  });
+}
+
+export async function deleteApiToken(token) {
+  await httpDelete(`/api/api-token/${token}`);
+}
+
 export function getKnownDevices() {
   return get('/api/known-device');
 }

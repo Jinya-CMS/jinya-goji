@@ -1,0 +1,30 @@
+parameters:
+  - name: token
+    schema:
+      type: string
+    in: path
+    required: true
+delete:
+  summary: Delete api token
+  operationId: delete_api_token
+  responses:
+    '204':
+      description: Succesfully deleted the api token
+    '401':
+      description: Authentication is missing
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/exception.yaml
+    '404':
+      description: The specified api key was not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/exception.yaml
+  tags:
+    - active-sessions
+  security:
+    - header-auth: []
+    - cookie-auth: []
+  description: Deletes the api key given in the request path

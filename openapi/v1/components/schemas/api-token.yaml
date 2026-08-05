@@ -1,0 +1,14 @@
+title: Api token
+type: object
+description: The api token is used to authenticate a user against the Jinya API. They differ from api keys in being persistent
+properties:
+  name:
+    type: string
+  token:
+    type: string
+  expiryDate:
+    type: string
+    format: date-time
+required:
+  - name
+  - token

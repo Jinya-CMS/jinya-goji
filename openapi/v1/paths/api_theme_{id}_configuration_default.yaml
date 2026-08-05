@@ -20,7 +20,7 @@ get:
                 - type: string
                 - type: boolean
     '401':
-      description: Api key missing
+      description: Authentication missing
       content:
         application/json:
           schema:

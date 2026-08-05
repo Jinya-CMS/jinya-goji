@@ -1,0 +1,11 @@
+title: Create api token
+type: object
+description: Can create a new api persistent api token
+properties:
+  name:
+    type: string
+  expiryDate:
+    type: string
+    format: date-time
+required:
+  - name
