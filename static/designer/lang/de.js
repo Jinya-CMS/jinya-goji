@@ -2,6 +2,9 @@ export default {
   alert: {
     dismiss: 'Ausblenden',
   },
+  search: {
+    placeholder: 'Tippe zum Suchen…',
+  },
   countries: {
     AF: 'Afghanistan',
     EG: 'Ägypten',

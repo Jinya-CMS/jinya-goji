@@ -19,6 +19,7 @@ import { getMediaDatabase } from '../../foundation/database/media.js';
 import '../../foundation/ui/components/tag.js';
 import '../../foundation/ui/components/tag-popup.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
+import { filterArray } from '../../foundation/utils/search.js';
 
 const fileDatabase = getFileDatabase();
 const mediaDatabase = getMediaDatabase();
@@ -44,6 +45,10 @@ Alpine.data('galleriesData', () => ({
   draggedItem: null,
   dragPosition: null,
   prevDragOver: null,
+  searchTerm: '',
+  get filteredGalleries() {
+    return filterArray(this.galleries, this.searchTerm, ['name', 'description']);
+  },
   get defaultTagName() {
     return localize({ key: 'media.files.action.show_all_tags' });
   },

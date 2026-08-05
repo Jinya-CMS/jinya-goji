@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           el.innerHTML = localized;
         } else if (modifiers.includes('title')) {
           el.setAttribute('title', localized);
+        } else if (modifiers.includes('placeholder')) {
+          el.setAttribute('placeholder', localized);
         } else if (modifiers.includes('picker')) {
           el.setAttribute('data-picker', localized);
         } else {
