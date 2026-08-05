@@ -115,6 +115,7 @@ Alpine.data('modernPagesData', () => ({
   },
   cleanSections(sections, pageId = null) {
     return sections.map((item) => ({
+      uniqueId: crypto.randomUUID(),
       pageId: pageId ?? item.pageId,
       gallery: item.gallery ? Alpine.raw(item.gallery) : null,
       file: item.file ? Alpine.raw(item.file) : null,
