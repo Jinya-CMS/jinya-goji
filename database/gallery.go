@@ -15,7 +15,6 @@ type Gallery struct {
 	Description   string    `db:"description"`
 	Type          string    `db:"type"`
 	Orientation   string    `db:"orientation"`
-	Group         string    `db:"group"`
 }
 
 func (gallery *Gallery) MarshalJSON() ([]byte, error) {
@@ -34,7 +33,6 @@ func (gallery *Gallery) MarshalJSON() ([]byte, error) {
 		Description string `json:"description"`
 		Type        string `json:"type"`
 		Orientation string `json:"orientation"`
-		Group       string `json:"group"`
 		Created     any    `json:"created"`
 		Updated     any    `json:"updated"`
 	}{
@@ -43,7 +41,6 @@ func (gallery *Gallery) MarshalJSON() ([]byte, error) {
 		Description: gallery.Description,
 		Type:        gallery.Type,
 		Orientation: gallery.Orientation,
-		Group:       gallery.Group,
 		Created: struct {
 			At string `json:"at"`
 			By any    `json:"by"`
@@ -106,8 +103,7 @@ select id,
        name,
        description,
        type,
-       orientation,
-       group
+       orientation
 from gallery
 order by id
 `)

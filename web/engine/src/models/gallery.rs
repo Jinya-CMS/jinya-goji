@@ -14,8 +14,6 @@ pub struct Model {
     pub name: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub description: Option<String>,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub group: Option<String>,
     #[sea_orm(column_type = "Text")]
     pub r#type: String,
     #[sea_orm(column_type = "Text")]

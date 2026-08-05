@@ -95,7 +95,6 @@ impl From<models::Gallery> for Gallery {
             updated_by_id: gallery.updated_by_id,
             last_updated_at: gallery.last_updated_at.to_rfc3339(),
             name: gallery.name,
-            group: gallery.group,
             description: gallery.description,
             type_: if gallery.r#type == "masonry" {
                 GalleryType::Masonry

@@ -77,7 +77,5 @@ func SetupDatabase() {
 		migrations.BaseMigration(conn)
 		migrations.CreateAdditionalTables(conn)
 		migrations.CreateForeignKeys(conn)
-
-		migrations.AddGalleryGroups(conn)
 	}
 }

@@ -63,7 +63,6 @@ interface types {
     last-updated-at: string,
     name: string,
     description: option<string>,
-    group: option<string>,
     %type: gallery-type,
     orientation: gallery-orientation,
   }
