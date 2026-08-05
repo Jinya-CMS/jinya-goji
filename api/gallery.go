@@ -69,6 +69,9 @@ func createGallery(w http.ResponseWriter, r *http.Request) {
 	if description, ok := GetFromBody[string](body, "description"); ok {
 		gallery.Description = *description
 	}
+	if group, ok := GetFromBody[string](body, "group"); ok {
+		gallery.Group = *group
+	}
 
 	name, _ := GetFromBody[string](body, "name")
 	gallery.Name = *name
@@ -127,6 +130,9 @@ func updateGallery(w http.ResponseWriter, r *http.Request) {
 	}
 	if name, ok := GetFromBody[string](body, "name"); ok {
 		gallery.Name = *name
+	}
+	if group, ok := GetFromBody[string](body, "group"); ok {
+		gallery.Group = *group
 	}
 
 	err = gallery.Update()

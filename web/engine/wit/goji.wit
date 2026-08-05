@@ -1,4 +1,4 @@
-package jinya:goji;
+package jinya:goji@1.0.0;
 
 interface types {
   record blog-category {
@@ -63,6 +63,7 @@ interface types {
     last-updated-at: string,
     name: string,
     description: option<string>,
+    group: option<string>,
     %type: gallery-type,
     orientation: gallery-orientation,
   }
