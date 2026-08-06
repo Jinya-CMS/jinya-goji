@@ -39,7 +39,10 @@ compile-themes:
 		fi \
 	done
 
-build-documentation:
+prepare-documentation:
+	cd docs && bun install
+
+build-documentation: prepare-documentation
     bunx @redocly/cli bundle openapi/v1/openapi.yaml > docs/apidocs.yml
     rm -rf docs/api
     cd docs && bun docusaurus gen-api-docs all
