@@ -22,6 +22,7 @@ import isEqual from '../../../lib/lodash/isEqual.js';
 
 import '../../foundation/ui/components/inline-editor.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
+import { filterArray } from '../../foundation/utils/search.js';
 
 const postDatabase = getBlogPostDatabase();
 
@@ -33,6 +34,10 @@ Alpine.data('postsData', () => ({
   sections: [],
   galleries: [],
   hasMessage: false,
+  searchTerm: '',
+  get filteredPosts() {
+    return filterArray(this.posts, this.searchTerm, ['title']);
+  },
   get title() {
     if (this.selectedCategory) {
       return `#${this.selectedCategory.id} ${this.selectedCategory.name}`;

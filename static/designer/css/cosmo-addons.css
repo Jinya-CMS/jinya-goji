@@ -82,3 +82,16 @@
 .cosmo-page__body {
   overflow-x: hidden;
 }
+
+.cosmo-input.is--sidelist-search {
+  width: 100%;
+  min-width: unset;
+  position: sticky;
+  margin-bottom: 0.5rem;
+  top: 0;
+
+  &.is--blog {
+    margin-left: auto;
+    width: 20rem;
+  }
+}

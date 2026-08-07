@@ -18,6 +18,7 @@ import { getModernPageDatabase } from '../../foundation/database/modern-page.js'
 
 import '../../foundation/ui/components/inline-editor.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
+import { filterArray } from '../../foundation/utils/search.js';
 
 const modernPageDatabase = getModernPageDatabase();
 
@@ -26,6 +27,10 @@ Alpine.data('modernPagesData', () => ({
   sections: [],
   selectedPage: null,
   galleries: [],
+  searchTerm: '',
+  get filteredPages() {
+    return filterArray(this.pages, this.searchTerm, ['name']);
+  },
   get title() {
     return `#${this.selectedPage.id} ${this.selectedPage.name}`;
   },

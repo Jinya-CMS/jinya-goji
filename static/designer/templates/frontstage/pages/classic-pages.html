@@ -1,6 +1,12 @@
 <div class="cosmo-side-list" x-data="classicPagesData">
   <nav class="cosmo-side-list__items">
-    <template :key="page.id" x-for="page in pages">
+    <input
+      x-model="searchTerm"
+      type="search"
+      class="cosmo-input is--sidelist-search"
+      x-localize:search-placeholder.placeholder
+    />
+    <template :key="page.id" x-for="page in filteredPages">
       <a
         :class="{ 'is--active': selectedPage?.id === page.id }"
         @click="selectPage(page)"

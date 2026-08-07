@@ -14,8 +14,6 @@ properties:
     type: string
   blogHomePage:
     type: boolean
-  form:
-    $ref: ./menu-item-form.yaml
   artist:
     $ref: ./menu-item-artist.yaml
   classicPage:

@@ -7,7 +7,7 @@
   align-items: start;
   justify-content: space-between;
   display: grid;
-  grid-template-columns: [tiles] var(--tiles-width) [separator] var(--separator-width) [editor] var(--editor-width);
+  grid-template-columns: [tiles] var(--tiles-width);
   grid-template-rows: [content] calc(var(--page-height) - 2.75rem - 1.25rem - 2rem - 2rem - 0.25rem);
   height: calc(var(--page-height) - 2.75rem - 1.25rem - 2rem - 2rem - 0.25rem);
   gap: 1rem;
@@ -17,6 +17,8 @@
     --tiles-width: 25rem;
     --editor-width: 1fr;
     --separator-width: 0.625rem;
+
+    grid-template-columns: [tiles] var(--tiles-width) [separator] var(--separator-width) [editor] var(--editor-width);
 
     @media screen and (width <= 1920px) {
       --tiles-width: 16rem;

@@ -6,6 +6,8 @@ properties:
     type: string
   description:
     type: string
+  group:
+    type: string
   orientation:
     type: string
     enum:
@@ -19,5 +21,4 @@ properties:
       - masonry
     default: sequence
 required:
-  - id
   - name

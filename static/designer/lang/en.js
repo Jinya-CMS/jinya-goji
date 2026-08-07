@@ -2,6 +2,9 @@ export default {
   alert: {
     dismiss: 'Dismiss',
   },
+  search: {
+    placeholder: 'Type to search…',
+  },
   countries: {
     AF: 'Afghanistan',
     AX: 'Åland Islands',

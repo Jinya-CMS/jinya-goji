@@ -20,6 +20,8 @@ properties:
       - sequence
       - masonry
     default: sequence
+  group:
+    type: string
   created:
     $ref: ./modification.yaml
   updated:
