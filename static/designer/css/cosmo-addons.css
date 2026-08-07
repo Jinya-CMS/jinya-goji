@@ -89,4 +89,9 @@
   position: sticky;
   margin-bottom: 0.5rem;
   top: 0;
+
+  &.is--blog {
+    margin-left: auto;
+    width: 20rem;
+  }
 }

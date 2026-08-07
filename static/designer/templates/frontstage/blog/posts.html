@@ -67,12 +67,18 @@
           x-localize:blog-posts-overview-action-delete
         ></button>
       </div>
+      <input
+        x-model="searchTerm"
+        type="search"
+        class="cosmo-input is--sidelist-search is--blog"
+        x-localize:search-placeholder.placeholder
+      />
     </div>
     <div :class="{ 'has--selection': selectedPost !== null }" class="jinya-designer__content is--blog-posts">
       <template x-if="posts.length > 0">
         <div style="display: contents">
           <div class="jinya-blog-tile__container" x-ref="tileContainer">
-            <template :key="post.id" x-for="(post, index) in posts">
+            <template :key="post.id" x-for="(post, index) in filteredPosts">
               <div
                 :class="{ 'is--selected': selectedPost?.id === post.id }"
                 @click="selectPost(index, post)"
