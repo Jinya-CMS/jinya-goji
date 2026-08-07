@@ -37,7 +37,7 @@ func serveConvertedImage(targetPath string, targetWidth *int, targetFileType *bi
 
 	result := buffer
 
-	if targetWidth != nil {
+	if targetWidth != nil && *targetWidth < 7680 {
 		slog.Debug("Calculate the image aspect ratio and calculate the target width", "path", targetPath)
 		ratio := float64(size.Width) / float64(size.Height)
 		targetHeight := int(math.Round(float64(*targetWidth) / ratio))

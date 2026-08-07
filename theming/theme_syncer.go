@@ -120,18 +120,6 @@ func SyncThemes() error {
 			}
 
 			slog.Info("Compile theme due to theme sync", "theme", name)
-			go func() {
-				theme, err := NewTheme(dbTheme)
-				if err != nil {
-					slog.Warn("Failed to construct theme", "theme", name)
-					return
-				}
-
-				err = theme.CompileAssetCache()
-				if err != nil {
-					slog.Error("Failed to compile asset cache", "theme", name, "error", err)
-				}
-			}()
 		}
 
 		theme, err := NewTheme(dbTheme)

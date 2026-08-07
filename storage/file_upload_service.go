@@ -68,19 +68,21 @@ func FinishFileUpload(fileId int) error {
 		return err
 	}
 
-	defer os.Remove(outTempFile.Name())
 	defer outTempFile.Close()
 
 	for _, chunk := range chunks {
-		chunkData, err := os.ReadFile(chunk.ChunkPath)
+		chunkFile, err := os.Open(chunk.ChunkPath)
 		if err != nil {
 			return err
 		}
 
-		_, err = outTempFile.Write(chunkData)
+		_, err = io.Copy(outTempFile, chunkFile)
 		if err != nil {
+			chunkFile.Close()
 			return err
 		}
+
+		chunkFile.Close()
 	}
 
 	_, err = outTempFile.Seek(0, 0)
@@ -96,19 +98,9 @@ func FinishFileUpload(fileId int) error {
 	fileName := hash
 	finalPath := filepath.Join(GetStoragePath(), fileName)
 
-	// Copy temp file to final destination
-	_, err = outTempFile.Seek(0, 0)
-	if err != nil {
-		return err
-	}
-	finalFile, err := os.Create(finalPath)
+	outTempFile.Close()
 
-	if err != nil {
-		return err
-	}
-	defer finalFile.Close()
-
-	_, err = io.Copy(finalFile, outTempFile)
+	err = os.Rename(outTempFile.Name(), finalPath)
 	if err != nil {
 		return err
 	}

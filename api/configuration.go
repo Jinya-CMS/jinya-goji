@@ -14,7 +14,6 @@ func getConfiguration(w http.ResponseWriter, r *http.Request) {
 			"encryption": configuration.GetString("mailer", "encryption", ""),
 			"from":       configuration.GetString("mailer", "from", ""),
 			"host":       configuration.GetString("mailer", "host", ""),
-			"password":   configuration.GetString("mailer", "password", ""),
 			"port":       configuration.GetInteger("mailer", "port", 25),
 			"username":   configuration.GetString("mailer", "username", ""),
 		},
@@ -55,7 +54,9 @@ func updateConfiguration(w http.ResponseWriter, r *http.Request) {
 	_ = configuration.SetString("mailer", "encryption", body.Mailer.Encryption)
 	_ = configuration.SetString("mailer", "from", &body.Mailer.From)
 	_ = configuration.SetString("mailer", "host", &body.Mailer.Host)
-	_ = configuration.SetString("mailer", "password", &body.Mailer.Password)
+	if body.Mailer.Password != "" {
+		_ = configuration.SetString("mailer", "password", &body.Mailer.Password)
+	}
 	_ = configuration.SetString("mailer", "username", &body.Mailer.Username)
 	_ = configuration.SetInteger("jinya", "api_key_expiry", body.Jinya.ApiKeyExpiry)
 	_ = configuration.SetString("jinya", "ip_database_url", &body.Jinya.IpDatabaseUrl)

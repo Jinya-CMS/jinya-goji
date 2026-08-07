@@ -128,6 +128,11 @@ func getBaseEntry(r *http.Request) (*database.AnalyticsEntry, bool, error) {
 		break
 	}
 
+	language := r.Header.Get("Accept-Language")
+	if len(language) > 2 {
+		language = language[:2]
+	}
+
 	entry := database.AnalyticsEntry{
 		Route:           new(strings.TrimPrefix(r.URL.Path, "/")),
 		Timestamp:       time.Now(),
@@ -136,7 +141,7 @@ func getBaseEntry(r *http.Request) (*database.AnalyticsEntry, bool, error) {
 		Browser:         new(parsedAgent.Browser().String()),
 		BrowserVersion:  new(parsedAgent.BrowserVersion()),
 		DeviceType:      &deviceType,
-		Language:        new(r.Header.Get("Accept-Language")[:2]),
+		Language:        &language,
 		Country:         &location.Country,
 		UserAgent:       new(r.UserAgent()),
 		Referer:         &refererHost,

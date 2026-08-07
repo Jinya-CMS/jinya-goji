@@ -39,6 +39,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !artist.ValidatePassword(body.Password) {
+		_ = artist.RegisterFailedLogin()
 		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
@@ -135,6 +136,12 @@ func request2fa(w http.ResponseWriter, r *http.Request) {
 
 	artist, err := database.FindArtistByEmail(body.Username)
 	if err != nil {
+		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
+		return
+	}
+
+	if !artist.ValidatePassword(body.Password) {
+		_ = artist.RegisterFailedLogin()
 		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}

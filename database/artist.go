@@ -218,7 +218,7 @@ where user_id = $1`, artist.Id)
 		return nil
 	}
 
-	return nil
+	return fmt.Errorf("invalid password")
 }
 
 func (artist *Artist) ValidatePassword(password string) bool {
