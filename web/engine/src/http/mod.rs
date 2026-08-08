@@ -1,6 +1,6 @@
 use crate::dbal;
 use crate::models::{BlogCategory, BlogPost, ClassicPage, Gallery, ModernPage, User};
-use crate::theming::engine::{GojiTheme, GojiThemeStore};
+use crate::theming::engine::GojiThemeStore;
 use crate::theming::theme::Theme;
 use actix_web::body::BoxBody;
 use actix_web::http::StatusCode;
@@ -12,6 +12,7 @@ use url::Url;
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Engine, Store};
 use wasmtime_wasi::WasiCtx;
+use crate::theming::GojiTheme;
 
 #[derive(Debug)]
 enum RequestEntity {

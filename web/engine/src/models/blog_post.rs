@@ -76,3 +76,25 @@ impl Related<super::file::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::BlogPost {
+    fn from(blog_post: Model) -> Self {
+        Self {
+            id: blog_post.id,
+            title: blog_post.title,
+            link: format!(
+                "/{}/{}",
+                blog_post.created_at.format("%Y/%m/%d"),
+                blog_post.slug
+            ),
+            slug: blog_post.slug,
+            header_image_id: blog_post.header_image_id,
+            public: blog_post.public,
+            creator_id: blog_post.creator_id,
+            created_at: blog_post.created_at.to_rfc3339(),
+            updated_by_id: blog_post.updated_by_id,
+            last_updated_at: blog_post.last_updated_at.to_rfc3339(),
+            blog_category_id: blog_post.category_id,
+        }
+    }
+}

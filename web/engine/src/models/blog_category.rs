@@ -1,6 +1,7 @@
-use sea_orm::entity::prelude::*;
 use sea_orm::FromQueryResult;
+use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
+use crate::theming::jinya::goji::blog;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "blog_category")]
@@ -72,4 +73,26 @@ pub struct BlogCategoryPath {
     pub menu_item_id: i32,
     pub route: String,
     pub menu_item_title: String,
+}
+
+impl From<Model> for crate::theming::BlogCategory {
+    fn from(category: Model) -> Self {
+        Self {
+            id: category.id,
+            name: category.name,
+            description: category.description,
+        }
+    }
+}
+
+impl From<BlogCategoryPath> for blog::BlogCategoryPathEntry {
+    fn from(value: BlogCategoryPath) -> Self {
+        Self {
+            route: value.route,
+            category_id: value.category_id,
+            category_title: value.category_name,
+            menu_item_id: value.menu_item_id,
+            menu_item_title: value.menu_item_title,
+        }
+    }
 }

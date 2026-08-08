@@ -119,3 +119,51 @@ impl Related<super::user::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::MenuItem {
+    fn from(value: Model) -> Self {
+        Self {
+            id: value.id,
+            menu_id: value.menu_id,
+            parent_id: value.parent_id,
+            position: value.position,
+            title: value.title,
+            route: value.route,
+            highlighted: value.highlighted,
+            artist_id: value.artist_id,
+            gallery_id: value.gallery_id,
+            modern_page_id: value.modern_page_id,
+            classic_page_id: value.classic_page_id,
+            blog_category_id: value.blog_category_id,
+            blog_home_page: value.blog_home_page,
+        }
+    }
+}
+
+impl From<crate::theming::MenuItem> for Model {
+    fn from(val: crate::theming::MenuItem) -> Self {
+        let route = val.route.map(|route| {
+            if !route.starts_with("/") {
+                format!("/{route}")
+            } else {
+                route
+            }
+        });
+
+        Model {
+            id: val.id,
+            position: val.position,
+            menu_id: None,
+            parent_id: None,
+            title: val.title,
+            route,
+            highlighted: val.highlighted,
+            artist_id: val.artist_id,
+            gallery_id: val.gallery_id,
+            modern_page_id: val.modern_page_id,
+            classic_page_id: val.classic_page_id,
+            blog_category_id: val.blog_category_id,
+            blog_home_page: val.blog_home_page,
+        }
+    }
+}

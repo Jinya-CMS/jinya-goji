@@ -65,3 +65,16 @@ impl Related<super::modern_page::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::ModernPageSection {
+    fn from(value: Model) -> Self {
+        Self {
+            position: value.position,
+            gallery_id: value.gallery_id,
+            file_id: value.file_id,
+            html: value.html,
+            action: value.action,
+            target: value.target,
+        }
+    }
+}

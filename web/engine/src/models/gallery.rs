@@ -1,3 +1,4 @@
+use crate::theming::{GalleryOrientation, GalleryType};
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -90,3 +91,27 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::Gallery {
+    fn from(gallery: Model) -> Self {
+        Self {
+            id: gallery.id,
+            creator_id: gallery.creator_id,
+            created_at: gallery.created_at.to_rfc3339(),
+            updated_by_id: gallery.updated_by_id,
+            last_updated_at: gallery.last_updated_at.to_rfc3339(),
+            name: gallery.name,
+            description: gallery.description,
+            type_: if gallery.r#type == "masonry" {
+                GalleryType::Masonry
+            } else {
+                GalleryType::Sequence
+            },
+            orientation: if gallery.r#type == "horizontal" {
+                GalleryOrientation::Horizontal
+            } else {
+                GalleryOrientation::Vertical
+            },
+        }
+    }
+}

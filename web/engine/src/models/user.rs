@@ -1,3 +1,4 @@
+use crate::theming;
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
@@ -28,3 +29,14 @@ impl Related<super::menu_item::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for theming::User {
+    fn from(user: Model) -> Self {
+        Self {
+            email: user.email,
+            artist_name: user.artist_name,
+            profile_picture: user.profile_picture,
+            about_me: user.about_me,
+        }
+    }
+}

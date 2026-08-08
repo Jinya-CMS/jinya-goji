@@ -1,5 +1,6 @@
-use sea_orm::entity::prelude::*;
+use crate::theming::GalleryFile;
 use sea_orm::FromQueryResult;
+use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
@@ -53,4 +54,18 @@ pub struct GalleryFileWithFile {
     pub name: String,
     pub r#type: String,
     pub position: i32,
+}
+
+impl From<GalleryFileWithFile> for GalleryFile {
+    fn from(value: GalleryFileWithFile) -> Self {
+        Self {
+            position: value.position,
+            file: crate::theming::File {
+                id: value.id,
+                path: value.path,
+                name: value.name,
+                file_type: value.r#type,
+            },
+        }
+    }
 }

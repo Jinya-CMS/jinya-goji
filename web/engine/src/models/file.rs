@@ -95,3 +95,14 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::File {
+    fn from(file: Model) -> Self {
+        Self {
+            id: file.id,
+            path: file.path,
+            name: file.name,
+            file_type: file.r#type,
+        }
+    }
+}

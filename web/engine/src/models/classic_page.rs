@@ -62,3 +62,16 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::ClassicPage {
+    fn from(value: Model) -> Self {
+        Self {
+            creator_id: value.creator_id,
+            created_at: value.created_at.to_rfc3339(),
+            updated_by_id: value.updated_by_id,
+            last_updated_at: value.last_updated_at.to_rfc3339(),
+            content: value.content,
+            title: value.title,
+        }
+    }
+}

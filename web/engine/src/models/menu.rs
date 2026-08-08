@@ -55,3 +55,13 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::Menu {
+    fn from(value: Model) -> Self {
+        Self {
+            id: value.id,
+            name: value.name,
+            logo: value.logo,
+        }
+    }
+}
