@@ -27,12 +27,7 @@
       </div>
       <template x-if="selectedPost">
         <div class="cosmo-toolbar__group">
-          <button
-            type="submit"
-            form="previewForm"
-            class="cosmo-button"
-            x-localize:pages-modern-action-preview
-          ></button>
+          <button type="submit" form="previewForm" class="cosmo-button" x-localize:pages-modern-action-preview></button>
           <button
             @click="savePost"
             class="cosmo-button is--primary"
@@ -117,8 +112,8 @@
           <template x-if="selectedPost !== null">
             <div style="display: contents">
               <form id="previewForm" method="post" target="_blank" action="/form-api/preview/blog-post">
-                <input type="hidden" name="id" :value="selectedPost.id">
-                <input type="hidden" name="sections" :value="sectionsString">
+                <input type="hidden" name="id" :value="selectedPost.id" />
+                <input type="hidden" name="sections" :value="sectionsString" />
               </form>
               <div class="jinya-blog__separator"></div>
               <div class="jinya-blog__editor">

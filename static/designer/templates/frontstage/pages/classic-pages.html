@@ -19,8 +19,8 @@
   <template x-if="selectedPage">
     <div class="cosmo-side-list__content jinya-designer">
       <form id="previewForm" method="post" target="_blank" action="/form-api/preview/classic-page">
-        <input type="hidden" name="id" :value="selectedPage.id">
-        <input type="hidden" name="content" :value="content">
+        <input type="hidden" name="id" :value="selectedPage.id" />
+        <input type="hidden" name="content" :value="content" />
       </form>
       <div class="jinya-designer__title">
         <span class="cosmo-title" x-text="title"></span>
@@ -75,7 +75,7 @@
           </div>
           <div class="cosmo-input__group">
             <label class="cosmo-label" for="createPageTitle" x-localize:pages-classic-create-page_title></label>
-            <input class="cosmo-input" id="createPageTitle" required type="text" x-model="create.title"/>
+            <input class="cosmo-input" id="createPageTitle" required type="text" x-model="create.title" />
           </div>
         </div>
         <div class="cosmo-modal__button-bar">
@@ -101,7 +101,7 @@
           </div>
           <div class="cosmo-input__group">
             <label class="cosmo-label" for="editPageTitle" x-localize:pages-classic-edit-page_title></label>
-            <input class="cosmo-input" id="editPageTitle" required type="text" x-model="edit.title"/>
+            <input class="cosmo-input" id="editPageTitle" required type="text" x-model="edit.title" />
           </div>
         </div>
         <div class="cosmo-modal__button-bar">
