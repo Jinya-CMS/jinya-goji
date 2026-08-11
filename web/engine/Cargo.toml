@@ -3,17 +3,12 @@ name = "engine"
 version = "1.0.0"
 edition = "2024"
 
-[[bin]]
-path = "src/main.rs"
-name = "engine"
-
 [lib]
 name = "engine"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-actix-web = "4"
 anyhow = "1"
 env_logger = "0.11"
 imagesize = "0.15"

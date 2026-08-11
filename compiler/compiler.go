@@ -1,11 +1,23 @@
 package compiler
 
-import "os"
+import "fmt"
+
+var (
+	ErrTokio    = fmt.Errorf("failed to start tokio")
+	ErrCompiler = fmt.Errorf("failed to compile theme")
+	ErrUnknown  = fmt.Errorf("unknown error")
+)
 
 func CompileTheme(themeId int) error {
-	if os.Getenv("DEBUG_THEME_COMPILER") == "true" {
-		return debugCompileTheme(themeId)
+	result := compileTheme(themeId)
+	switch result {
+	case 0:
+		return nil
+	case 1:
+		return ErrCompiler
+	case 2:
+		return ErrTokio
+	default:
+		return ErrUnknown
 	}
-
-	return releaseCompileTheme(themeId)
 }

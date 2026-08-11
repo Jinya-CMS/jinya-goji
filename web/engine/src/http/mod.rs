@@ -3,12 +3,9 @@ use crate::models::{BlogCategory, BlogPost, ClassicPage, Gallery, ModernPage, Us
 use crate::theming::GojiTheme;
 use crate::theming::frontend_engine::GojiFrontendEngineStore;
 use crate::theming::theme::Theme;
-use actix_web::body::BoxBody;
-use actix_web::http::StatusCode;
-use actix_web::web::Query;
-use actix_web::{HttpRequest, HttpResponse};
 use serde::Deserialize;
 use std::path::Path;
+use reqwest::StatusCode;
 use url::Url;
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Engine, Store};
@@ -25,36 +22,6 @@ enum RequestEntity {
     ClassicPage(ClassicPage),
     Profile(User),
     Error(StatusCode),
-}
-
-#[derive(Deserialize)]
-pub struct ErrorQuery {
-    pub error: u16,
-}
-
-pub async fn error_route(req: HttpRequest, query: Query<ErrorQuery>) -> HttpResponse {
-    let is_json_request = req.headers().get("Accept").is_some_and(|accept| {
-        accept
-            .to_str()
-            .is_ok_and(|accept| accept.starts_with("application/json"))
-    });
-
-    let (status_code, content) =
-        handle_error(&req.uri().to_string(), is_json_request, query.error).await;
-
-    HttpResponse::new(status_code).set_body(BoxBody::new(content))
-}
-
-pub async fn frontend_router(req: HttpRequest) -> HttpResponse {
-    let is_json_request = req.headers().get("Accept").is_some_and(|accept| {
-        accept
-            .to_str()
-            .is_ok_and(|accept| accept.starts_with("application/json"))
-    });
-
-    let (status_code, content) = handle_request(&req.uri().to_string(), is_json_request).await;
-
-    HttpResponse::new(status_code).set_body(BoxBody::new(content))
 }
 
 async fn get_request_entity(path: &str) -> Option<RequestEntity> {
