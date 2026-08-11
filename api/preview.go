@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"jinya.de/goji/database"
-	"jinya.de/goji/web/engine"
+	"jinya.de/goji/libgoji"
 )
 
 func previewClassicPage(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func previewClassicPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page.Content = content
-	preview, err := engine.PreviewClassicPage(activeTheme.Id, page)
+	preview, err := libgoji.PreviewClassicPage(activeTheme.Id, page)
 	if err != nil {
 		slog.Error("Failed to render preview", "id", id, "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -77,7 +77,7 @@ func previewModernPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	preview, err := engine.PreviewModernPage(activeTheme.Id, id, sections)
+	preview, err := libgoji.PreviewModernPage(activeTheme.Id, id, sections)
 	if err != nil {
 		slog.Error("Failed to render preview", "id", id, "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -112,7 +112,7 @@ func previewBlogPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	preview, err := engine.PreviewBlogPost(activeTheme.Id, id, sections)
+	preview, err := libgoji.PreviewBlogPost(activeTheme.Id, id, sections)
 	if err != nil {
 		slog.Error("Failed to render preview", "id", id, "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
