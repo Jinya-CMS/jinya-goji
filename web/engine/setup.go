@@ -84,29 +84,10 @@ func PreviewClassicPage(themeId int, classicPage *database.ClassicPage) (string,
 	return html, nil
 }
 
-func PreviewModernPage(themeId, modernPageId int, modernPageSections []database.ModernPageSection) (string, error) {
+func PreviewModernPage(themeId, modernPageId int, modernPageSectionsJson string) (string, error) {
 	var output uintptr
 
-	data := make([]map[string]any, len(modernPageSections))
-	for i, section := range modernPageSections {
-		data[i] = map[string]any{
-			"id":        section.Id,
-			"position":  section.Position,
-			"galleryId": section.GalleryId,
-			"fileId":    section.FileId,
-			"html":      section.Html,
-			"pageId":    section.PageId,
-			"action":    section.Action,
-			"target":    section.Target,
-		}
-	}
-
-	sectionsData, err := json.Marshal(data)
-	if err != nil {
-		return "", err
-	}
-
-	code := nativePreviewModernPage(themeId, modernPageId, string(sectionsData), &output)
+	code := nativePreviewModernPage(themeId, modernPageId, modernPageSectionsJson, &output)
 	runtime.KeepAlive(output)
 
 	defer freeEngineString(output)
@@ -123,28 +104,10 @@ func PreviewModernPage(themeId, modernPageId int, modernPageSections []database.
 	return html, nil
 }
 
-func PreviewBlogPost(themeId, blogPostId int, blogPostSections []database.BlogPostSection) (string, error) {
+func PreviewBlogPost(themeId, blogPostId int, blogPostSectionsJson string) (string, error) {
 	var output uintptr
 
-	data := make([]map[string]any, len(blogPostSections))
-	for i, section := range blogPostSections {
-		data[i] = map[string]any{
-			"id":         section.Id,
-			"position":   section.Position,
-			"galleryId":  section.GalleryId,
-			"fileId":     section.FileId,
-			"html":       section.Html,
-			"blogPostId": section.BlogPostId,
-			"link":       section.Link,
-		}
-	}
-
-	sectionsData, err := json.Marshal(data)
-	if err != nil {
-		return "", err
-	}
-
-	code := nativePreviewBlogPost(themeId, blogPostId, string(sectionsData), &output)
+	code := nativePreviewBlogPost(themeId, blogPostId, blogPostSectionsJson, &output)
 	runtime.KeepAlive(output)
 
 	defer freeEngineString(output)

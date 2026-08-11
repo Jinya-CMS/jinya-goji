@@ -821,8 +821,7 @@ export default {
         new: 'Create page',
         edit: 'Change title',
         delete: 'Delete page',
-        edit_segment: 'Edit segment',
-        delete_segment: 'Delete segment',
+        preview: 'Preview changes',
         save: 'Save page',
       },
       create: {

@@ -564,6 +564,10 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Path("/preview/classic-page").
 		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(previewClassicPage))).
 		Methods(http.MethodPost)
+	formApiRouter.
+		Path("/preview/modern-page").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(previewModernPage))).
+		Methods(http.MethodPost)
 
 	apiRouter.Use(middleware.ContentTypeJson)
 
