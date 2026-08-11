@@ -770,7 +770,7 @@ export default {
         edit: 'Change title',
         delete: 'Delete page',
         save_content: 'Save page',
-        discard_content: 'Discard changes',
+        preview: 'Preview changes',
       },
       load: {
         title: 'Load unsaved changes',

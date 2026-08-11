@@ -781,6 +781,7 @@ export default {
         delete: 'Seite löschen',
         save_content: 'Seite speichern',
         discard_content: 'Änderungen verwerfen',
+        preview: 'Vorschau der Änderungen',
       },
       load: {
         title: 'Ungespeicherte Änderungen laden',

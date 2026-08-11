@@ -1,6 +1,6 @@
 .jinya-designer__content.is--simple-page {
   grid-template-columns: unset;
-  grid-template-rows: [message] auto [jodit] 1fr [buttons] auto;
+  grid-template-rows: [message] auto [jodit] 1fr;
   display: grid;
 }
 
@@ -10,8 +10,4 @@
 
 .cosmo-message.is--simple-page {
   grid-row: message;
-}
-
-.cosmo-button__container.is--simple-page {
-  grid-row: buttons;
 }

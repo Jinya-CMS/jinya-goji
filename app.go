@@ -82,11 +82,7 @@ func main() {
 	}()
 
 	slog.Info("Preparing frontend engine")
-	if os.Getenv("ENV") == "dev" {
-		engine.StartEngine(appCtx)
-	} else {
-		engine.SetupEngine()
-	}
+	engine.SetupEngine()
 
 	watcher, err := fswatcher.New(
 		fswatcher.WithCooldown(200*time.Millisecond),

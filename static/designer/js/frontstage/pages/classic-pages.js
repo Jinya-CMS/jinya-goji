@@ -29,6 +29,13 @@ Alpine.data('classicPagesData', () => ({
   get filteredPages() {
     return filterArray(this.pages, this.searchTerm, ['title', 'content']);
   },
+  get formAsJson() {
+    return {
+      id: this.selectedPage?.id,
+      title: this.title,
+      content: this.content,
+    };
+  },
   get title() {
     return `#${this.selectedPage.id} ${this.selectedPage.title}`;
   },
