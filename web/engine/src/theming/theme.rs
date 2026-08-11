@@ -24,7 +24,7 @@ static THEME: tokio::sync::OnceCell<Theme> = tokio::sync::OnceCell::const_new();
 static ACTIVE_THEME_ID: tokio::sync::OnceCell<i32> = tokio::sync::OnceCell::const_new();
 
 impl Theme {
-    pub async fn new<'a>(db_theme: models::theme::Theme) -> anyhow::Result<&'a Self> {
+    pub async fn get_or_try_init<'a>(db_theme: models::theme::Theme) -> anyhow::Result<&'a Self> {
         if let Some(active_theme_id) = ACTIVE_THEME_ID.get()
             && *active_theme_id == db_theme.id
         {
@@ -41,6 +41,11 @@ impl Theme {
 
             Ok(THEME.get().unwrap())
         }
+    }
+
+    pub async fn new<'a>(db_theme: models::theme::Theme) -> anyhow::Result<Self> {
+        let theme = Theme::from_yaml(db_theme).await?;
+        Ok(theme)
     }
 
     async fn from_yaml(db_theme: models::theme::Theme) -> anyhow::Result<Theme> {

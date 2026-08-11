@@ -35,6 +35,19 @@ Alpine.data('postsData', () => ({
   galleries: [],
   hasMessage: false,
   searchTerm: '',
+  get sectionsString() {
+    return JSON.stringify(
+      this.sections.map((item, idx) => ({
+        id: -1,
+        position: idx,
+        html: item.html,
+        galleryId: item.gallery?.id,
+        fileId: item.file?.id,
+        blogPostId: this.selectedPost.id,
+        link: item.link,
+      })),
+    );
+  },
   get filteredPosts() {
     return filterArray(this.posts, this.searchTerm, ['title']);
   },

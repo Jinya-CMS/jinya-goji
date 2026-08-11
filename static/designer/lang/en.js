@@ -770,7 +770,7 @@ export default {
         edit: 'Change title',
         delete: 'Delete page',
         save_content: 'Save page',
-        discard_content: 'Discard changes',
+        preview: 'Preview changes',
       },
       load: {
         title: 'Load unsaved changes',
@@ -821,8 +821,7 @@ export default {
         new: 'Create page',
         edit: 'Change title',
         delete: 'Delete page',
-        edit_segment: 'Edit segment',
-        delete_segment: 'Delete segment',
+        preview: 'Preview changes',
         save: 'Save page',
       },
       create: {
@@ -956,6 +955,7 @@ export default {
           edit: 'Edit post',
           publish: 'Publish post',
           unpublish: 'Unpublish post',
+          preview: 'Preview changes',
           save: 'Save post',
         },
       },

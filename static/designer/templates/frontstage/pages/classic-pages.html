@@ -18,6 +18,10 @@
   </nav>
   <template x-if="selectedPage">
     <div class="cosmo-side-list__content jinya-designer">
+      <form id="previewForm" method="post" target="_blank" action="/form-api/preview/classic-page">
+        <input type="hidden" name="id" :value="selectedPage.id" />
+        <input type="hidden" name="content" :value="content" />
+      </form>
       <div class="jinya-designer__title">
         <span class="cosmo-title" x-text="title"></span>
       </div>
@@ -26,6 +30,19 @@
         <div class="cosmo-toolbar__group">
           <button @click="openEditDialog" class="cosmo-button" x-localize:pages-classic-action-edit></button>
           <button @click="deletePage" class="cosmo-button" x-localize:pages-classic-action-delete></button>
+        </div>
+        <div class="cosmo-toolbar__group">
+          <button
+            type="submit"
+            form="previewForm"
+            class="cosmo-button"
+            x-localize:pages-classic-action-preview
+          ></button>
+          <button
+            @click="savePage"
+            class="cosmo-button is--primary"
+            x-localize:pages-classic-action-save_content
+          ></button>
         </div>
       </div>
       <div class="jinya-designer__content is--simple-page">
@@ -44,20 +61,6 @@
           height="calc(var(--page-height) - 2.75rem - 1.25rem - 2rem - 2rem - 0.25rem - 3rem)"
           type="classic-page"
         ></cms-toolbar-editor>
-        <div class="cosmo-button__container is--simple-page">
-          <button
-            @click="selectPage(selectedPage)"
-            class="cosmo-button"
-            id="discard-changes"
-            x-localize:pages-classic-action-discard_content
-          ></button>
-          <button
-            @click="savePage"
-            class="cosmo-button is--primary"
-            id="save-changes"
-            x-localize:pages-classic-action-save_content
-          ></button>
-        </div>
       </div>
     </div>
   </template>

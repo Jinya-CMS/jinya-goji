@@ -3,9 +3,11 @@ use sea_orm::entity::prelude::*;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use crate::theming;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "theme")]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -32,6 +34,15 @@ impl ActiveModelBehavior for ActiveModel {}
 pub enum BoolOrString {
     Bool(bool),
     String(String),
+}
+
+impl From<BoolOrString> for theming::jinya::goji::theme::BoolOrString {
+    fn from(value: BoolOrString) -> Self {
+        match value {
+            BoolOrString::Bool(val) => crate::theming::jinya::goji::theme::BoolOrString::BoolValue(val),
+            BoolOrString::String(val) => crate::theming::jinya::goji::theme::BoolOrString::StringValue(val),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]

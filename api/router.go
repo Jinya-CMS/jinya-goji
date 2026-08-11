@@ -11,6 +11,7 @@ import (
 
 func SetupAdminApiRouter(router *mux.Router) {
 	apiRouter := router.PathPrefix("/api").Subrouter()
+	formApiRouter := router.PathPrefix("/form-api").Subrouter()
 
 	// Blog Category
 	blogCategoryRouter := apiRouter.PathPrefix("/blog-category").Subrouter()
@@ -558,6 +559,19 @@ func SetupAdminApiRouter(router *mux.Router) {
 		Path("/api/theme/{id:\\d+}/preview").
 		Handler(middleware.CheckAuthentication(http.HandlerFunc(getThemePreview))).
 		Methods(http.MethodGet)
+
+	formApiRouter.
+		Path("/preview/classic-page").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(previewClassicPage))).
+		Methods(http.MethodPost)
+	formApiRouter.
+		Path("/preview/modern-page").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(previewModernPage))).
+		Methods(http.MethodPost)
+	formApiRouter.
+		Path("/preview/blog-post").
+		Handler(middleware.CheckAuthenticationAndRole(auth.RoleWriter)(http.HandlerFunc(previewBlogPost))).
+		Methods(http.MethodPost)
 
 	apiRouter.Use(middleware.ContentTypeJson)
 

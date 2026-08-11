@@ -3,7 +3,6 @@ package engine
 import (
 	"context"
 	_ "embed"
-	"io"
 	"log/slog"
 	"net"
 	"net/http"
@@ -118,57 +117,18 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) int {
 			body       []byte
 		)
 
-		if os.Getenv("ENV") == "dev" {
-			client, err := getEngineClient()
-			if err != nil {
-				slog.Error("Failed to get engine client", "error", err)
-				http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
-				return nil, http.StatusInternalServerError
-			}
-
-			engineReq := r.Clone(r.Context())
-			engineReq.URL.Scheme = "http"
-			engineReq.URL.Host = r.Host
-			engineReq.URL.Path = uriPath
-			engineReq.URL.RawQuery = uriQuery
-			engineReq.RequestURI = ""
-
-			res, err := client.Do(engineReq)
-			if err != nil {
-				slog.Error("Failed to send request to frontend engine", "error", err)
-				http.Error(w, "Failed to handle your request", http.StatusInternalServerError)
-				return nil, http.StatusInternalServerError
-			}
-			defer res.Body.Close()
-
-			for key, values := range res.Header {
-				for _, value := range values {
-					w.Header().Add(key, value)
-				}
-			}
-
-			body, err = io.ReadAll(res.Body)
-			if err != nil {
-				slog.Error("Failed to read body from frontend engine", "error", err)
-				w.WriteHeader(http.StatusInternalServerError)
-				return nil, http.StatusInternalServerError
-			}
-
-			statusCode = res.StatusCode
+		uri := r.URL
+		uri.Host = r.Host
+		if r.TLS != nil {
+			uri.Scheme = "https"
 		} else {
-			uri := r.URL
-			uri.Host = r.Host
-			if r.TLS != nil {
-				uri.Scheme = "https"
-			} else {
-				uri.Scheme = "http"
-			}
+			uri.Scheme = "http"
+		}
 
-			if isError {
-				body, statusCode = handleError(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String(), errorStatusCode)
-			} else {
-				body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
-			}
+		if isError {
+			body, statusCode = handleError(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String(), errorStatusCode)
+		} else {
+			body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
 		}
 
 		return body, statusCode

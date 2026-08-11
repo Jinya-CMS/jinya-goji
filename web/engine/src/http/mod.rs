@@ -1,6 +1,7 @@
 use crate::dbal;
 use crate::models::{BlogCategory, BlogPost, ClassicPage, Gallery, ModernPage, User};
-use crate::theming::engine::{GojiTheme, GojiThemeStore};
+use crate::theming::GojiTheme;
+use crate::theming::frontend_engine::GojiFrontendEngineStore;
 use crate::theming::theme::Theme;
 use actix_web::body::BoxBody;
 use actix_web::http::StatusCode;
@@ -129,7 +130,7 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
             return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
         }
     };
-    let theme = if let Ok(theme) = Theme::new(theme).await {
+    let theme = if let Ok(theme) = Theme::get_or_try_init(theme).await {
         theme
     } else {
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
@@ -167,7 +168,7 @@ pub async fn handle_error(uri: &str, is_api: bool, status_code: u16) -> (StatusC
     } else {
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     };
-    let theme = if let Ok(theme) = Theme::new(theme).await {
+    let theme = if let Ok(theme) = Theme::get_or_try_init(theme).await {
         theme
     } else {
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
@@ -220,7 +221,7 @@ async fn call_theme(
 
     let mut store = Store::new(
         &engine,
-        GojiThemeStore {
+        GojiFrontendEngineStore {
             theme: theme.clone(),
             uri: uri.to_string(),
             path: url.path().to_string(),
@@ -247,7 +248,9 @@ async fn call_theme(
     };
 
     if let Err(err) =
-        GojiTheme::add_to_linker::<_, HasSelf<GojiThemeStore>>(&mut linker, |state| state)
+        GojiTheme::add_to_linker::<_, HasSelf<GojiFrontendEngineStore>>(&mut linker, |state| {
+            state
+        })
     {
         log::error!(
             "Failed to add goji theme {} to linker: {err}",

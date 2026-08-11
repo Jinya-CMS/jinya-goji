@@ -28,6 +28,20 @@ Alpine.data('modernPagesData', () => ({
   selectedPage: null,
   galleries: [],
   searchTerm: '',
+  get sectionsString() {
+    return JSON.stringify(
+      this.sections.map((item, idx) => ({
+        id: -1,
+        position: idx,
+        html: item.html,
+        galleryId: item.gallery?.id,
+        fileId: item.file?.id,
+        pageId: this.selectedPage.id,
+        action: item.link ? 'link' : 'none',
+        target: item.link,
+      })),
+    );
+  },
   get filteredPages() {
     return filterArray(this.pages, this.searchTerm, ['name']);
   },

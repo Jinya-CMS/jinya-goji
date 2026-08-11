@@ -1,7 +1,10 @@
+use crate::theming;
 use sea_orm::entity::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "users")]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -28,3 +31,14 @@ impl Related<super::menu_item::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for theming::User {
+    fn from(user: Model) -> Self {
+        Self {
+            email: user.email,
+            artist_name: user.artist_name,
+            profile_picture: user.profile_picture,
+            about_me: user.about_me,
+        }
+    }
+}

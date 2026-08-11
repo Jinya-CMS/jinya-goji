@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "modern_page_section")]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -65,3 +66,16 @@ impl Related<super::modern_page::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::ModernPageSection {
+    fn from(value: Model) -> Self {
+        Self {
+            position: value.position,
+            gallery_id: value.gallery_id,
+            file_id: value.file_id,
+            html: value.html,
+            action: value.action,
+            target: value.target,
+        }
+    }
+}

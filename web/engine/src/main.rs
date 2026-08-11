@@ -6,6 +6,7 @@ pub mod dbal;
 pub mod http;
 pub mod models;
 pub mod theming;
+pub mod preview;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {

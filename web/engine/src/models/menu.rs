@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "menu")]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -55,3 +56,13 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::Menu {
+    fn from(value: Model) -> Self {
+        Self {
+            id: value.id,
+            name: value.name,
+            logo: value.logo,
+        }
+    }
+}

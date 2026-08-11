@@ -2,7 +2,8 @@ use crate::dbal::db;
 use crate::models::MenuItem;
 use crate::{find_by_parent, find_entity, models};
 use sea_orm::{
-    ColumnTrait, Condition, ConnectionTrait, DbBackend, EntityTrait, QueryFilter, Statement,
+    ColumnTrait, Condition, ConnectionTrait, DbBackend, EntityTrait, JoinType, QueryFilter,
+    QuerySelect, RelationTrait, Statement,
 };
 
 find_entity!(menu, Menu);
@@ -68,6 +69,36 @@ pub async fn find_menu_item_by_route(route: String) -> Option<MenuItem> {
                     models::menu_item::Column::Route.eq(route.strip_prefix("/").unwrap_or(&route)),
                 ),
         )
+        .one(db().await.ok()?)
+        .await
+        .unwrap_or_default()
+}
+
+pub async fn find_first_by_classic_page(classic_page_id: i32, theme_id: i32) -> Option<MenuItem> {
+    models::menu_item::Entity::find()
+        .join(JoinType::InnerJoin, models::menu_item::Relation::Menu.def())
+        .join(JoinType::InnerJoin, models::menu::Relation::ThemeMenu.def())
+        .filter(
+            Condition::all()
+                .add(models::menu_item::Column::ClassicPageId.eq(classic_page_id))
+                .add(models::theme_menu::Column::ThemeId.eq(theme_id)),
+        )
+        .limit(1)
+        .one(db().await.ok()?)
+        .await
+        .unwrap_or_default()
+}
+
+pub async fn find_first_by_modern_page(modern_page_id: i32, theme_id: i32) -> Option<MenuItem> {
+    models::menu_item::Entity::find()
+        .join(JoinType::InnerJoin, models::menu_item::Relation::Menu.def())
+        .join(JoinType::InnerJoin, models::menu::Relation::ThemeMenu.def())
+        .filter(
+            Condition::all()
+                .add(models::menu_item::Column::ModernPageId.eq(modern_page_id))
+                .add(models::theme_menu::Column::ThemeId.eq(theme_id)),
+        )
+        .limit(1)
         .one(db().await.ok()?)
         .await
         .unwrap_or_default()

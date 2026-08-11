@@ -19,3 +19,19 @@ pub async fn get_active_theme() -> anyhow::Result<Theme> {
             }
         })?
 }
+
+pub async fn find_theme_by_id(id: i32) -> anyhow::Result<Theme> {
+    let db = db().await.map_err(|err| anyhow!(err))?;
+
+    Entity::find_by_id(id)
+        .one(db)
+        .await
+        .map_err(|err| anyhow!(err))
+        .map(|res| {
+            if let Some(m) = res {
+                m.try_into()
+            } else {
+                Err(anyhow!("theme not found"))
+            }
+        })?
+}

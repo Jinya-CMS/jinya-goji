@@ -781,6 +781,7 @@ export default {
         delete: 'Seite löschen',
         save_content: 'Seite speichern',
         discard_content: 'Änderungen verwerfen',
+        preview: 'Vorschau der Änderungen',
       },
       load: {
         title: 'Ungespeicherte Änderungen laden',
@@ -831,8 +832,7 @@ export default {
         new: 'Seite erstellen',
         edit: 'Titel ändern',
         delete: 'Seite löschen',
-        edit_segment: 'Segment bearbeiten',
-        delete_segment: 'Segment löschen',
+        preview: 'Vorschau der Änderungen',
         save: 'Seite speichern',
       },
       create: {
@@ -967,6 +967,7 @@ export default {
           edit: 'Post bearbeiten',
           publish: 'Post veröffentlichen',
           unpublish: 'Veröffentlichung zurückziehen',
+          preview: 'Vorschau der Änderungen',
           save: 'Post speichern',
         },
         empty: {

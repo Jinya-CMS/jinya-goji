@@ -1,8 +1,10 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
+use crate::models::{blog_post_section, BlogPostSection};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "blog_post_section")]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -63,3 +65,15 @@ impl Related<super::gallery::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::BlogPostSection {
+    fn from(value: Model) -> Self {
+        Self {
+            gallery_id: value.gallery_id,
+            file_id: value.file_id,
+            html: value.html,
+            link: value.link,
+            position: value.position,
+        }
+    }
+}

@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "file")]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -95,3 +96,14 @@ impl Related<super::theme::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for crate::theming::File {
+    fn from(file: Model) -> Self {
+        Self {
+            id: file.id,
+            path: file.path,
+            name: file.name,
+            file_type: file.r#type,
+        }
+    }
+}

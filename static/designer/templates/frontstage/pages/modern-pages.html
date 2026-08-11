@@ -18,6 +18,10 @@
   </nav>
   <template x-if="selectedPage">
     <div class="cosmo-side-list__content jinya-designer">
+      <form id="previewForm" method="post" target="_blank" action="/form-api/preview/modern-page">
+        <input type="hidden" name="id" :value="selectedPage.id" />
+        <input type="hidden" name="sections" :value="sectionsString" />
+      </form>
       <div class="jinya-designer__title">
         <span class="cosmo-title">
           <span x-text="selectedPage.name"></span>
@@ -30,6 +34,7 @@
           <button @click="deletePage" class="cosmo-button" x-localize:pages-modern-action-delete></button>
         </div>
         <div class="cosmo-toolbar__group">
+          <button type="submit" form="previewForm" class="cosmo-button" x-localize:pages-modern-action-preview></button>
           <button @click="savePage" class="cosmo-button is--primary" x-localize:pages-modern-action-save></button>
         </div>
       </div>
