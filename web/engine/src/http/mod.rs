@@ -136,11 +136,7 @@ pub async fn handle_request(uri: &str, is_api: bool) -> (StatusCode, String) {
         return (StatusCode::INTERNAL_SERVER_ERROR, "".to_string());
     };
 
-    let uri = if std::env::var("ENV").unwrap_or("prod".to_string()) == "dev" {
-        format!("http://localhost/{uri}")
-    } else {
-        uri.to_string()
-    };
+    let uri = uri.to_string();
 
     let url = Url::parse(&uri);
     if url.is_err() {
@@ -248,9 +244,7 @@ async fn call_theme(
     };
 
     if let Err(err) =
-        GojiTheme::add_to_linker::<_, HasSelf<GojiFrontendEngineStore>>(&mut linker, |state| {
-            state
-        })
+        GojiTheme::add_to_linker::<_, HasSelf<GojiFrontendEngineStore>>(&mut linker, |state| state)
     {
         log::error!(
             "Failed to add goji theme {} to linker: {err}",
