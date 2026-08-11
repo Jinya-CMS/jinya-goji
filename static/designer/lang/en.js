@@ -955,6 +955,7 @@ export default {
           edit: 'Edit post',
           publish: 'Publish post',
           unpublish: 'Unpublish post',
+          preview: 'Preview changes',
           save: 'Save post',
         },
       },

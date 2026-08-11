@@ -967,6 +967,7 @@ export default {
           edit: 'Post bearbeiten',
           publish: 'Post veröffentlichen',
           unpublish: 'Veröffentlichung zurückziehen',
+          preview: 'Vorschau der Änderungen',
           save: 'Post speichern',
         },
         empty: {
