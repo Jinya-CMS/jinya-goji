@@ -1,0 +1,270 @@
+package jinya:goji@1.0.0;
+
+interface types {
+  record blog-category {
+    id: s32,
+    name: string,
+    description: string,
+  }
+
+  record blog-post {
+    id: s32,
+    title: string,
+    slug: string,
+    link: string,
+    header-image-id: option<s32>,
+    public: bool,
+    creator-id: s32,
+    created-at: string,
+    updated-by-id: s32,
+    last-updated-at: string,
+    blog-category-id: option<s32>,
+  }
+
+  record blog-post-section {
+    gallery-id: option<s32>,
+    file-id: option<s32>,
+    html: option<string>,
+    link: option<string>,
+    position: s32,
+  }
+
+  record classic-page {
+    creator-id: s32,
+    created-at: string,
+    updated-by-id: s32,
+    last-updated-at: string,
+    content: string,
+    title: string,
+  }
+
+  record file {
+    id: s32,
+    path: string,
+    file-type: string,
+    name: string,
+  }
+
+  enum gallery-type {
+    masonry,
+    sequence
+  }
+
+  enum gallery-orientation {
+    horizontal,
+    vertical
+  }
+
+  record gallery {
+    id: s32,
+    creator-id: s32,
+    created-at: string,
+    updated-by-id: s32,
+    last-updated-at: string,
+    name: string,
+    description: option<string>,
+    %type: gallery-type,
+    orientation: gallery-orientation,
+  }
+
+  record gallery-file {
+    position: s32,
+    file: file,
+  }
+
+  record menu {
+    id: s32,
+    name: string,
+    logo: option<s32>,
+  }
+
+  record menu-item {
+    id: s32,
+    menu-id: option<s32>,
+    parent-id: option<s32>,
+    position: s32,
+    title: string,
+    route: option<string>,
+    highlighted: option<bool>,
+    artist-id: option<s32>,
+    gallery-id: option<s32>,
+    modern-page-id: option<s32>,
+    classic-page-id: option<s32>,
+    blog-category-id: option<s32>,
+    blog-home-page: option<bool>,
+  }
+
+  record modern-page {
+    id: s32,
+    creator-id: s32,
+    created-at: string,
+    updated-by-id: s32,
+    last-updated-at: string,
+    name: string,
+  }
+
+  record modern-page-section {
+    position: s32,
+    gallery-id: option<s32>,
+    file-id: option<s32>,
+    html: option<string>,
+    action: option<string>,
+    target: option<string>,
+  }
+
+  record user {
+    email: string,
+    artist-name: string,
+    profile-picture: option<string>,
+    about-me: option<string>,
+  }
+
+  record theme-response {
+    content: string,
+    status-code: u16,
+  }
+}
+
+interface db {
+  use types.{
+  blog-category,
+  blog-post,
+  blog-post-section,
+  classic-page,
+  file,
+  gallery,
+  gallery-file,
+  menu,
+  menu-item,
+  modern-page,
+  modern-page-section,
+  user,
+  };
+
+  find-gallery-files: func(gallery-id: s32) -> list<gallery-file>;
+  find-blog-post-sections: func(blog-post-id: s32) -> list<blog-post-section>;
+  find-blog-posts-by-category: func(blog-category-id: s32, with-children: bool) -> list<blog-post>;
+  find-modern-page-sections: func(modern-page-id: s32) -> list<modern-page-section>;
+  find-menu-items-by-menu: func(id: s32) -> list<menu-item>;
+  find-menu-items-by-menu-item: func(id: s32) -> list<menu-item>;
+  find-menu-item-by-route: func(route: string) -> option<menu-item>;
+
+  find-blog-category-by-id: func(id: s32) -> option<blog-category>;
+  find-blog-post-by-id: func(id: s32) -> option<blog-post>;
+  find-classic-page-by-id: func(id: s32) -> option<classic-page>;
+  find-file-by-id: func(id: s32) -> option<file>;
+  find-gallery-by-id: func(id: s32) -> option<gallery>;
+  find-menu-by-id: func(id: s32) -> option<menu>;
+  find-modern-page-by-id: func(id: s32) -> option<modern-page>;
+  find-user-by-id: func(id: s32) -> option<user>;
+
+  find-all-blog-categories: func() -> list<blog-category>;
+  find-all-blog-posts: func() -> list<blog-post>;
+  find-all-classic-pages: func() -> list<classic-page>;
+  find-all-files: func() -> list<file>;
+  find-all-galleries: func() -> list<gallery>;
+  find-all-menus: func() -> list<menu>;
+  find-all-modern-pages: func() -> list<modern-page>;
+  find-all-users: func() -> list<user>;
+
+  query-db: func(query: string) -> list<map<string, string>>;
+}
+
+interface http {
+  get: func(url: string) -> result<string, string>;
+}
+
+interface theme {
+  use types.{
+  blog-category,
+  classic-page,
+  file,
+  gallery,
+  menu,
+  menu-item,
+  modern-page,
+  };
+
+  variant bool-or-string {
+    bool-value(bool),
+    string-value(string),
+  }
+
+  get-theme-config-value: func(group: string, key: string) -> option<bool-or-string>;
+
+  get-active-menu-item: func() -> option<menu-item>;
+  is-menu-item-active: func(item: menu-item) -> bool;
+  is-parent-of-active-menu-item: func(item: menu-item) -> bool;
+
+  find-modern-page-by-theme: func(name: string) -> option<modern-page>;
+  find-classic-page-by-theme: func(name: string) -> option<classic-page>;
+  find-file-by-theme: func(name: string) -> option<file>;
+  find-menu-by-theme: func(name: string) -> option<menu>;
+  find-gallery-by-theme: func(name: string) -> option<gallery>;
+  find-blog-category-by-theme: func(name: string) -> option<blog-category>;
+
+  scripts: func() -> string;
+  styles: func() -> string;
+
+  asset-path: func(name: string) -> string;
+}
+
+interface image {
+  image-size: func(file-id: s32) -> tuple<s32, s32>;
+}
+
+interface request {
+  get-path: func() -> string;
+  get-url: func() -> string;
+  is-api-request: func() -> bool;
+}
+
+interface blog {
+  record blog-category-path-entry {
+    route: string,
+    category-title: string,
+    category-id: s32,
+    menu-item-id: s32,
+    menu-item-title: string,
+  }
+
+  get-category-path-for-post: func(post: s32) -> list<blog-category-path-entry>;
+  get-category-path-for-category: func(category: s32) -> list<blog-category-path-entry>;
+}
+
+world goji-theme {
+  use types.{
+  blog-category,
+  blog-post,
+  gallery,
+  modern-page,
+  classic-page,
+  user,
+  theme-response,
+  file,
+  blog-post-section,
+  gallery-file,
+  gallery-orientation,
+  gallery-type,
+  menu-item,
+  menu,
+  modern-page-section,
+  };
+
+  import blog;
+  import db;
+  import http;
+  import image;
+  import theme;
+  import request;
+
+  export handle-blog-category: async func(entity: blog-category) -> theme-response;
+  export handle-blog-post: async func(entity: blog-post) -> theme-response;
+  export handle-blog-homepage: async func() -> theme-response;
+  export handle-homepage: async func() -> theme-response;
+  export handle-gallery: async func(entity: gallery) -> theme-response;
+  export handle-modern-page: async func(entity: modern-page) -> theme-response;
+  export handle-classic-page: async func(entity: classic-page) -> theme-response;
+  export handle-profile: async func(entity: user) -> theme-response;
+  export handle-error: async func(status-code: u16) -> theme-response;
+}
