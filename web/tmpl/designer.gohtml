@@ -46,6 +46,7 @@
         <link href="/static/designer/css/toolbar.css" rel="stylesheet"/>
 
         <script src="/static/designer/js/foundation/ui/components/loader.js"></script>
+        <script src="/static/designer/js/foundation/ui/components/toast-container.js"></script>
 
         <link href="/static/lib/favicons/favicon-light.png" rel="icon" type="image/png"/>
         <link href="/static/lib/favicons/favicon-dark.png" media="(prefers-color-scheme: dark)" rel="icon" type="image/png"/>
@@ -413,6 +414,8 @@
             <template
                     x-route="notfound"
                     x-handler="(ctx) => ctx.redirect('/frontstage/statistics/month')"></template>
+
+            <cms-toast-container></cms-toast-container>
         </div>
         <template x-if="$store.authentication.loggedIn">
             <div class="cosmo-bottom-bar is--three-column" x-data="indexBottomBarData">

@@ -7,7 +7,6 @@ import localize from './foundation/utils/localize.js';
 import { getMyProfile } from './foundation/api/my-jinya.js';
 import { logout } from './foundation/api/authentication.js';
 import { dataUrlReader } from './foundation/utils/blob.js';
-import { getFileDatabase } from './foundation/database/file.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   let myProfile = null;
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Not logged in, continue initialization but logout at the end');
   }
 
-  const fileDatabase = getFileDatabase();
   window.Alpine = Alpine;
 
   Alpine.plugin(Anchor);
