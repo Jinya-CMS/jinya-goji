@@ -49,7 +49,11 @@ class ToastContainer extends HTMLElement {
   }
 
   closeToast(id) {
-    const toast = this.root.getElementById('id');
+    const toast = this.root.getElementById(id);
+    if (!toast) {
+      return;
+    }
+
     toast.classList.remove('is--open');
     setTimeout(() => {
       toast.remove();
