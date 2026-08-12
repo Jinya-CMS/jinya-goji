@@ -59,15 +59,6 @@
                 <button @click="openEditDialog" class="cosmo-button" x-localize:design-themes-action-update></button>
               </div>
             </div>
-            <template x-if="details.message.hasMessage">
-              <div
-                :class="{ 'is--negative': details.message.hasError, 'is--positive': !details.message.hasError }"
-                class="cosmo-message is--details is--theme"
-              >
-                <span class="cosmo-message__header" x-text="details.message.title"></span>
-                <div class="cosmo-message__message" x-text="details.message.content"></div>
-              </div>
-            </template>
             <img
               :alt="selectedThemeDisplayName"
               :src="selectedThemePreviewImage"
@@ -80,15 +71,6 @@
             class="cosmo-tab__content is--theme"
             x-show="activeTab === 'configuration'"
           >
-            <template x-if="configuration.message.hasMessage">
-              <div
-                :class="{ 'is--negative': configuration.message.hasError, 'is--positive': !configuration.message.hasError }"
-                class="cosmo-message"
-              >
-                <span class="cosmo-message__header" x-text="configuration.message.title"></span>
-                <div class="cosmo-message__message" x-text="configuration.message.content"></div>
-              </div>
-            </template>
             <div class="cosmo-input__group">
               <template :key="group.name" x-for="group in selectedThemeData.configurationStructure.groups">
                 <div style="display: contents">
@@ -138,15 +120,6 @@
             </div>
           </form>
           <form @submit.prevent="saveLinks" class="cosmo-tab__content is--theme" x-show="activeTab === 'links'">
-            <template x-if="links.message.hasMessage">
-              <div
-                :class="{ 'is--negative': links.message.hasError, 'is--positive': !links.message.hasError }"
-                class="cosmo-message"
-              >
-                <span class="cosmo-message__header" x-text="links.message.title"></span>
-                <div class="cosmo-message__message" x-text="links.message.content"></div>
-              </div>
-            </template>
             <div class="cosmo-input__group">
               <template x-if="selectedThemeData.configurationStructure.links.menus">
                 <div style="display: contents">
@@ -300,15 +273,6 @@
             </div>
           </form>
           <form @submit.prevent="saveVariables" class="cosmo-tab__content is--theme" x-show="activeTab === 'variables'">
-            <template x-if="variables.message.hasMessage">
-              <div
-                :class="{ 'is--negative': variables.message.hasError, 'is--positive': !variables.message.hasError }"
-                class="cosmo-message"
-              >
-                <span class="cosmo-message__header" x-text="variables.message.title"></span>
-                <div class="cosmo-message__message" x-text="variables.message.content"></div>
-              </div>
-            </template>
             <div class="cosmo-input__group">
               <template :key="variable" x-for="[variable, value] in Object.entries(selectedThemeData.styleVariables)">
                 <div style="display: contents">

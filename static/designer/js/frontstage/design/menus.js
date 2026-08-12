@@ -11,13 +11,13 @@ import localize from '../../foundation/utils/localize.js';
 import confirm from '../../foundation/ui/confirm.js';
 import isEqual from '../../../lib/lodash/isEqual.js';
 import filePicker from '../../foundation/ui/filePicker.js';
-import alert from '../../foundation/ui/alert.js';
 import { getGalleries } from '../../foundation/api/galleries.js';
 import { getClassicPages } from '../../foundation/api/classic-pages.js';
 import { getModernPages } from '../../foundation/api/modern-pages.js';
 import { getBlogCategories } from '../../foundation/api/blog-categories.js';
 import { getArtists } from '../../foundation/api/artists.js';
 import { getMenuDatabase } from '../../foundation/database/menu.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 const menuDatabase = getMenuDatabase();
 
@@ -31,6 +31,7 @@ Alpine.data('menusData', () => ({
   blogCategories: [],
   artists: [],
   selectedMenu: null,
+  toastId: null,
   getItemTitle(item) {
     let type = 'group';
     if (item.artistId) {
@@ -128,6 +129,11 @@ Alpine.data('menusData', () => ({
     this.modernPages = modernPages;
     this.blogCategories = blogCategories;
     this.artists = artists;
+
+    this.$watch('selectedMenu', () => dismissToast(this.toastId));
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   async selectMenu(menu) {
     if (menu) {
@@ -305,6 +311,7 @@ Alpine.data('menusData', () => ({
     }
   },
   async deleteMenu() {
+    dismissToast(this.toastId);
     const confirmed = await confirm({
       title: localize({ key: 'design.menus.delete.title' }),
       message: localize({
@@ -331,10 +338,9 @@ Alpine.data('menusData', () => ({
         } else {
           message = localize({ key: 'design.menus.delete.error.generic' });
         }
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'design.menus.delete.error.title' }),
           message,
-          negative: true,
         });
       }
     }
@@ -365,25 +371,21 @@ Alpine.data('menusData', () => ({
     return res;
   },
   async saveItems() {
-    this.updateItems.message.reset();
+    dismissToast(this.toastId);
     const items = this.mapItems(0, 0, this.items.length);
 
     try {
       await updateMenuItems(this.selectedMenu.id, items);
 
-      this.updateItems.message.hasMessage = true;
-      this.updateItems.message.isNegative = false;
-      this.updateItems.message.title = localize({ key: 'design.menus.designer.success.title' });
-      this.updateItems.message.content = localize({ key: 'design.menus.designer.success.message' });
-
-      setTimeout(() => {
-        this.updateItems.message.hasMessage = false;
-      }, 30000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'design.menus.designer.success.title' }),
+        message: localize({ key: 'design.menus.designer.success.message' }),
+      });
     } catch (e) {
-      this.updateItems.message.hasMessage = true;
-      this.updateItems.message.isNegative = true;
-      this.updateItems.message.title = localize({ key: 'design.menus.designer.error.title' });
-      this.updateItems.message.content = localize({ key: 'design.menus.designer.error.message' });
+      this.toastId = negativeToast({
+        title: localize({ key: 'design.menus.designer.error.title' }),
+        message: localize({ key: 'design.menus.designer.error.message' }),
+      });
     }
   },
   async deleteItem(item, index) {
@@ -684,19 +686,6 @@ Alpine.data('menusData', () => ({
     artist: undefined,
     blogCategory: undefined,
     blogHomePage: undefined,
-  },
-  updateItems: {
-    message: {
-      reset() {
-        this.hasMessage = false;
-        this.title = '';
-        this.content = '';
-      },
-      hasMessage: false,
-      isNegative: false,
-      title: '',
-      content: '',
-    },
   },
   moveItem: {
     draggingItemIndex: -1,

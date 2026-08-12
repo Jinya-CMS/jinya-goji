@@ -42,7 +42,7 @@ class ToastContainer extends HTMLElement {
     if (autoClose) {
       setTimeout(() => {
         this.closeToast(uniqueId);
-      });
+      }, 5_000);
     }
 
     return uniqueId;

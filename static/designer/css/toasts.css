@@ -31,6 +31,7 @@
 
 .jinya-toast {
     background: var(--toast-background);
+    backdrop-filter: var(--toast-backdrop-filter);
     border-radius: var(--toast-border-radius);
     border: var(--toast-border-width) solid var(--toast-border-color);
     border-top-width: var(--toast-indicator-width);
