@@ -1,14 +1,10 @@
 update:
 	go get -u ./...
 	go mod tidy
-	cd mailing/templating && cargo update
-	cd web/engine && cargo update
-	cd compiler && cargo update
+	cd libgoji && cargo update
 
 lint-rust:
-	cd mailing/templating && cargo clippy --release
-	cd web/engine && cargo clippy --release
-	cd compiler && cargo clippy --release
+	cd libgoji && cargo clippy --release
 
 lint-go:
     go vet .
@@ -20,9 +16,7 @@ lint-frontend:
 lint: lint-rust lint-go lint-frontend
 
 build-rust:
-	cd mailing/templating && cargo build --release
-	cd web/engine && cargo build --release
-	cd compiler && cargo build --release
+	cd libgoji && cargo build --release
 
 build-go:
     go build -o jinya-cms-goji app.go

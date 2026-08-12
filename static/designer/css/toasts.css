@@ -5,6 +5,7 @@
     --toast-backdrop-filter: blur(24px) saturate(90%);
     --toast-padding: 0.5rem 0.75rem;
     --toast-background: rgb(var(--white-base) var(--white-base) var(--white-base) / 90%);
+    --toast-shadow: rgb(var(--black-base) var(--black-base) var(--black-base) / 10%);
 }
 
 .jinya-toast__container {
@@ -25,6 +26,7 @@
     height: min-content;
     gap: 1rem;
     max-height: var(--page-height);
+    padding-bottom: 1rem;
 }
 
 .jinya-toast {
@@ -37,6 +39,7 @@
     margin-right: -30rem;
     margin-left: 30rem;
     transition: all 0.5s;
+    box-shadow: 0 0.5rem 0.5rem -0.125rem var(--toast-shadow);
 
     &.is--open {
         margin-right: 0;

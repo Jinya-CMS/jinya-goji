@@ -1,0 +1,15 @@
+[package]
+name = "dbal"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+wasi-bridge = { path = "../wasi-bridge" }
+
+anyhow = { workspace = true }
+sea-orm = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sql_query_analyzer = { workspace = true }
+tokio = { workspace = true }
+log = { workspace = true }

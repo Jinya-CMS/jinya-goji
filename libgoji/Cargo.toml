@@ -1,0 +1,54 @@
+[package]
+name = "libgoji"
+version = "1.0.0"
+edition = "2024"
+
+[lib]
+name = "goji"
+crate-type = ["cdylib"]
+
+[dependencies]
+compiler = { path = "compiler" }
+engine = { path = "engine" }
+mailing = { path = "mailing" }
+
+env_logger = { workspace = true }
+log = { workspace = true }
+num-traits = { workspace = true }
+tokio = { workspace = true }
+
+[workspace]
+members = [
+    "compiler",
+    "dbal",
+    "engine",
+    "mailing",
+    "wasi-bridge"
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+
+[workspace.dependencies]
+anyhow = "1"
+env_logger = "0.11"
+grass = { version = "0.13", features = ["random"] }
+grass_compiler = { version = "0.13", features = ["custom-builtin-fns"] }
+imagesize = "0.15"
+log = "0.4"
+md5 = "0.8"
+mrml = { version = "6", features = ["async", "parse", "render"] }
+num-traits = "0.2"
+reqwest = "0.13"
+sea-orm = { version = "2", features = ["sqlx-postgres", "runtime-tokio", "macros"] }
+serde = "1"
+serde_json = "1"
+sql_query_analyzer = "0.16"
+swc = "74"
+swc_common = { version = "25", features = ["tty-emitter"] }
+tokio = { version = "1", features = ["full"] }
+url = "2"
+wasmtime = { version = "47", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
+wasmtime-wasi = "47"
+yaml_serde = "0.10"

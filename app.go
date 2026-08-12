@@ -1,32 +1,28 @@
 package main
 
 import (
-	"context"
-	"embed"
-	"errors"
-	"log/slog"
-	"net/http"
-	"os"
-	"os/signal"
-	"slices"
-	"syscall"
-	"time"
+    "context"
+    "embed"
+    "errors"
+    "log/slog"
+    "net/http"
+    "os"
+    "os/signal"
+    "slices"
+    "syscall"
+    "time"
 
-	"github.com/gorilla/mux"
-	"jinya.de/goji/api"
-	"jinya.de/goji/compiler"
-	"jinya.de/goji/database"
-	"jinya.de/goji/localization"
-	"jinya.de/goji/locate"
-	"jinya.de/goji/logging"
-	"jinya.de/goji/mailing"
-	"jinya.de/goji/native"
-	"jinya.de/goji/theming"
-	"jinya.de/goji/web"
-	"jinya.de/goji/web/engine"
-
-	_ "github.com/joho/godotenv/autoload"
-	"github.com/sgtdi/fswatcher"
+    "github.com/gorilla/mux"
+    _ "github.com/joho/godotenv/autoload"
+    "github.com/sgtdi/fswatcher"
+    "jinya.de/goji/api"
+    "jinya.de/goji/database"
+    "jinya.de/goji/libgoji"
+    "jinya.de/goji/localization"
+    "jinya.de/goji/locate"
+    "jinya.de/goji/logging"
+    "jinya.de/goji/theming"
+    "jinya.de/goji/web"
 )
 
 var (
@@ -35,22 +31,22 @@ var (
 )
 
 func main() {
-	defer native.Cleanup()
+	defer libgoji.Cleanup()
 
 	logging.SetupLogging()
 	slog.Info("Prepared logging")
 
-	slog.Info("Prepare theme compiler")
-	compiler.SetupCompiler()
+	slog.Info("Prepare libgoji")
+	err := libgoji.SetupLibGoji()
+	if err != nil {
+		panic(err)
+	}
 
 	slog.Info("Prepare the database")
 	database.SetupDatabase()
 
 	slog.Info("Prepare localization")
 	localization.SetupLocalization()
-
-	slog.Info("Prepare mailing")
-	mailing.SetupMailing()
 
 	defer database.GetDbMap().Db.Close()
 
@@ -80,9 +76,6 @@ func main() {
 			slog.Info("Theme sync successful")
 		}
 	}()
-
-	slog.Info("Preparing frontend engine")
-	engine.SetupEngine()
 
 	watcher, err := fswatcher.New(
 		fswatcher.WithCooldown(200*time.Millisecond),
