@@ -9,6 +9,7 @@ import (
 
 	"jinya.de/goji/analytics"
 	"jinya.de/goji/database"
+	"jinya.de/goji/libgoji"
 )
 
 func ForwardBlogRequest(w http.ResponseWriter, r *http.Request) {
@@ -41,9 +42,9 @@ func forwardRequest(w http.ResponseWriter, r *http.Request) int {
 		}
 
 		if isError {
-			body, statusCode = handleError(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String(), errorStatusCode)
+			body, statusCode = libgoji.HandleError(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String(), errorStatusCode)
 		} else {
-			body, statusCode = handleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
+			body, statusCode = libgoji.HandleRequest(strings.HasPrefix(r.Header.Get("Accept"), "application/json"), uri.String())
 		}
 
 		return body, statusCode

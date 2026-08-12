@@ -8,6 +8,7 @@ import (
 
 	"jinya.de/goji/analytics"
 	"jinya.de/goji/configuration"
+	"jinya.de/goji/libgoji"
 	"jinya.de/goji/localization"
 	"jinya.de/goji/locate"
 
@@ -116,7 +117,7 @@ func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 		return
 	}
 
-	tmpl, err := renderMrmlTemplate(mjml)
+	tmpl, err := libgoji.RenderMrmlTemplate(mjml)
 	if err != nil {
 		slog.Error("Failed to render template", "error", err)
 		return
@@ -159,7 +160,7 @@ func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
 		return
 	}
 
-	tmpl, err := renderMrmlTemplate(mjml)
+	tmpl, err := libgoji.RenderMrmlTemplate(mjml)
 	if err != nil {
 		slog.Error("Failed to render template", "error", err)
 		return
@@ -191,7 +192,7 @@ func SendTwoFactorCodeMail(r *http.Request, artistName, artistEmail, twoFactorCo
 		return
 	}
 
-	tmpl, err := renderMrmlTemplate(mjml)
+	tmpl, err := libgoji.RenderMrmlTemplate(mjml)
 	if err != nil {
 		slog.Error("Failed to render template", "error", err)
 		return

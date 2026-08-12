@@ -1,0 +1,18 @@
+[package]
+name = "compiler"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+anyhow = "1"
+grass = { version = "0.13", features = ["random"] }
+grass_compiler = { version = "0.13", features = ["custom-builtin-fns"] }
+log = "0.4"
+md5 = "0.8"
+sea-orm = { version = "2", features = ["sqlx-postgres", "runtime-tokio", "macros"] }
+serde = "1"
+serde_json = "1"
+swc = "74"
+swc_common = { version = "25", features = ["tty-emitter"] }
+tokio = { version = "1", features = ["full"] }
+yaml_serde = "0.10"

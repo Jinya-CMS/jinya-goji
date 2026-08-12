@@ -20,7 +20,7 @@ require (
 	github.com/sgtdi/fswatcher v1.3.0
 	github.com/spf13/cast v1.10.0
 	github.com/wneessen/go-mail v0.8.1
-	golang.org/x/text v0.40.0
+	golang.org/x/text v0.41.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -38,5 +38,5 @@ require (
 require (
 	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/poy/onpar v1.1.2 // indirect
-	golang.org/x/crypto v0.54.0
+	golang.org/x/crypto v0.55.0
 )
