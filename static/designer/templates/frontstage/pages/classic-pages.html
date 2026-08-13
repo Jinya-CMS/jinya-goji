@@ -46,14 +46,6 @@
         </div>
       </div>
       <div class="jinya-designer__content is--simple-page">
-        <div
-          :class="{ 'is--negative': messageError, 'is--positive': !messageError }"
-          class="cosmo-message is--simple-page"
-          x-show="hasMessage"
-        >
-          <span class="cosmo-message__header" x-text="messageTitle"></span>
-          <p class="cosmo-message__message" x-text="messageContent"></p>
-        </div>
         <cms-toolbar-editor
           :content="content"
           @change="updateContent"

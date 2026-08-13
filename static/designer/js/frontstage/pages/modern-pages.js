@@ -13,12 +13,12 @@ import {
 import { getFilesByGallery, getGalleries } from '../../foundation/api/galleries.js';
 import isEqual from '../../../lib/lodash/isEqual.js';
 import filePicker from '../../foundation/ui/filePicker.js';
-import alert from '../../foundation/ui/alert.js';
 import { getModernPageDatabase } from '../../foundation/database/modern-page.js';
 
 import '../../foundation/ui/components/inline-editor.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
 import { filterArray } from '../../foundation/utils/search.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 const modernPageDatabase = getModernPageDatabase();
 
@@ -28,6 +28,7 @@ Alpine.data('modernPagesData', () => ({
   selectedPage: null,
   galleries: [],
   searchTerm: '',
+  toastId: null,
   get sectionsString() {
     return JSON.stringify(
       this.sections.map((item, idx) => ({
@@ -67,6 +68,10 @@ Alpine.data('modernPagesData', () => ({
     this.$watch('sections', () => {
       this.savePageSections();
     });
+    this.$watch('selectedPage', () => dismissToast(this.toastId));
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   openCreateDialog() {
     this.create.error.reset();
@@ -200,6 +205,7 @@ Alpine.data('modernPagesData', () => ({
     }
   },
   async savePage() {
+    dismissToast(this.toastId);
     try {
       await updateModernPageSections(
         this.selectedPage.id,
@@ -209,18 +215,15 @@ Alpine.data('modernPagesData', () => ({
           file: item.file?.id,
         })),
       );
-      this.message.hasMessage = true;
-      this.message.title = localize({ key: 'pages.modern.designer.success.title' });
-      this.message.isNegative = false;
-      this.message.content = localize({ key: 'pages.modern.designer.success.message' });
-      setTimeout(() => {
-        this.message.hasMessage = false;
-      }, 30000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'pages.modern.designer.success.title' }),
+        message: localize({ key: 'pages.modern.designer.success.message' }),
+      });
     } catch (e) {
-      this.message.hasMessage = true;
-      this.message.title = localize({ key: 'pages.modern.designer.error.title' });
-      this.message.isNegative = true;
-      this.message.content = localize({ key: 'pages.modern.designer.error.message' });
+      this.toastId = negativeToast({
+        title: localize({ key: 'pages.modern.designer.error.title' }),
+        message: localize({ key: 'pages.modern.designer.error.message' }),
+      });
     }
   },
   async createPage() {
@@ -259,6 +262,7 @@ Alpine.data('modernPagesData', () => ({
     }
   },
   async deletePage() {
+    dismissToast(this.toastId);
     const confirmation = await confirm({
       title: localize({ key: 'pages.modern.delete.title' }),
       message: localize({
@@ -285,10 +289,9 @@ Alpine.data('modernPagesData', () => ({
         } else {
           message = localize({ key: 'pages.modern.delete.error.generic' });
         }
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'pages.modern.delete.error.title' }),
           message,
-          negative: true,
         });
       }
     }
@@ -319,18 +322,6 @@ Alpine.data('modernPagesData', () => ({
         this.message = '';
         this.hasError = false;
       },
-    },
-  },
-  message: {
-    title: '',
-    content: '',
-    isNegative: false,
-    hasMessage: false,
-    reset() {
-      this.title = '';
-      this.content = '';
-      this.isNegative = false;
-      this.hasMessage = false;
     },
   },
 }));
