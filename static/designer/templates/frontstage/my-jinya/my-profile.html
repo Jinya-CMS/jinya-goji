@@ -48,14 +48,6 @@
       </div>
     </template>
   </div>
-  <div
-    :class="{ 'is--negative': aboutMe.message.isNegative, 'is--positive': !aboutMe.message.isNegative }"
-    class="cosmo-message is--profile"
-    x-show="aboutMe.message.hasMessage"
-  >
-    <span class="cosmo-message__header" x-text="aboutMe.message.title"></span>
-    <p class="cosmo-message__message" x-text="aboutMe.message.content"></p>
-  </div>
   <cms-toolbar-editor
     :content="aboutMe.data"
     @change="(e) => aboutMe.data = e.target.value"
