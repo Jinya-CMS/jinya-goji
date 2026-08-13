@@ -7,13 +7,13 @@ import {
   updateClassicPage,
 } from '../../foundation/api/classic-pages.js';
 import localize from '../../foundation/utils/localize.js';
-import alert from '../../foundation/ui/alert.js';
 import confirm from '../../foundation/ui/confirm.js';
 import { getClassicPageDatabase } from '../../foundation/database/classic-page.js';
+import { filterArray } from '../../foundation/utils/search.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 import '../../foundation/ui/components/toolbar-editor.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
-import { filterArray } from '../../foundation/utils/search.js';
 
 const classicPageDatabase = getClassicPageDatabase();
 
@@ -21,11 +21,8 @@ Alpine.data('classicPagesData', () => ({
   pages: [],
   selectedPage: null,
   content: null,
-  hasMessage: false,
-  messageTitle: '',
-  messageContent: '',
-  messageError: false,
   searchTerm: '',
+  toastId: null,
   get filteredPages() {
     return filterArray(this.pages, this.searchTerm, ['title', 'content']);
   },
@@ -46,6 +43,10 @@ Alpine.data('classicPagesData', () => ({
     }
 
     this.$watch('content', async (value) => await this.savePageContent(value));
+    this.$watch('selectedPage', () => dismissToast(this.toastId));
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   openCreateDialog() {
     this.create.error.reset();
@@ -93,19 +94,18 @@ Alpine.data('classicPagesData', () => ({
     await classicPageDatabase.saveChangedPage(Alpine.raw(this.selectedPage.id), Alpine.raw(this.content));
   },
   async savePage() {
+    dismissToast(this.toastId);
     try {
       await updateClassicPage(this.selectedPage.id, this.selectedPage.title, this.content);
-      this.hasMessage = true;
-      this.messageTitle = localize({ key: 'pages.classic.edit.saved.title' });
-      this.messageError = false;
-      this.messageContent = localize({ key: 'pages.classic.edit.saved.content' });
-      setTimeout(() => (this.hasMessage = false), 5_000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'pages.classic.edit.saved.title' }),
+        message: localize({ key: 'pages.classic.edit.saved.content' }),
+      });
     } catch (e) {
-      this.hasMessage = true;
-      this.messageTitle = localize({ key: 'pages.classic.edit.error.title' });
-      this.messageError = true;
-      this.messageContent = localize({ key: 'pages.classic.edit.error.generic' });
-      setTimeout(() => (this.hasMessage = false), 15_000);
+      this.toastId = negativeToast({
+        title: localize({ key: 'pages.classic.edit.error.title' }),
+        message: localize({ key: 'pages.classic.edit.error.content' }),
+      });
     }
   },
   async updatePage() {
@@ -144,6 +144,7 @@ Alpine.data('classicPagesData', () => ({
     }
   },
   async deletePage() {
+    dismissToast(this.toastId);
     const confirmation = await confirm({
       title: localize({ key: 'pages.classic.delete.title' }),
       message: localize({
@@ -170,10 +171,9 @@ Alpine.data('classicPagesData', () => ({
         } else {
           message = localize({ key: 'pages.classic.delete.error.generic' });
         }
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'pages.classic.delete.error.title' }),
           message,
-          negative: true,
         });
       }
     }

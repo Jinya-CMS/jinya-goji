@@ -1,0 +1,95 @@
+:root {
+  --toast-border-width: 0.0625rem;
+  --toast-border-radius: 0.5rem;
+  --toast-indicator-width: 0.25rem;
+  --toast-backdrop-filter: blur(24px) saturate(90%);
+  --toast-padding: 0.5rem 0.75rem;
+  --toast-background: rgb(var(--white-base) var(--white-base) var(--white-base) / 90%);
+  --toast-shadow: rgb(var(--black-base) var(--black-base) var(--black-base) / 10%);
+}
+
+.jinya-toast__container {
+  display: flex;
+  flex-flow: column-reverse nowrap;
+  position: absolute;
+  right: 0;
+  top: calc(
+    var(--top-menu-height) + var(--main-menu-height) + var(--menu-gap) + var(--sub-menu-height) +
+      var(--page-top-spacing)
+  );
+  bottom: 0;
+  width: auto;
+  align-items: end;
+  max-width: 25rem;
+  padding-right: 4rem;
+  box-sizing: content-box;
+  overflow: hidden;
+  height: min-content;
+  gap: 1rem;
+  max-height: var(--page-height);
+  padding-bottom: 1rem;
+}
+
+.jinya-toast {
+  background: var(--toast-background);
+  backdrop-filter: var(--toast-backdrop-filter);
+  border-radius: var(--toast-border-radius);
+  border: var(--toast-border-width) solid var(--toast-border-color);
+  border-top-width: var(--toast-indicator-width);
+  padding: var(--toast-padding);
+  position: relative;
+  margin-right: -30rem;
+  margin-left: 30rem;
+  transition: all 0.5s;
+  box-shadow: 0 0.5rem 0.5rem -0.125rem var(--toast-shadow);
+
+  &.is--open {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  &.is--positive {
+    --toast-border-color: var(--positive-color);
+  }
+
+  &.is--negative {
+    --toast-border-color: var(--negative-color);
+  }
+
+  &.is--warning {
+    --toast-border-color: var(--warning-color);
+  }
+
+  &.is--information {
+    --toast-border-color: var(--information-color);
+  }
+
+  &.is--primary {
+    --toast-border-color: var(--primary-color);
+  }
+}
+
+.jinya-toast__title {
+  margin: 0;
+  color: var(--toast-border-color);
+  font-weight: var(--font-weight-normal);
+}
+
+.jinya-toast__icon.is--close {
+  stroke: currentcolor;
+  stroke-width: 0.125rem;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.jinya-toast__close {
+  color: var(--toast-border-color);
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: absolute;
+  right: 0.5rem;
+}

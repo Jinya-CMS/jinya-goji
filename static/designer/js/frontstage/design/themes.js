@@ -33,6 +33,7 @@ import localize from '../../foundation/utils/localize.js';
 import confirm from '../../foundation/ui/confirm.js';
 import { getMediaDatabase } from '../../foundation/database/media.js';
 import filePicker from '../../foundation/ui/filePicker.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 const mediaDatabase = getMediaDatabase();
 
@@ -49,6 +50,7 @@ Alpine.data('themesData', () => ({
   menus: [],
   blogCategories: [],
   forms: [],
+  toastId: null,
   getValueForCurrentLanguage(data) {
     const currentLanguage = navigator.language.substring(0, 2);
     if (Object.prototype.hasOwnProperty.call(data, currentLanguage)) {
@@ -95,6 +97,10 @@ Alpine.data('themesData', () => ({
     if (this.themes.length > 0) {
       await this.selectTheme(this.themes[0]);
     }
+    this.$watch('selectedTheme', () => dismissToast(this.toastId));
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   selectedThemeData: {
     modernPages: {},
@@ -225,40 +231,37 @@ Alpine.data('themesData', () => ({
     this.themeSelected = true;
   },
   async saveConfiguration() {
+    dismissToast(this.toastId);
     try {
       await updateThemeConfiguration(this.selectedTheme.id, this.selectedThemeData.configuration);
-      this.configuration.message.title = localize({ key: 'design.themes.configuration.success.title' });
-      this.configuration.message.content = localize({ key: 'design.themes.configuration.success.message' });
-      this.configuration.message.hasError = false;
-      this.configuration.message.hasMessage = true;
-      setTimeout(() => {
-        this.configuration.message.hasMessage = false;
-      }, 30000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'design.themes.configuration.success.title' }),
+        message: localize({ key: 'design.themes.configuration.success.message' }),
+      });
     } catch (e) {
-      this.configuration.message.title = localize({ key: 'design.themes.configuration.error.title' });
-      this.configuration.message.content = localize({ key: 'design.themes.configuration.error.message' });
-      this.configuration.message.hasError = true;
-      this.configuration.message.hasMessage = true;
+      this.toastId = negativeToast({
+        title: localize({ key: 'design.themes.configuration.error.title' }),
+        message: localize({ key: 'design.themes.configuration.error.message' }),
+      });
     }
   },
   async saveVariables() {
+    dismissToast(this.toastId);
     try {
       await updateThemeVariables(this.selectedTheme.id, this.selectedThemeData.scssVariables);
-      this.variables.message.title = localize({ key: 'design.themes.variables.success.title' });
-      this.variables.message.content = localize({ key: 'design.themes.variables.success.message' });
-      this.variables.message.hasError = false;
-      this.variables.message.hasMessage = true;
-      setTimeout(() => {
-        this.variables.message.hasMessage = false;
-      }, 30000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'design.themes.variables.success.title' }),
+        message: localize({ key: 'design.themes.variables.success.message' }),
+      });
     } catch (e) {
-      this.variables.message.title = localize({ key: 'design.themes.variables.error.title' });
-      this.variables.message.content = localize({ key: 'design.themes.variables.error.message' });
-      this.variables.message.hasError = true;
-      this.variables.message.hasMessage = true;
+      this.toastId = negativeToast({
+        title: localize({ key: 'design.themes.variables.error.title' }),
+        message: localize({ key: 'design.themes.variables.error.message' }),
+      });
     }
   },
   async saveLinks() {
+    dismissToast(this.toastId);
     const { modernPages, classicPages, menus, galleries, files, blogCategories } = this.selectedThemeData;
     const { id } = this.selectedTheme;
     try {
@@ -277,21 +280,19 @@ Alpine.data('themesData', () => ({
         ),
       ]);
 
-      this.links.message.title = localize({ key: 'design.themes.links.success.title' });
-      this.links.message.content = localize({ key: 'design.themes.links.success.message' });
-      this.links.message.hasError = false;
-      this.links.message.hasMessage = true;
-      setTimeout(() => {
-        this.links.message.hasMessage = false;
-      }, 30000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'design.themes.links.success.title' }),
+        message: localize({ key: 'design.themes.links.success.message' }),
+      });
     } catch (e) {
-      this.links.message.title = localize({ key: 'design.themes.links.error.title' });
-      this.links.message.content = localize({ key: 'design.themes.links.error.message' });
-      this.links.message.hasError = true;
-      this.links.message.hasMessage = true;
+      this.toastId = negativeToast({
+        title: localize({ key: 'design.themes.links.error.title' }),
+        message: localize({ key: 'design.themes.links.error.message' }),
+      });
     }
   },
   async activate() {
+    dismissToast(this.toastId);
     const confirmed = await confirm({
       title: localize({ key: 'design.themes.activate.title' }),
       message: localize({
@@ -304,28 +305,20 @@ Alpine.data('themesData', () => ({
     if (confirmed) {
       try {
         await activateTheme(this.selectedTheme.id);
-        this.details.message.title = localize({ key: 'design.themes.activate.success.title' });
-        this.details.message.content = localize({
-          key: 'design.themes.activate.success.message',
-          values: this.selectedTheme,
+        this.toastId = positiveToast({
+          title: localize({ key: 'design.themes.activate.success.title' }),
+          message: localize({ key: 'design.themes.activate.success.message', values: this.selectedTheme }),
         });
-        this.details.message.hasError = false;
-        this.details.message.hasMessage = true;
-        setTimeout(() => {
-          this.details.message.hasMessage = false;
-        }, 30000);
       } catch (e) {
-        this.details.message.title = localize({ key: 'design.themes.activate.error.title' });
-        this.details.message.content = localize({
-          key: 'design.themes.activate.error.message',
-          values: this.selectedTheme,
+        this.toastId = negativeToast({
+          title: localize({ key: 'design.themes.activate.error.title' }),
+          message: localize({ key: 'design.themes.activate.error.message', values: this.selectedTheme }),
         });
-        this.details.message.hasError = true;
-        this.details.message.hasMessage = true;
       }
     }
   },
   async compileAssets() {
+    dismissToast(this.toastId);
     const confirmed = await confirm({
       title: localize({ key: 'design.themes.assets.title' }),
       message: localize({
@@ -338,24 +331,15 @@ Alpine.data('themesData', () => ({
     if (confirmed) {
       try {
         await compileThemeAssets(this.selectedTheme.id);
-        this.details.message.title = localize({ key: 'design.themes.assets.success.title' });
-        this.details.message.content = localize({
-          key: 'design.themes.assets.success.message',
-          values: this.selectedTheme,
+        this.toastId = positiveToast({
+          title: localize({ key: 'design.themes.assets.success.title' }),
+          message: localize({ key: 'design.themes.assets.success.message', values: this.selectedTheme }),
         });
-        this.details.message.hasError = false;
-        this.details.message.hasMessage = true;
-        setTimeout(() => {
-          this.details.message.hasMessage = false;
-        }, 30000);
       } catch (e) {
-        this.details.message.title = localize({ key: 'design.themes.assets.error.title' });
-        this.details.message.content = localize({
-          key: 'design.themes.assets.error.message',
-          values: this.selectedTheme,
+        this.toastId = negativeToast({
+          title: localize({ key: 'design.themes.assets.error.title' }),
+          message: localize({ key: 'design.themes.assets.error.message', values: this.selectedTheme }),
         });
-        this.details.message.hasError = true;
-        this.details.message.hasMessage = true;
       }
     }
   },
@@ -436,30 +420,8 @@ Alpine.data('themesData', () => ({
     },
   },
   links: {
-    message: {
-      title: '',
-      content: '',
-      hasError: false,
-      hasMessage: false,
-    },
     picker: {
       label: localize({ key: 'design.themes.links.file_picker_label' }),
-    },
-  },
-  variables: {
-    message: {
-      title: '',
-      content: '',
-      hasError: false,
-      hasMessage: false,
-    },
-  },
-  details: {
-    message: {
-      title: '',
-      content: '',
-      hasError: false,
-      hasMessage: false,
     },
   },
 }));

@@ -39,14 +39,6 @@
         </div>
       </div>
       <div class="jinya-modern-page-designer">
-        <div
-          :class="{ 'is--negative': message.isNegative, 'is--positive': !message.isNegative }"
-          class="cosmo-message is--modern-page"
-          x-show="message.hasMessage"
-        >
-          <span class="cosmo-message__header" x-text="message.title"></span>
-          <p class="cosmo-message__message" x-text="message.content"></p>
-        </div>
         <template :key="section.uniqueId" x-for="(section, index) in sections">
           <div style="display: contents">
             <div class="jinya-section-editor__button is--add" x-data="{ addOpen: false, buttonId: $id('add-section') }">

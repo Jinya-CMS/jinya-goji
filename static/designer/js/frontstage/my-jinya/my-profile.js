@@ -13,10 +13,15 @@ import {
 import QRCodeStyling from '../../../lib/qrcode-styling.js';
 
 import '../../foundation/ui/components/toolbar-editor.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 Alpine.data('profileData', () => ({
+  toastId: null,
   init() {
     this.aboutMe.data = Alpine.store('artist').aboutMe;
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   openChangePasswordDialog() {
     this.changePassword.oldPassword = '';
@@ -105,18 +110,15 @@ Alpine.data('profileData', () => ({
       this.aboutMe.message.reset();
       await updateAboutMe(this.aboutMe.data);
 
-      this.aboutMe.message.hasMessage = true;
-      this.aboutMe.message.isNegative = false;
-      this.aboutMe.message.title = localize({ key: 'my_jinya.my_profile.about_me.success.title' });
-      this.aboutMe.message.content = localize({ key: 'my_jinya.my_profile.about_me.success.message' });
-      setTimeout(() => {
-        this.aboutMe.message.hasMessage = false;
-      }, 30000);
+      this.toastId = positiveToast({
+        title: localize({ key: 'my_jinya.my_profile.about_me.success.title' }),
+        message: localize({ key: 'my_jinya.my_profile.about_me.success.message' }),
+      });
     } catch (e) {
-      this.aboutMe.message.hasMessage = true;
-      this.aboutMe.message.isNegative = true;
-      this.aboutMe.message.title = localize({ key: 'my_jinya.my_profile.about_me.error.title' });
-      this.aboutMe.message.content = localize({ key: 'my_jinya.my_profile.about_me.error.message' });
+      this.toastId = negativeToast({
+        title: localize({ key: 'my_jinya.my_profile.about_me.error.title' }),
+        message: localize({ key: 'my_jinya.my_profile.about_me.error.message' }),
+      });
     }
   },
   resetAboutMe() {
@@ -199,17 +201,6 @@ Alpine.data('profileData', () => ({
   },
   aboutMe: {
     data: '',
-    message: {
-      reset() {
-        this.hasError = false;
-        this.title = '';
-        this.content = '';
-      },
-      hasError: false,
-      isNegative: false,
-      title: '',
-      content: '',
-    },
   },
   edit: {
     open: false,

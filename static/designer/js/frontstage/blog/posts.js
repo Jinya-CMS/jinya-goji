@@ -23,6 +23,7 @@ import isEqual from '../../../lib/lodash/isEqual.js';
 import '../../foundation/ui/components/inline-editor.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
 import { filterArray } from '../../foundation/utils/search.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 const postDatabase = getBlogPostDatabase();
 
@@ -35,6 +36,7 @@ Alpine.data('postsData', () => ({
   galleries: [],
   hasMessage: false,
   searchTerm: '',
+  toastId: null,
   get sectionsString() {
     return JSON.stringify(
       this.sections.map((item, idx) => ({
@@ -187,6 +189,10 @@ Alpine.data('postsData', () => ({
     this.$watch('sections', () => {
       this.savePostSections();
     });
+    this.$watch('selectedPost', () => dismissToast(this.toastId));
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   openCreateDialog() {
     this.create.error.reset();
@@ -336,6 +342,7 @@ Alpine.data('postsData', () => ({
     }
   },
   async deletePost() {
+    dismissToast(this.toastId);
     const confirmation = await confirm({
       title: localize({ key: 'blog.posts.delete.title' }),
       message: localize({
@@ -352,15 +359,15 @@ Alpine.data('postsData', () => ({
         this.posts = this.posts.filter((post) => post.id !== this.selectedPost.id);
         this.selectedPost = null;
       } catch (e) {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'blog.posts.delete.error.title' }),
           message: localize({ key: 'blog.posts.delete.error.generic' }),
-          negative: true,
         });
       }
     }
   },
   async publishPost() {
+    dismissToast(this.toastId);
     const confirmation = await confirm({
       title: localize({ key: 'blog.posts.publish.title' }),
       message: localize({
@@ -376,15 +383,15 @@ Alpine.data('postsData', () => ({
         await publishBlogPost(this.selectedPost.id);
         this.posts[this.posts.findIndex((post) => post.id === this.selectedPost.id)].public = true;
       } catch (e) {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'blog.posts.publish.error.title' }),
           message: localize({ key: 'blog.posts.publish.error.generic' }),
-          negative: true,
         });
       }
     }
   },
   async unpublishPost() {
+    dismissToast(this.toastId);
     const confirmation = await confirm({
       title: localize({ key: 'blog.posts.unpublish.title' }),
       message: localize({
@@ -400,15 +407,15 @@ Alpine.data('postsData', () => ({
         await unpublishBlogPost(this.selectedPost.id);
         this.posts[this.posts.findIndex((post) => post.id === this.selectedPost.id)].public = false;
       } catch (e) {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'blog.posts.unpublish.error.title' }),
           message: localize({ key: 'blog.posts.unpublish.error.generic' }),
-          negative: true,
         });
       }
     }
   },
   async savePost() {
+    dismissToast(this.toastId);
     try {
       await updateBlogPostSections(
         this.selectedPost.id,
@@ -435,20 +442,19 @@ Alpine.data('postsData', () => ({
             this.posts[this.posts.findIndex((post) => post.id === this.selectedPost.id)].public = true;
             this.selectedPost = null;
           } catch (e) {
-            await alert({
+            this.toastId = negativeToast({
               title: localize({ key: 'blog.posts.publish.designer.error.title' }),
               message: localize({ key: 'blog.posts.publish.designer.error.generic' }),
-              negative: true,
             });
           }
         }
       }
       await this.selectPost(null, null);
     } catch (e) {
-      this.message.hasMessage = true;
-      this.message.title = localize({ key: 'blog.posts.designer.error.title' });
-      this.message.isNegative = true;
-      this.message.content = localize({ key: 'blog.posts.designer.error.message' });
+      this.toastId = negativeToast({
+        title: localize({ key: 'blog.posts.designer.error.title' }),
+        message: localize({ key: 'blog.posts.designer.error.message' }),
+      });
     }
   },
   create: {
@@ -491,18 +497,6 @@ Alpine.data('postsData', () => ({
         this.message = '';
         this.hasError = false;
       },
-    },
-  },
-  message: {
-    title: '',
-    content: '',
-    isNegative: false,
-    hasMessage: false,
-    reset() {
-      this.title = '';
-      this.content = '';
-      this.isNegative = false;
-      this.hasMessage = false;
     },
   },
 }));

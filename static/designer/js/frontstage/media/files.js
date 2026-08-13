@@ -15,7 +15,6 @@ import {
 } from '../../foundation/api/files.js';
 import { getRandomEmoji } from '../../foundation/utils/text.js';
 import confirm from '../../foundation/ui/confirm.js';
-import alert from '../../foundation/ui/alert.js';
 import { getRandomColor, lightenDarkenColor } from '../../foundation/utils/color.js';
 import { getFileDatabase } from '../../foundation/database/file.js';
 
@@ -24,6 +23,7 @@ import '../../foundation/ui/components/tag-popup.js';
 import { getMediaDatabase } from '../../foundation/database/media.js';
 import { createFolder, deleteFolder, moveFolder, updateFolder } from '../../foundation/api/folders.js';
 import folderPicker from '../../foundation/ui/folderPicker.js';
+import { dismissToast, negativeToast } from '../../foundation/ui/toast.js';
 
 const fileDatabase = getFileDatabase();
 const mediaDatabase = getMediaDatabase();
@@ -42,6 +42,7 @@ Alpine.data('filesData', () => ({
   loading: true,
   uploadMenuOpen: false,
   defaultTagName: localize({ key: 'media.files.action.show_all_tags' }),
+  toastId: null,
   get folderPath() {
     if (!this.$router.params?.folder) {
       return [];
@@ -173,6 +174,9 @@ Alpine.data('filesData', () => ({
       }
     });
   },
+  destroy() {
+    dismissToast(this.toastId);
+  },
   clearTags() {
     this.activeTags.clear();
   },
@@ -300,6 +304,7 @@ Alpine.data('filesData', () => ({
     this.$router.navigate(`/designer/frontstage/media/files/${path.join('/')}`);
   },
   async deleteTag(tag) {
+    dismissToast(this.toastId);
     const confirmed = await confirm({
       title: localize({ key: 'media.files.tags.delete.title' }),
       message: localize({
@@ -319,16 +324,15 @@ Alpine.data('filesData', () => ({
         this.activeTags.delete(tag.id);
         this.manageTags.tags = this.tags;
       } catch (e) {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.delete.error.title' }),
           message: localize({ key: 'media.files.tags.delete.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.delete.error.close' }),
-          negative: true,
         });
       }
     }
   },
   async deleteFile() {
+    dismissToast(this.toastId);
     const confirmed = await confirm({
       title: localize({ key: 'media.files.delete.title' }),
       message: localize({
@@ -347,25 +351,24 @@ Alpine.data('filesData', () => ({
         this.selectedFiles.delete(this.selectedFileDetails.id);
       } catch (e) {
         if (e.status === 409) {
-          await alert({
+          this.toastId = negativeToast({
             title: localize({ key: 'media.files.delete.error.title' }),
             message: localize({
               key: 'media.files.delete.error.conflict',
               values: { name: this.selectedFileDetails.name },
             }),
-            negative: true,
           });
         } else {
-          await alert({
+          this.toastId = negativeToast({
             title: localize({ key: 'media.files.delete.error.title' }),
             message: localize({ key: 'media.files.delete.error.generic' }),
-            negative: true,
           });
         }
       }
     }
   },
   async deleteMultipleFiles() {
+    dismissToast(this.toastId);
     const fileCount = this.selectedFilesDetails.length;
     const confirmed = await confirm({
       title: localize({ key: 'media.files.delete_files.title' }),
@@ -387,7 +390,7 @@ Alpine.data('filesData', () => ({
         await Promise.all(promises);
         this.selectedFiles.clear();
       } catch (e) {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.delete_files.error.title' }),
           message: localize({
             key: 'media.files.delete_files.error.message',
@@ -399,6 +402,7 @@ Alpine.data('filesData', () => ({
     }
   },
   async deleteMultipleFolders() {
+    dismissToast(this.toastId);
     const folderCount = this.selectedFolders.size;
     const confirmed = await confirm({
       title: localize({ key: 'media.files.delete_folders.title' }),
@@ -453,13 +457,12 @@ Alpine.data('filesData', () => ({
         await Promise.all(promises);
         await mediaDatabase.cacheMedia();
       } catch (e) {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.delete_folders.error.title' }),
           message: localize({
             key: 'media.files.delete_folders.error.message',
             values: { count: folderCount },
           }),
-          negative: true,
         });
       }
     }
@@ -618,6 +621,7 @@ Alpine.data('filesData', () => ({
     }
   },
   async createUploadSingleFileTag(event) {
+    dismissToast(this.toastId);
     try {
       this.uploadSingleFile.error.tagError = '';
       const tag = await createTag(event.name, event.emoji, event.color);
@@ -628,16 +632,15 @@ Alpine.data('filesData', () => ({
       if (e.status === 409) {
         this.uploadSingleFile.error.tagError = localize({ key: 'media.files.tags.new.error.exists' });
       } else {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.new.error.title' }),
           message: localize({ key: 'media.files.tags.new.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.new.error.close' }),
-          negative: true,
         });
       }
     }
   },
   async createUploadMultipleFilesTag(event) {
+    dismissToast(this.toastId);
     try {
       this.uploadMultipleFiles.error.tagError = '';
       const tag = await createTag(event.name, event.emoji, event.color);
@@ -648,16 +651,15 @@ Alpine.data('filesData', () => ({
       if (e.status === 409) {
         this.uploadMultipleFiles.error.tagError = localize({ key: 'media.files.tags.new.error.exists' });
       } else {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.new.error.title' }),
           message: localize({ key: 'media.files.tags.new.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.new.error.close' }),
-          negative: true,
         });
       }
     }
   },
   async createManageTagsTag(event) {
+    dismissToast(this.toastId);
     try {
       this.manageTags.error.tagError = '';
       const tag = await createTag(event.name, event.emoji, event.color);
@@ -668,16 +670,15 @@ Alpine.data('filesData', () => ({
       if (e.status === 409) {
         this.manageTags.error.tagError = localize({ key: 'media.files.tags.new.error.exists' });
       } else {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.new.error.title' }),
           message: localize({ key: 'media.files.tags.new.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.new.error.close' }),
-          negative: true,
         });
       }
     }
   },
   async createEditTag(event) {
+    dismissToast(this.toastId);
     try {
       this.edit.error.tagError = '';
       const tag = await createTag(event.name, event.emoji, event.color);
@@ -688,16 +689,15 @@ Alpine.data('filesData', () => ({
       if (e.status === 409) {
         this.edit.error.tagError = localize({ key: 'media.files.tags.new.error.exists' });
       } else {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.new.error.title' }),
           message: localize({ key: 'media.files.tags.new.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.new.error.close' }),
-          negative: true,
         });
       }
     }
   },
   async createTagMultipleTag(event) {
+    dismissToast(this.toastId);
     try {
       this.tagMultiple.error.tagError = '';
       const tag = await createTag(event.name, event.emoji, event.color);
@@ -708,16 +708,15 @@ Alpine.data('filesData', () => ({
       if (e.status === 409) {
         this.edit.error.tagError = localize({ key: 'media.files.tags.new.error.exists' });
       } else {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.new.error.title' }),
           message: localize({ key: 'media.files.tags.new.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.new.error.close' }),
-          negative: true,
         });
       }
     }
   },
   async saveTag(tag, event) {
+    dismissToast(this.toastId);
     try {
       await updateTag(tag.id, event.name, event.emoji, event.color);
       await mediaDatabase.saveTag({
@@ -733,11 +732,9 @@ Alpine.data('filesData', () => ({
       if (e.status === 409) {
         this.manageTags.error.tagError = localize({ key: 'media.files.tags.edit.error.exists' });
       } else {
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.tags.edit.error.title' }),
           message: localize({ key: 'media.files.tags.edit.error.generic' }),
-          buttonLabel: localize({ key: 'media.files.tags.edit.error.close' }),
-          negative: true,
         });
       }
     }
@@ -762,6 +759,7 @@ Alpine.data('filesData', () => ({
     }
   },
   async move() {
+    dismissToast(this.toastId);
     const targetFolder = await folderPicker({
       title: localize({
         key: 'media.files.move.title',
@@ -781,13 +779,12 @@ Alpine.data('filesData', () => ({
         await Promise.all(promises);
       } catch (e) {
         console.error(e);
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.files.move.error.title' }),
           message: localize({
             key: 'media.files.move.error.generic',
             values: { count: this.selectedFiles.size + this.selectedFolders.size },
           }),
-          buttonLabel: localize({ key: 'media.files.move.error.close' }),
         });
       }
 

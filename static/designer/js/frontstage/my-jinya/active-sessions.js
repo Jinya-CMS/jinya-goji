@@ -9,8 +9,8 @@ import {
 } from '../../foundation/api/authentication.js';
 import UAParser from '../../../lib/uaparser.js';
 import localize from '../../foundation/utils/localize.js';
-import alert from '../../foundation/ui/alert.js';
 import confirm from '../../foundation/ui/confirm.js';
+import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
 
 Alpine.data('sessionsData', () => ({
   activeTab: 'logins',
@@ -22,9 +22,13 @@ Alpine.data('sessionsData', () => ({
     expiryDate: null,
     open: false,
   },
+  toastId: null,
   async init() {
     this.sessions = await getApiKeys();
     this.tokens = await getApiTokens();
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   getBrowser(userAgent) {
     const parser = new UAParser(userAgent);
@@ -92,31 +96,27 @@ Alpine.data('sessionsData', () => ({
     this.newToken.open = true;
   },
   async createApiToken() {
+    dismissToast(this.toastId);
     const data = {
       name: this.newToken.name,
     };
     if (this.newToken.expiryDate) {
-      const date = new Date(Date.parse(this.newToken.expiryDate));
-      data.expiryDate = date;
+      data.expiryDate = new Date(Date.parse(this.newToken.expiryDate));
     }
 
     try {
       const token = await createApiToken(data.name, data.expiryDate);
       this.tokens = await getApiTokens();
       this.newToken.open = false;
-      alert({
+      this.toastId = positiveToast({
         title: localize({ key: 'my_jinya.sessions.created.title' }),
         message: localize({ key: 'my_jinya.sessions.created.message', values: token }),
-        buttonLabel: localize({ key: 'my_jinya.sessions.created.ok' }),
-        positive: true,
       });
     } catch (e) {
       console.error(e);
-      alert({
+      this.toastId = negativeToast({
         title: localize({ key: 'my_jinya.sessions.error.title' }),
         message: localize({ key: 'my_jinya.sessions.error.message' }),
-        buttonLabel: localize({ key: 'my_jinya.sessions.error.ok' }),
-        negative: true,
       });
     }
   },

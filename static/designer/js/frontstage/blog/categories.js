@@ -1,7 +1,6 @@
 import { Alpine } from '../../../../lib/alpine.js';
 import confirm from '../../foundation/ui/confirm.js';
 import localize from '../../foundation/utils/localize.js';
-import alert from '../../foundation/ui/alert.js';
 import {
   createBlogCategory,
   deleteBlogCategory,
@@ -10,6 +9,7 @@ import {
 } from '../../foundation/api/blog-categories.js';
 import { categoriesToTree, prepareCategories } from './utils.js';
 import { getBlogPosts } from '../../foundation/api/blog-post.js';
+import { dismissToast, negativeToast } from '../../foundation/ui/toast.js';
 
 import '../../foundation/ui/components/diagrams/sparkline.js';
 
@@ -17,6 +17,7 @@ Alpine.data('categoriesData', () => ({
   categories: [],
   selectedCategory: null,
   hasMessage: false,
+  toastId: null,
   get title() {
     return `#${this.selectedCategory.id} ${this.selectedCategory.name}`;
   },
@@ -27,7 +28,7 @@ Alpine.data('categoriesData', () => ({
 
     const posts = await getBlogPosts(this.selectedCategory.id);
 
-    return posts.totalCount === 0;
+    return posts.length === 0;
   },
   async init() {
     const categories = await getBlogCategories();
@@ -35,6 +36,10 @@ Alpine.data('categoriesData', () => ({
     if (this.categories.length > 0) {
       await this.selectCategory(this.categories[0]);
     }
+    this.$watch('selectedCategory', () => dismissToast(this.toastId));
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   openCreateDialog(parent) {
     this.create.error.reset();
@@ -127,6 +132,7 @@ Alpine.data('categoriesData', () => ({
     }
   },
   async deleteCategory() {
+    dismissToast(this.toastId);
     const confirmation = await confirm({
       title: localize({ key: 'blog.categories.delete.title' }),
       message: localize({
@@ -153,10 +159,9 @@ Alpine.data('categoriesData', () => ({
         } else {
           message = localize({ key: 'blog.categories.delete.error.generic' });
         }
-        await alert({
+        this.toastId = await negativeToast({
           title: localize({ key: 'blog.categories.delete.error.title' }),
           message,
-          negative: true,
         });
       }
     }

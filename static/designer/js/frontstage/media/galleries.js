@@ -12,16 +12,14 @@ import {
 } from '../../foundation/api/galleries.js';
 import localize from '../../foundation/utils/localize.js';
 import confirm from '../../foundation/ui/confirm.js';
-import alert from '../../foundation/ui/alert.js';
-import { getFileDatabase } from '../../foundation/database/file.js';
 import { getMediaDatabase } from '../../foundation/database/media.js';
 
 import '../../foundation/ui/components/tag.js';
 import '../../foundation/ui/components/tag-popup.js';
 import '../../foundation/ui/components/diagrams/sparkline.js';
 import { filterArray } from '../../foundation/utils/search.js';
+import { dismissToast, negativeToast } from '../../foundation/ui/toast.js';
 
-const fileDatabase = getFileDatabase();
 const mediaDatabase = getMediaDatabase();
 
 Alpine.data('galleriesData', () => ({
@@ -46,6 +44,7 @@ Alpine.data('galleriesData', () => ({
   dragPosition: null,
   prevDragOver: null,
   searchTerm: '',
+  toastId: null,
   get filteredGalleries() {
     return filterArray(this.galleries, this.searchTerm, ['name', 'description']);
   },
@@ -123,6 +122,9 @@ Alpine.data('galleriesData', () => ({
     if (this.galleries.length > 0) {
       await this.selectGallery(this.galleries[0]);
     }
+  },
+  destroy() {
+    dismissToast(this.toastId);
   },
   async selectGallery(gallery) {
     this.selectedGallery = gallery;
@@ -256,10 +258,9 @@ Alpine.data('galleriesData', () => ({
         } else {
           message = localize({ key: 'media.galleries.delete.error.generic' });
         }
-        await alert({
+        this.toastId = negativeToast({
           title: localize({ key: 'media.galleries.delete.error.title' }),
           message,
-          negative: true,
         });
       }
     }
