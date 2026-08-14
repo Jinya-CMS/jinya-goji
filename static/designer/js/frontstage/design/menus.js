@@ -418,6 +418,7 @@ Alpine.data('menusData', () => ({
   },
   async insertItem() {
     const res = {
+      uniqueId: crypto.randomUUID(),
       title: this.addItem.title,
       highlighted: this.addItem.highlighted,
       menuId: this.selectedMenu.id,

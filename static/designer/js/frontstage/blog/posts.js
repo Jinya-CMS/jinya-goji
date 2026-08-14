@@ -117,6 +117,7 @@ Alpine.data('postsData', () => ({
   },
   insertHtmlSection(index) {
     this.sections.splice(index, 0, {
+      uniqueId: crypto.randomUUID(),
       postId: this.selectedPost.id,
       gallery: null,
       file: null,
@@ -127,6 +128,7 @@ Alpine.data('postsData', () => ({
   },
   insertGallerySection(index) {
     this.sections.splice(index, 0, {
+      uniqueId: crypto.randomUUID(),
       postId: this.selectedPost.id,
       gallery: this.galleries[0],
       file: null,
@@ -141,6 +143,7 @@ Alpine.data('postsData', () => ({
     });
     if (file) {
       this.sections.splice(index, 0, {
+        uniqueId: crypto.randomUUID(),
         postId: this.selectedPost.id,
         gallery: null,
         file: {

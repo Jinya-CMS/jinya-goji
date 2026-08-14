@@ -150,6 +150,7 @@ Alpine.data('modernPagesData', () => ({
   },
   insertHtmlSection(index) {
     this.sections.splice(index, 0, {
+      uniqueId: crypto.randomUUID(),
       pageId: this.selectedPage.id,
       gallery: null,
       file: null,
@@ -160,6 +161,7 @@ Alpine.data('modernPagesData', () => ({
   },
   insertGallerySection(index) {
     this.sections.splice(index, 0, {
+      uniqueId: crypto.randomUUID(),
       pageId: this.selectedPage.id,
       gallery: this.galleries[0],
       file: null,
@@ -174,6 +176,7 @@ Alpine.data('modernPagesData', () => ({
     });
     if (file) {
       this.sections.splice(index, 0, {
+        uniqueId: crypto.randomUUID(),
         pageId: this.selectedPage.id,
         gallery: null,
         file: {
