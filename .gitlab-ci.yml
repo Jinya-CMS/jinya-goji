@@ -122,7 +122,10 @@ merge-beta-manifests:
     - buildah manifest push --all $FQ_IMAGE_NAME
   variables:
     TAG: 1.0.0-beta.$CI_PIPELINE_IID
-    FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:$TAG
+  parallel:
+    matrix:
+      - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:$TAG
+      - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:latest
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
