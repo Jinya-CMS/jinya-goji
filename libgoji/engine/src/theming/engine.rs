@@ -74,7 +74,7 @@ macro_rules! goji_image {
                         std::path::Path::new(
                             &std::env::var("STORAGE_PATH").unwrap_or("data".to_string()),
                         )
-                        .join(file.path),
+                        .join(file.path.strip_prefix("/jinya-content/").unwrap_or(&file.path)),
                     ) {
                         (size.width as i32, size.height as i32)
                     } else {
