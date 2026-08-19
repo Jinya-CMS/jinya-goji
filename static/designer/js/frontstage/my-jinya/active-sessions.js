@@ -10,7 +10,8 @@ import {
 import UAParser from '../../../lib/uaparser.js';
 import localize from '../../foundation/utils/localize.js';
 import confirm from '../../foundation/ui/confirm.js';
-import { dismissToast, negativeToast, positiveToast } from '../../foundation/ui/toast.js';
+import { dismissToast, negativeToast } from '../../foundation/ui/toast.js';
+import alert from '../../foundation/ui/alert.js';
 
 Alpine.data('sessionsData', () => ({
   activeTab: 'logins',
@@ -108,9 +109,11 @@ Alpine.data('sessionsData', () => ({
       const token = await createApiToken(data.name, data.expiryDate);
       this.tokens = await getApiTokens();
       this.newToken.open = false;
-      this.toastId = positiveToast({
+      await alert({
         title: localize({ key: 'my_jinya.sessions.created.title' }),
         message: localize({ key: 'my_jinya.sessions.created.message', values: token }),
+        buttonLabel: localize({ key: 'alert.dismiss' }),
+        positive: true,
       });
     } catch (e) {
       console.error(e);
