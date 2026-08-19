@@ -1,28 +1,28 @@
 package main
 
 import (
-    "context"
-    "embed"
-    "errors"
-    "log/slog"
-    "net/http"
-    "os"
-    "os/signal"
-    "slices"
-    "syscall"
-    "time"
+	"context"
+	"embed"
+	"errors"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"slices"
+	"syscall"
+	"time"
 
-    "github.com/gorilla/mux"
-    _ "github.com/joho/godotenv/autoload"
-    "github.com/sgtdi/fswatcher"
-    "jinya.de/goji/api"
-    "jinya.de/goji/database"
-    "jinya.de/goji/libgoji"
-    "jinya.de/goji/localization"
-    "jinya.de/goji/locate"
-    "jinya.de/goji/logging"
-    "jinya.de/goji/theming"
-    "jinya.de/goji/web"
+	"github.com/gorilla/mux"
+	_ "github.com/joho/godotenv/autoload"
+	"github.com/sgtdi/fswatcher"
+	"jinya.de/goji/api"
+	"jinya.de/goji/database"
+	"jinya.de/goji/libgoji"
+	"jinya.de/goji/localization"
+	"jinya.de/goji/locate"
+	"jinya.de/goji/logging"
+	"jinya.de/goji/theming"
+	"jinya.de/goji/web"
 )
 
 var (
@@ -56,6 +56,11 @@ func main() {
 		syscall.SIGTERM,
 	)
 	defer stop()
+
+	slog.Info("Create directories if they don't exist")
+	_ = os.MkdirAll(os.Getenv("THEME_PATH"), 0755)
+	_ = os.MkdirAll(os.Getenv("STORAGE_PATH"), 0755)
+	_ = os.MkdirAll(os.Getenv("CACHE_PATH"), 0755)
 
 	go func() {
 		slog.Info("Populate ip database")
