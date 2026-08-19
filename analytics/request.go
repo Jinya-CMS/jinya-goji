@@ -2,7 +2,6 @@ package analytics
 
 import (
 	"log/slog"
-	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -12,6 +11,7 @@ import (
 	"github.com/medama-io/go-useragent/agents"
 	"jinya.de/goji/auth"
 	"jinya.de/goji/database"
+	"jinya.de/goji/http_helper"
 	"jinya.de/goji/locate"
 )
 
@@ -90,11 +90,7 @@ func getBaseEntry(r *http.Request) (*database.AnalyticsEntry, bool, error) {
 		return nil, false, nil
 	}
 
-	ip, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		slog.Info("The remote ip could not be split, ignore the request", "error", err)
-		return nil, false, nil
-	}
+	ip := http_helper.GetClientIP(r)
 
 	location, err := locate.LocalizeIp(ip)
 	if err != nil {

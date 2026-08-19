@@ -2,12 +2,12 @@ package mailing
 
 import (
 	"log/slog"
-	"net"
 	"net/http"
 	"strings"
 
 	"jinya.de/goji/analytics"
 	"jinya.de/goji/configuration"
+	"jinya.de/goji/http_helper"
 	"jinya.de/goji/libgoji"
 	"jinya.de/goji/localization"
 	"jinya.de/goji/locate"
@@ -85,10 +85,7 @@ func sendEmail(message *mail.Msg, subject string, plainBody string, htmlBody str
 
 func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 	ua := analytics.UserAgent.Parse(r.UserAgent())
-	ip, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		ip = r.RemoteAddr
-	}
+	ip := http_helper.GetClientIP(r)
 	location, _ := locate.LocalizeIp(ip)
 
 	data := struct {
@@ -128,10 +125,7 @@ func SendNewLoginMail(r *http.Request, artistName, artistEmail string) {
 
 func SendNewDeviceMail(r *http.Request, artistName, artistEmail string) {
 	ua := analytics.UserAgent.Parse(r.UserAgent())
-	ip, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		ip = r.RemoteAddr
-	}
+	ip := http_helper.GetClientIP(r)
 	location, _ := locate.LocalizeIp(ip)
 
 	data := struct {
