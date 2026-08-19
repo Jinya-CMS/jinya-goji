@@ -7,6 +7,10 @@ import (
 )
 
 func GetClientIP(r *http.Request) string {
+	if xRealIP := r.Header.Get("X-Real-IP"); xRealIP != "" {
+		return xRealIP
+	}
+
 	xForwardedFor := r.Header.Get("X-Forwarded-For")
 	if xForwardedFor != "" {
 		ips := strings.Split(xForwardedFor, ",")
@@ -14,10 +18,6 @@ func GetClientIP(r *http.Request) string {
 		if clientIP != "" {
 			return clientIP
 		}
-	}
-
-	if xRealIP := r.Header.Get("X-Real-IP"); xRealIP != "" {
-		return xRealIP
 	}
 
 	ip := r.RemoteAddr
