@@ -125,7 +125,7 @@ merge-beta-manifests:
   parallel:
     matrix:
       - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:$TAG
-      - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:latest
+      - FQ_IMAGE_NAME: $CI_REGISTRY_IMAGE:beta
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
