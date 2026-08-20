@@ -5,8 +5,9 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"encoding/json"
-	"net"
 	"net/http"
+
+	"jinya.de/goji/http_helper"
 )
 
 type KnownDevice struct {
@@ -18,7 +19,7 @@ type KnownDevice struct {
 }
 
 func NewKnownDevice(artist *Artist, r *http.Request) (string, *KnownDevice, error) {
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	ip := http_helper.GetClientIP(r)
 
 	device := KnownDevice{
 		Id:            0,

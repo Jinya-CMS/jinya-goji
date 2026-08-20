@@ -6,9 +6,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"net"
 	"net/http"
 	"time"
+
+	"jinya.de/goji/http_helper"
 )
 
 const ApiKeyPrefix = "jinya-api-token"
@@ -22,7 +23,7 @@ type ApiKey struct {
 }
 
 func NewApiKey(artist *Artist, r *http.Request) (string, *ApiKey, error) {
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	ip := http_helper.GetClientIP(r)
 
 	apiKey := ApiKey{
 		UserId:        artist.Id,
