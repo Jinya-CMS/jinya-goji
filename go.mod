@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	github.com/ebitengine/purego v0.10.2
+	github.com/ebitengine/purego v0.11.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/h2non/bimg v1.1.9
