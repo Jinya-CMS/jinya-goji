@@ -1,6 +1,6 @@
 module jinya.de/goji
 
-go 1.26
+go 1.26.0
 
 require (
 	github.com/DerKnerd/gorp v0.0.0-20250205211156-2176498e2403
@@ -38,5 +38,5 @@ require (
 require (
 	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/poy/onpar v1.1.2 // indirect
-	golang.org/x/crypto v0.55.0
+	golang.org/x/crypto v0.56.0
 )
