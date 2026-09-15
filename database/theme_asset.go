@@ -17,19 +17,21 @@ func (asset *ThemeAsset) MarshalJSON() ([]byte, error) {
 }
 
 func (asset *ThemeAsset) Create() error {
-	return Insert(asset)
+	return dbMap.Insert(asset)
 }
 
 func (asset *ThemeAsset) Update() error {
-	return Update(asset)
+	_, err := dbMap.Update(asset)
+	return err
 }
 
 func (asset *ThemeAsset) Delete() error {
-	return Delete(asset)
+	_, err := dbMap.Delete(asset)
+	return err
 }
 
 func FindThemeAssetByThemeAndName(themeName, name string) (*ThemeAsset, error) {
-	return SelectOne[ThemeAsset](`
+	return dbMap.SelectOneType[ThemeAsset](`
 select ta.name,
        ta.theme_id,
        ta.path
@@ -45,7 +47,7 @@ func (asset *ThemeAsset) GetTheme() (*Theme, error) {
 }
 
 func FindThemeAssetsByTheme(themeId int) ([]ThemeAsset, error) {
-	return Select[ThemeAsset](`
+	return dbMap.SelectType[ThemeAsset](`
 select name,
        theme_id,
        path

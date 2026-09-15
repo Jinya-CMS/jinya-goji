@@ -24,15 +24,17 @@ func (tg *ThemeGallery) MarshalJSON() ([]byte, error) {
 }
 
 func (tg *ThemeGallery) Create() error {
-	return Insert(tg)
+	return dbMap.Insert(tg)
 }
 
 func (tg *ThemeGallery) Update() error {
-	return Update(tg)
+	_, err := dbMap.Update(tg)
+	return err
 }
 
 func (tg *ThemeGallery) Delete() error {
-	return Delete(tg)
+	_, err := dbMap.Delete(tg)
+	return err
 }
 
 func (tg *ThemeGallery) GetTheme() (*Theme, error) {
@@ -44,7 +46,7 @@ func (tg *ThemeGallery) GetGallery() (*Gallery, error) {
 }
 
 func FindThemeGalleriesByTheme(themeId int) ([]ThemeGallery, error) {
-	return Select[ThemeGallery](`
+	return dbMap.SelectType[ThemeGallery](`
 select name,
        theme_id,
        gallery_id

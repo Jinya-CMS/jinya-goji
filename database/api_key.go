@@ -55,19 +55,21 @@ func (apiKey *ApiKey) MarshalJSON() ([]byte, error) {
 }
 
 func (apiKey *ApiKey) Create() error {
-	return Insert(apiKey)
+	return dbMap.Insert(apiKey)
 }
 
 func (apiKey *ApiKey) Update() error {
-	return Update(apiKey)
+	_, err := dbMap.Update(apiKey)
+	return err
 }
 
 func (apiKey *ApiKey) Delete() error {
-	return Delete(apiKey)
+	_, err := dbMap.Delete(apiKey)
+	return err
 }
 
 func FindApiKeyByHashedKey(key string) (*ApiKey, error) {
-	return Get[ApiKey](key)
+	return dbMap.GetType[ApiKey](key)
 }
 
 func FindApiKeyByKey(key string) (*ApiKey, error) {
@@ -76,7 +78,7 @@ func FindApiKeyByKey(key string) (*ApiKey, error) {
 }
 
 func FindApiKeysByArtist(artistId int) ([]ApiKey, error) {
-	return Select[ApiKey](`
+	return dbMap.SelectType[ApiKey](`
 select api_key,
        user_id,
        valid_since,

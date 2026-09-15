@@ -8,19 +8,21 @@ type UploadingFileChunk struct {
 }
 
 func (chunk *UploadingFileChunk) Create() error {
-	return Insert(chunk)
+	return dbMap.Insert(chunk)
 }
 
 func (chunk *UploadingFileChunk) Update() error {
-	return Update(chunk)
+	_, err := dbMap.Update(chunk)
+	return err
 }
 
 func (chunk *UploadingFileChunk) Delete() error {
-	return Delete(chunk)
+	_, err := dbMap.Delete(chunk)
+	return err
 }
 
 func FindUploadingFileChunksByFile(uploadingFileId string) ([]UploadingFileChunk, error) {
-	return Select[UploadingFileChunk](`
+	return dbMap.SelectType[UploadingFileChunk](`
 select id,
        uploading_file_id,
        chunk_path,

@@ -3,7 +3,7 @@ package database
 import (
 	"encoding/json"
 
-	"github.com/DerKnerd/gorp"
+	"github.com/DerKnerd/gorp/v4"
 )
 
 type Menu struct {
@@ -40,23 +40,25 @@ func (menu *Menu) MarshalJSON() ([]byte, error) {
 }
 
 func (menu *Menu) Create() error {
-	return Insert(menu)
+	return dbMap.Insert(menu)
 }
 
 func (menu *Menu) Update() error {
-	return Update(menu)
+	_, err := dbMap.Update(menu)
+	return err
 }
 
 func (menu *Menu) Delete() error {
-	return Delete(menu)
+	_, err := dbMap.Delete(menu)
+	return err
 }
 
 func FindMenuById(id int) (*Menu, error) {
-	return Get[Menu](id)
+	return dbMap.GetType[Menu](id)
 }
 
 func FindAllMenus() ([]Menu, error) {
-	return Select[Menu](`
+	return dbMap.SelectType[Menu](`
 select id,
        name,
        logo

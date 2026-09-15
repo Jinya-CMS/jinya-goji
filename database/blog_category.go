@@ -34,23 +34,25 @@ func (category *BlogCategory) MarshalJSON() ([]byte, error) {
 }
 
 func (category *BlogCategory) Create() error {
-	return Insert(category)
+	return dbMap.Insert(category)
 }
 
 func (category *BlogCategory) Update() error {
-	return Update(category)
+	_, err := dbMap.Update(category)
+	return err
 }
 
 func (category *BlogCategory) Delete() error {
-	return Delete(category)
+	_, err := dbMap.Delete(category)
+	return err
 }
 
 func FindBlogCategoryById(id int) (*BlogCategory, error) {
-	return Get[BlogCategory](id)
+	return dbMap.GetType[BlogCategory](id)
 }
 
 func FindAllBlogCategories() ([]BlogCategory, error) {
-	return Select[BlogCategory](`
+	return dbMap.SelectType[BlogCategory](`
 select id,
        name,
        description,
@@ -115,5 +117,5 @@ order by id
 		query += " and public = true"
 	}
 
-	return Select[BlogPost](query, category.Id)
+	return dbMap.SelectType[BlogPost](query, category.Id)
 }

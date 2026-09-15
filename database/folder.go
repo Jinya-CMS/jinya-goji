@@ -39,23 +39,25 @@ func (folder *Folder) MarshalJSON() ([]byte, error) {
 }
 
 func (folder *Folder) Create() error {
-	return Insert(folder)
+	return dbMap.Insert(folder)
 }
 
 func (folder *Folder) Update() error {
-	return Update(folder)
+	_, err := dbMap.Update(folder)
+	return err
 }
 
 func (folder *Folder) Delete() error {
-	return Delete(folder)
+	_, err := dbMap.Delete(folder)
+	return err
 }
 
 func FindFolderById(id int) (*Folder, error) {
-	return Get[Folder](id)
+	return dbMap.GetType[Folder](id)
 }
 
 func FindRootFolders() ([]Folder, error) {
-	return Select[Folder](`
+	return dbMap.SelectType[Folder](`
 select id,
        name,
        parent_id
@@ -65,7 +67,7 @@ where parent_id is null
 }
 
 func (folder *Folder) GetFiles() ([]File, error) {
-	return Select[File](`
+	return dbMap.SelectType[File](`
 select id,
        creator_id,
        updated_by_id,
@@ -81,7 +83,7 @@ where folder_id = $1
 }
 
 func (folder *Folder) GetFolders() ([]Folder, error) {
-	return Select[Folder](`
+	return dbMap.SelectType[Folder](`
 select id,
        name,
        parent_id

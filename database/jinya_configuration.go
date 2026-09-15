@@ -16,7 +16,7 @@ type JinyaConfiguration struct {
 }
 
 func FindJinyaConfiguration(group, key string) (*JinyaConfiguration, error) {
-	return SelectOne[JinyaConfiguration](`
+	return dbMap.SelectOneType[JinyaConfiguration](`
 select "group", key, value, type
 from jinya_configuration
 where "group" = $1

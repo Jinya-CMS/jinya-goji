@@ -24,15 +24,17 @@ func (tcp *ThemeClassicPage) MarshalJSON() ([]byte, error) {
 }
 
 func (tcp *ThemeClassicPage) Create() error {
-	return Insert(tcp)
+	return dbMap.Insert(tcp)
 }
 
 func (tcp *ThemeClassicPage) Update() error {
-	return Update(tcp)
+	_, err := dbMap.Update(tcp)
+	return err
 }
 
 func (tcp *ThemeClassicPage) Delete() error {
-	return Delete(tcp)
+	_, err := dbMap.Delete(tcp)
+	return err
 }
 
 func (tcp *ThemeClassicPage) GetTheme() (*Theme, error) {
@@ -44,7 +46,7 @@ func (tcp *ThemeClassicPage) GetClassicPage() (*ClassicPage, error) {
 }
 
 func FindThemeClassicPagesByTheme(themeId int) ([]ThemeClassicPage, error) {
-	return Select[ThemeClassicPage](`
+	return dbMap.SelectType[ThemeClassicPage](`
 select name,
        theme_id,
        page_id

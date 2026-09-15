@@ -120,7 +120,7 @@ func LocalizeIp(ipStr string) (Location, error) {
 		return Location{Country: "-1", City: "-1"}, nil
 	}
 
-	addr, err := database.SelectOne[Location](`
+	addr, err := database.GetDbMap().SelectOneType[Location](`
 select country, city
 from ip_address
 where ip_start <= cast($1 as inet)

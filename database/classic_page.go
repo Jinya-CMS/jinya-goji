@@ -71,24 +71,26 @@ func (page *ClassicPage) MarshalJSON() ([]byte, error) {
 func (page *ClassicPage) Create() error {
 	page.CreatedAt = time.Now()
 	page.LastUpdatedAt = time.Now()
-	return Insert(page)
+	return dbMap.Insert(page)
 }
 
 func (page *ClassicPage) Update() error {
 	page.LastUpdatedAt = time.Now()
-	return Update(page)
+	_, err := dbMap.Update(page)
+	return err
 }
 
 func (page *ClassicPage) Delete() error {
-	return Delete(page)
+	_, err := dbMap.Delete(page)
+	return err
 }
 
 func FindClassicPageById(id int) (*ClassicPage, error) {
-	return Get[ClassicPage](id)
+	return dbMap.GetType[ClassicPage](id)
 }
 
 func FindAllClassicPages() ([]ClassicPage, error) {
-	return Select[ClassicPage](`
+	return dbMap.SelectType[ClassicPage](`
 select id,
        creator_id,
        updated_by_id,

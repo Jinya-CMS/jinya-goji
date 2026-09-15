@@ -115,23 +115,25 @@ func (artist *Artist) MarshalJSON() ([]byte, error) {
 }
 
 func (artist *Artist) Create() error {
-	return Insert(artist)
+	return dbMap.Insert(artist)
 }
 
 func (artist *Artist) Update() error {
-	return Update(artist)
+	_, err := dbMap.Update(artist)
+	return err
 }
 
 func (artist *Artist) Delete() error {
-	return Delete(artist)
+	_, err := dbMap.Delete(artist)
+	return err
 }
 
 func FindArtistById(id int) (*Artist, error) {
-	return Get[Artist](id)
+	return dbMap.GetType[Artist](id)
 }
 
 func FindArtistByEmail(email string) (*Artist, error) {
-	return SelectOne[Artist](`
+	return dbMap.SelectOneType[Artist](`
 select id,
        email,
        enabled,
@@ -154,7 +156,7 @@ where email = $1
 }
 
 func FindAllArtists() ([]Artist, error) {
-	return Select[Artist](`
+	return dbMap.SelectType[Artist](`
 select id,
        email,
        enabled,

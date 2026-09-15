@@ -77,24 +77,26 @@ func (gallery *Gallery) MarshalJSON() ([]byte, error) {
 func (gallery *Gallery) Create() error {
 	gallery.CreatedAt = time.Now()
 	gallery.LastUpdatedAt = time.Now()
-	return Insert(gallery)
+	return dbMap.Insert(gallery)
 }
 
 func (gallery *Gallery) Update() error {
 	gallery.LastUpdatedAt = time.Now()
-	return Update(gallery)
+	_, err := dbMap.Update(gallery)
+	return err
 }
 
 func (gallery *Gallery) Delete() error {
-	return Delete(gallery)
+	_, err := dbMap.Delete(gallery)
+	return err
 }
 
 func FindGalleryById(id int) (*Gallery, error) {
-	return Get[Gallery](id)
+	return dbMap.GetType[Gallery](id)
 }
 
 func FindAllGalleries() ([]Gallery, error) {
-	return Select[Gallery](`
+	return dbMap.SelectType[Gallery](`
 select id,
        creator_id,
        updated_by_id,

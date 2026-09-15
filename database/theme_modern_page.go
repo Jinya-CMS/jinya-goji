@@ -24,15 +24,17 @@ func (tmp *ThemeModernPage) MarshalJSON() ([]byte, error) {
 }
 
 func (tmp *ThemeModernPage) Create() error {
-	return Insert(tmp)
+	return dbMap.Insert(tmp)
 }
 
 func (tmp *ThemeModernPage) Update() error {
-	return Update(tmp)
+	_, err := dbMap.Update(tmp)
+	return err
 }
 
 func (tmp *ThemeModernPage) Delete() error {
-	return Delete(tmp)
+	_, err := dbMap.Delete(tmp)
+	return err
 }
 
 func (tmp *ThemeModernPage) GetTheme() (*Theme, error) {
@@ -44,7 +46,7 @@ func (tmp *ThemeModernPage) GetModernPage() (*ModernPage, error) {
 }
 
 func FindThemeModernPagesByTheme(themeId int) ([]ThemeModernPage, error) {
-	return Select[ThemeModernPage](`
+	return dbMap.SelectType[ThemeModernPage](`
 select name,
        theme_id,
        modern_page_id

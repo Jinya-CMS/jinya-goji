@@ -24,15 +24,17 @@ func (tm *ThemeMenu) MarshalJSON() ([]byte, error) {
 }
 
 func (tm *ThemeMenu) Create() error {
-	return Insert(tm)
+	return dbMap.Insert(tm)
 }
 
 func (tm *ThemeMenu) Update() error {
-	return Update(tm)
+	_, err := dbMap.Update(tm)
+	return err
 }
 
 func (tm *ThemeMenu) Delete() error {
-	return Delete(tm)
+	_, err := dbMap.Delete(tm)
+	return err
 }
 
 func (tm *ThemeMenu) GetTheme() (*Theme, error) {
@@ -44,7 +46,7 @@ func (tm *ThemeMenu) GetMenu() (*Menu, error) {
 }
 
 func FindThemeMenusByTheme(themeId int) ([]ThemeMenu, error) {
-	return Select[ThemeMenu](`
+	return dbMap.SelectType[ThemeMenu](`
 select name,
        theme_id,
        menu_id

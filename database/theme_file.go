@@ -24,15 +24,17 @@ func (tf *ThemeFile) MarshalJSON() ([]byte, error) {
 }
 
 func (tf *ThemeFile) Create() error {
-	return Insert(tf)
+	return dbMap.Insert(tf)
 }
 
 func (tf *ThemeFile) Update() error {
-	return Update(tf)
+	_, err := dbMap.Update(tf)
+	return err
 }
 
 func (tf *ThemeFile) Delete() error {
-	return Delete(tf)
+	_, err := dbMap.Delete(tf)
+	return err
 }
 
 func (tf *ThemeFile) GetTheme() (*Theme, error) {
@@ -44,7 +46,7 @@ func (tf *ThemeFile) GetFile() (*File, error) {
 }
 
 func FindThemeFilesByTheme(themeId int) ([]ThemeFile, error) {
-	return Select[ThemeFile](`
+	return dbMap.SelectType[ThemeFile](`
 select name,
        theme_id,
        file_id

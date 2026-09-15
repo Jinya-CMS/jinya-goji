@@ -125,7 +125,7 @@ func (entry *AnalyticsEntry) MarshalJSON() ([]byte, error) {
 }
 
 func (entry *AnalyticsEntry) Create() error {
-	return Insert(entry)
+	return dbMap.Insert(entry)
 }
 
 type AnalyticsPastIntervalResult struct {
@@ -153,7 +153,7 @@ where timestamp is not null
 	}
 	query += " group by timestamp"
 
-	return Select[AnalyticsPastIntervalResult](query, args...)
+	return dbMap.SelectType[AnalyticsPastIntervalResult](query, args...)
 }
 
 func GetAnalyticsPastIntervalGrouped(group string, months *int, entityType *EntityType, id *int, uniqueOnly bool) ([]AnalyticsPastIntervalResult, error) {
@@ -212,7 +212,7 @@ from analytics`
 		query += col
 	}
 
-	return Select[AnalyticsPastIntervalResult](query, args...)
+	return dbMap.SelectType[AnalyticsPastIntervalResult](query, args...)
 }
 
 func GetTotalAnalyticsPastInterval(months *int) (int, error) {

@@ -57,19 +57,21 @@ func (section *ModernPageSection) MarshalJSON() ([]byte, error) {
 }
 
 func (section *ModernPageSection) Create() error {
-	return Insert(section)
+	return dbMap.Insert(section)
 }
 
 func (section *ModernPageSection) Update() error {
-	return Update(section)
+	_, err := dbMap.Update(section)
+	return err
 }
 
 func (section *ModernPageSection) Delete() error {
-	return Delete(section)
+	_, err := dbMap.Delete(section)
+	return err
 }
 
 func FindModernPageSectionsByPage(pageId int) ([]ModernPageSection, error) {
-	return Select[ModernPageSection](`
+	return dbMap.SelectType[ModernPageSection](`
 select id,
        position,
        gallery_id,

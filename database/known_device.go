@@ -60,19 +60,21 @@ func (device *KnownDevice) SetDeviceCode() (string, error) {
 }
 
 func (device *KnownDevice) Create() error {
-	return Insert(device)
+	return dbMap.Insert(device)
 }
 
 func (device *KnownDevice) Update() error {
-	return Update(device)
+	_, err := dbMap.Update(device)
+	return err
 }
 
 func (device *KnownDevice) Delete() error {
-	return Delete(device)
+	_, err := dbMap.Delete(device)
+	return err
 }
 
 func FindKnownDevicesByUser(userId int) ([]KnownDevice, error) {
-	return Select[KnownDevice](`
+	return dbMap.SelectType[KnownDevice](`
 select id,
        user_id,
        device_key,
@@ -87,7 +89,7 @@ func FindKnownDeviceByKey(key string) (*KnownDevice, error) {
 	hash := sha512.Sum512([]byte(key))
 	hashedKey := hex.EncodeToString(hash[:])
 
-	return SelectOne[KnownDevice](`
+	return dbMap.SelectOneType[KnownDevice](`
 select id,
        user_id,
        device_key,
@@ -100,7 +102,7 @@ order by id
 }
 
 func FindKnownDeviceByHashed(key string) (*KnownDevice, error) {
-	return SelectOne[KnownDevice](`
+	return dbMap.SelectOneType[KnownDevice](`
 select id,
        user_id,
        device_key,

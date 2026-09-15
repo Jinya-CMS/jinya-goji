@@ -102,23 +102,25 @@ func (item *MenuItem) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MenuItem) Create() error {
-	return Insert(item)
+	return dbMap.Insert(item)
 }
 
 func (item *MenuItem) Update() error {
-	return Update(item)
+	_, err := dbMap.Update(item)
+	return err
 }
 
 func (item *MenuItem) Delete() error {
-	return Delete(item)
+	_, err := dbMap.Delete(item)
+	return err
 }
 
 func FindMenuItemById(id int) (*MenuItem, error) {
-	return Get[MenuItem](id)
+	return dbMap.GetType[MenuItem](id)
 }
 
 func FindMenuItemsByMenu(menuId int) ([]MenuItem, error) {
-	return Select[MenuItem](`
+	return dbMap.SelectType[MenuItem](`
 select id,
        position,
        menu_id,
@@ -139,7 +141,7 @@ order by position
 }
 
 func FindMenuItemsByParent(parentId int) ([]MenuItem, error) {
-	return Select[MenuItem](`
+	return dbMap.SelectType[MenuItem](`
 select id,
        position,
        menu_id,
@@ -160,7 +162,7 @@ order by position
 }
 
 func FindMenuItemByRoute(route string) (*MenuItem, error) {
-	return SelectOne[MenuItem](`
+	return dbMap.SelectOneType[MenuItem](`
 select id,
        position,
        menu_id,

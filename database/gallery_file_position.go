@@ -56,7 +56,7 @@ func (position *GalleryFilePosition) Create() error {
 		return err
 	}
 
-	err = Insert(position)
+	err = dbMap.Insert(position)
 	if err != nil {
 		return err
 	}
@@ -65,11 +65,12 @@ func (position *GalleryFilePosition) Create() error {
 }
 
 func (position *GalleryFilePosition) Update() error {
-	return Update(position)
+	_, err := dbMap.Update(position)
+	return err
 }
 
 func (position *GalleryFilePosition) Delete() error {
-	err := Delete(position)
+	_, err := dbMap.Delete(position)
 	if err != nil {
 		return err
 	}
@@ -106,7 +107,7 @@ func (position *GalleryFilePosition) internalRearrange(parentId int, newPosition
 		target++
 	}
 
-	data, err := Select[GalleryFilePosition](`
+	data, err := dbMap.SelectType[GalleryFilePosition](`
 select id,
        position,
        gallery_id,
@@ -137,7 +138,7 @@ where id = $2`, previousPosition, item.Id)
 }
 
 func (position *GalleryFilePosition) resetOrder(parentId int) error {
-	data, err := Select[GalleryFilePosition](`
+	data, err := dbMap.SelectType[GalleryFilePosition](`
 select id,
        position,
        gallery_id,
@@ -164,7 +165,7 @@ where id = $2`, idx, item.Id)
 }
 
 func FindGalleryFilePositionByPosition(galleryId int, position int) (*GalleryFilePosition, error) {
-	return SelectOne[GalleryFilePosition](`
+	return dbMap.SelectOneType[GalleryFilePosition](`
 select id,
        position,
        gallery_id,
@@ -176,7 +177,7 @@ where gallery_id = $1
 }
 
 func FindGalleryFilePositionsByGallery(galleryId int) ([]GalleryFilePosition, error) {
-	return Select[GalleryFilePosition](`
+	return dbMap.SelectType[GalleryFilePosition](`
 select id,
        position,
        gallery_id,

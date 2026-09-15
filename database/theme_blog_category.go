@@ -21,15 +21,17 @@ func (tbc *ThemeBlogCategory) MarshalJSON() ([]byte, error) {
 }
 
 func (tbc *ThemeBlogCategory) Upsert() error {
-	return Insert(tbc)
+	return dbMap.Insert(tbc)
 }
 
 func (tbc *ThemeBlogCategory) Update() error {
-	return Update(tbc)
+	_, err := dbMap.Update(tbc)
+	return err
 }
 
 func (tbc *ThemeBlogCategory) Delete() error {
-	return Delete(tbc)
+	_, err := dbMap.Delete(tbc)
+	return err
 }
 
 func (tbc *ThemeBlogCategory) GetTheme() (*Theme, error) {
@@ -41,7 +43,7 @@ func (tbc *ThemeBlogCategory) GetBlogCategory() (*BlogCategory, error) {
 }
 
 func FindThemeBlogCategoriesByTheme(themeId int) ([]ThemeBlogCategory, error) {
-	return Select[ThemeBlogCategory](`
+	return dbMap.SelectType[ThemeBlogCategory](`
 select name,
        theme_id,
        blog_category_id

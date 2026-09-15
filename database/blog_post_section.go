@@ -56,19 +56,21 @@ func (section *BlogPostSection) MarshalJSON() ([]byte, error) {
 }
 
 func (section *BlogPostSection) Create() error {
-	return Insert(section)
+	return dbMap.Insert(section)
 }
 
 func (section *BlogPostSection) Update() error {
-	return Update(section)
+	_, err := dbMap.Update(section)
+	return err
 }
 
 func (section *BlogPostSection) Delete() error {
-	return Delete(section)
+	_, err := dbMap.Delete(section)
+	return err
 }
 
 func FindBlogPostSectionsByPost(postId int) ([]BlogPostSection, error) {
-	return Select[BlogPostSection](`
+	return dbMap.SelectType[BlogPostSection](`
 select
     id,
     gallery_id,

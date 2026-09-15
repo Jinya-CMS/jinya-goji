@@ -141,15 +141,17 @@ values ($1, $2)`, tag.Id, file.Id)
 
 func (file *File) Update() error {
 	file.LastUpdatedAt = time.Now()
-	return Update(file)
+	_, err := dbMap.Update(file)
+	return err
 }
 
 func (file *File) Delete() error {
-	return Delete(file)
+	_, err := dbMap.Delete(file)
+	return err
 }
 
 func FindFileById(id int) (*File, error) {
-	return Get[File](id)
+	return dbMap.GetType[File](id)
 }
 
 func FilePathExists(path string) bool {
@@ -171,7 +173,7 @@ where profile_picture = $1`, path)
 }
 
 func FindRootFiles() ([]File, error) {
-	return Select[File](`
+	return dbMap.SelectType[File](`
 select id,
        creator_id,
        updated_by_id,
@@ -207,7 +209,7 @@ func (file *File) GetUploadChunks() ([]UploadingFileChunk, error) {
 }
 
 func (file *File) GetTags() ([]FileTag, error) {
-	return Select[FileTag](`
+	return dbMap.SelectType[FileTag](`
 select ft.id,
        ft.name,
        ft.color,

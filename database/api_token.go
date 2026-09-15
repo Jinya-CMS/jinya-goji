@@ -46,19 +46,21 @@ func (apiToken *ApiToken) MarshalJSON() ([]byte, error) {
 }
 
 func (apiToken *ApiToken) Create() error {
-	return Insert(apiToken)
+	return dbMap.Insert(apiToken)
 }
 
 func (apiToken *ApiToken) Update() error {
-	return Update(apiToken)
+	_, err := dbMap.Update(apiToken)
+	return err
 }
 
 func (apiToken *ApiToken) Delete() error {
-	return Delete(apiToken)
+	_, err := dbMap.Delete(apiToken)
+	return err
 }
 
 func FindApiTokenByHashedToken(key string) (*ApiToken, error) {
-	return Get[ApiToken](key)
+	return dbMap.GetType[ApiToken](key)
 }
 
 func FindApiTokenByToken(key string) (*ApiToken, error) {
@@ -67,7 +69,7 @@ func FindApiTokenByToken(key string) (*ApiToken, error) {
 }
 
 func FindApiTokensByArtist(artistId int) ([]ApiToken, error) {
-	return Select[ApiToken](`
+	return dbMap.SelectType[ApiToken](`
 select api_token,
        user_id,
        name,

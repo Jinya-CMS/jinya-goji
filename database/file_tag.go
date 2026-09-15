@@ -8,23 +8,25 @@ type FileTag struct {
 }
 
 func (tag *FileTag) Create() error {
-	return Insert(tag)
+	return dbMap.Insert(tag)
 }
 
 func (tag *FileTag) Update() error {
-	return Update(tag)
+	_, err := dbMap.Update(tag)
+	return err
 }
 
 func (tag *FileTag) Delete() error {
-	return Delete(tag)
+	_, err := dbMap.Delete(tag)
+	return err
 }
 
 func FindFileTagById(id int) (*FileTag, error) {
-	return Get[FileTag](id)
+	return dbMap.GetType[FileTag](id)
 }
 
 func FindFileTagByName(name string) (*FileTag, error) {
-	return SelectOne[FileTag](`
+	return dbMap.SelectOneType[FileTag](`
 select
     id,
     name,
@@ -38,7 +40,7 @@ where
 }
 
 func FindAllFileTags() ([]FileTag, error) {
-	return Select[FileTag](`
+	return dbMap.SelectType[FileTag](`
 select
     id,
     name,

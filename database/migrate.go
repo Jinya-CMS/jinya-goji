@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/DerKnerd/gorp"
+	"github.com/DerKnerd/gorp/v4"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"jinya.de/goji/database/migrations"
@@ -29,44 +29,44 @@ func SetupDatabase() {
 
 		dbMap = &gorp.DbMap{Db: conn, Dialect: dialect}
 
-		AddTableWithName[AnalyticsEntry]("analytics")
-		AddTableWithName[ApiKey]("api_key")
-		AddTableWithName[ApiToken]("api_token")
-		AddTableWithName[Artist]("users")
-		AddTableWithName[BlogCategory]("blog_category")
-		AddTableWithName[BlogPost]("blog_post")
-		AddTableWithName[BlogPostSection]("blog_post_section")
-		AddTableWithName[ClassicPage]("classic_page")
-		AddTableWithName[File]("file").
+		dbMap.AddTableWithName[AnalyticsEntry]("analytics")
+		dbMap.AddTableWithName[ApiKey]("api_key")
+		dbMap.AddTableWithName[ApiToken]("api_token")
+		dbMap.AddTableWithName[Artist]("users")
+		dbMap.AddTableWithName[BlogCategory]("blog_category")
+		dbMap.AddTableWithName[BlogPost]("blog_post")
+		dbMap.AddTableWithName[BlogPostSection]("blog_post_section")
+		dbMap.AddTableWithName[ClassicPage]("classic_page")
+		dbMap.AddTableWithName[File]("file").
 			SetUniqueTogether("folder_id", "name")
-		AddTableWithName[FileTag]("file_tag")
-		AddTableWithName[Folder]("folder").
+		dbMap.AddTableWithName[FileTag]("file_tag")
+		dbMap.AddTableWithName[Folder]("folder").
 			SetUniqueTogether("parent_id", "name")
-		AddTableWithName[Gallery]("gallery")
-		AddTableWithName[GalleryFilePosition]("gallery_file_position")
-		AddTableWithName[KnownDevice]("known_device")
-		AddTableWithName[Menu]("menu")
-		AddTableWithName[MenuItem]("menu_item")
-		AddTableWithName[ModernPage]("modern_page")
-		AddTableWithName[ModernPageSection]("modern_page_section")
-		AddTableWithName[Theme]("theme")
-		AddTableWithName[ThemeAsset]("theme_asset").
+		dbMap.AddTableWithName[Gallery]("gallery")
+		dbMap.AddTableWithName[GalleryFilePosition]("gallery_file_position")
+		dbMap.AddTableWithName[KnownDevice]("known_device")
+		dbMap.AddTableWithName[Menu]("menu")
+		dbMap.AddTableWithName[MenuItem]("menu_item")
+		dbMap.AddTableWithName[ModernPage]("modern_page")
+		dbMap.AddTableWithName[ModernPageSection]("modern_page_section")
+		dbMap.AddTableWithName[Theme]("theme")
+		dbMap.AddTableWithName[ThemeAsset]("theme_asset").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[ThemeBlogCategory]("theme_blog_category").
+		dbMap.AddTableWithName[ThemeBlogCategory]("theme_blog_category").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[ThemeClassicPage]("theme_classic_page").
+		dbMap.AddTableWithName[ThemeClassicPage]("theme_classic_page").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[ThemeFile]("theme_file").
+		dbMap.AddTableWithName[ThemeFile]("theme_file").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[ThemeGallery]("theme_gallery").
+		dbMap.AddTableWithName[ThemeGallery]("theme_gallery").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[ThemeMenu]("theme_menu").
+		dbMap.AddTableWithName[ThemeMenu]("theme_menu").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[ThemeModernPage]("theme_modern_page").
+		dbMap.AddTableWithName[ThemeModernPage]("theme_modern_page").
 			SetUniqueTogether("theme_id", "name")
-		AddTableWithName[UploadingFile]("uploading_file")
-		AddTableWithName[UploadingFileChunk]("uploading_file_chunk")
-		AddTableWithName[JinyaConfiguration]("jinya_configuration").
+		dbMap.AddTableWithName[UploadingFile]("uploading_file")
+		dbMap.AddTableWithName[UploadingFileChunk]("uploading_file_chunk")
+		dbMap.AddTableWithName[JinyaConfiguration]("jinya_configuration").
 			SetUniqueTogether("key", "group")
 
 		err = dbMap.CreateTablesIfNotExists()

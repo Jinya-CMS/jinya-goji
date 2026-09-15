@@ -6,19 +6,21 @@ type UploadingFile struct {
 }
 
 func (file *UploadingFile) Create() error {
-	return Insert(file)
+	return dbMap.Insert(file)
 }
 
 func (file *UploadingFile) Update() error {
-	return Update(file)
+	_, err := dbMap.Update(file)
+	return err
 }
 
 func (file *UploadingFile) Delete() error {
-	return Delete(file)
+	_, err := dbMap.Delete(file)
+	return err
 }
 
 func FindUploadingFileByFile(fileId int) (*UploadingFile, error) {
-	return SelectOne[UploadingFile](`
+	return dbMap.SelectOneType[UploadingFile](`
 select id,
        file_id
 from uploading_file

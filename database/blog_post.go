@@ -112,24 +112,26 @@ func (post *BlogPost) MarshalJSON() ([]byte, error) {
 func (post *BlogPost) Create() error {
 	post.CreatedAt = time.Now()
 	post.LastUpdatedAt = time.Now()
-	return Insert(post)
+	return dbMap.Insert(post)
 }
 
 func (post *BlogPost) Update() error {
 	post.LastUpdatedAt = time.Now()
-	return Update(post)
+	_, err := dbMap.Update(post)
+	return err
 }
 
 func (post *BlogPost) Delete() error {
-	return Delete(post)
+	_, err := dbMap.Delete(post)
+	return err
 }
 
 func FindBlogPostById(id int) (*BlogPost, error) {
-	return Get[BlogPost](id)
+	return dbMap.GetType[BlogPost](id)
 }
 
 func FindAllBlogPosts() ([]BlogPost, error) {
-	return Select[BlogPost](`
+	return dbMap.SelectType[BlogPost](`
 select id,
        title,
        slug,
@@ -200,7 +202,7 @@ where blog_post_id = $1`, post.Id)
 }
 
 func FindBlogPostBySlug(slug string) (*BlogPost, error) {
-	return SelectOne[BlogPost](`
+	return dbMap.SelectOneType[BlogPost](`
 select id,
        title,
        slug,

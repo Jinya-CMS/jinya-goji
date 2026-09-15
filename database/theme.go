@@ -113,23 +113,25 @@ func (theme *Theme) MarshalJSON() ([]byte, error) {
 }
 
 func (theme *Theme) Create() error {
-	return Insert(theme)
+	return dbMap.Insert(theme)
 }
 
 func (theme *Theme) Update() error {
-	return Update(theme)
+	_, err := dbMap.Update(theme)
+	return err
 }
 
 func (theme *Theme) Delete() error {
-	return Delete(theme)
+	_, err := dbMap.Delete(theme)
+	return err
 }
 
 func FindThemeById(id int) (*Theme, error) {
-	return Get[Theme](id)
+	return dbMap.GetType[Theme](id)
 }
 
 func FindThemeByName(name string) (*Theme, error) {
-	return SelectOne[Theme](`
+	return dbMap.SelectOneType[Theme](`
 select id,
        name,
        display_name,
@@ -143,7 +145,7 @@ where name = $1
 }
 
 func FindAllThemes() ([]Theme, error) {
-	return Select[Theme](`
+	return dbMap.SelectType[Theme](`
 select id,
        name,
        display_name,
@@ -157,7 +159,7 @@ order by id
 }
 
 func GetActiveTheme() (*Theme, error) {
-	return SelectOne[Theme](`
+	return dbMap.SelectOneType[Theme](`
 select t.id,
        t.name,
        t.display_name,
@@ -171,7 +173,7 @@ from theme t
 }
 
 func (theme *Theme) MakeActiveTheme() error {
-	_, err := SelectOne[int](`
+	_, err := dbMap.SelectOneType[int](`
 select current_frontend_theme_id
 from configuration`)
 	if err != nil {
