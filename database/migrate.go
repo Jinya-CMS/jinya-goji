@@ -77,5 +77,7 @@ func SetupDatabase() {
 		migrations.BaseMigration(conn)
 		migrations.CreateAdditionalTables(conn)
 		migrations.CreateForeignKeys(conn)
+
+		migrations.Migrate202609160005convertTimestampToDate(dbMap)
 	}
 }

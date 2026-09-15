@@ -3,6 +3,8 @@ package migrations
 import (
 	"database/sql"
 	"log/slog"
+
+	"github.com/DerKnerd/gorp/v4"
 )
 
 func BaseMigration(conn *sql.DB) {
@@ -80,4 +82,29 @@ create table if not exists ip_address
 	if err != nil {
 		panic(err)
 	}
+
+	_, err = conn.Exec(`
+create table if not exists migration_state
+(
+    name text primary key
+);`)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func CheckMigration(executor gorp.SqlExecutor, name string) bool {
+	count, _ := executor.SelectInt(`
+select count(*)
+from migration_state
+where name = $1`, name)
+
+	return count == 1
+}
+
+func MarkMigration(executor gorp.SqlExecutor, name string) error {
+	_, err := executor.Exec(`
+insert into migration_state (name) values ($1)`, name)
+
+	return err
 }

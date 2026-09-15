@@ -8,7 +8,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/DerKnerd/gorp"
+	"github.com/DerKnerd/gorp/v4"
 	"github.com/pquerna/otp/totp"
 	"golang.org/x/crypto/bcrypt"
 )

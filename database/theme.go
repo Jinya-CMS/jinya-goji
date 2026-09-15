@@ -3,7 +3,7 @@ package database
 import (
 	"encoding/json"
 
-	"github.com/DerKnerd/gorp"
+	"github.com/DerKnerd/gorp/v4"
 )
 
 type Theme struct {
