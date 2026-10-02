@@ -815,7 +815,7 @@ dependencies = [
 
 [[package]]
 name = "compiler"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "anyhow",
  "grass",
@@ -1222,7 +1222,7 @@ checksum = "4583a4551df46e2792f82ceeac45e850d2e2d5debba0b91f102385cda5b11f06"
 
 [[package]]
 name = "dbal"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "anyhow",
  "log",
@@ -1432,7 +1432,7 @@ dependencies = [
 
 [[package]]
 name = "engine"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "anyhow",
  "dbal",
@@ -2603,7 +2603,7 @@ checksum = "ce5d3ddc6d3fa000eb1536d85e147bfe31aacaba692ed6a876f95cb7c855be78"
 
 [[package]]
 name = "libgoji"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "compiler",
  "engine",
@@ -6071,7 +6071,7 @@ checksum = "ccf3ec651a847eb01de73ccad15eb7d99f80485de043efb2f370cd654f4ea44b"
 
 [[package]]
 name = "wasi-bridge"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "wasmtime",
 ]
