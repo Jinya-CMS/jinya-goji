@@ -27,7 +27,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	deviceCode, _ := auth.GetDeviceCodeFromRequest(r)
-	if deviceCode == nil && body.TwoFactorCode == "" {
+	if deviceCode.DeviceKey == "" && body.TwoFactorCode == "" {
 		sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
 		return
 	}
@@ -59,7 +59,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		var code string
 		var knownDevice *database.KnownDevice
-		if deviceCode == nil {
+		if deviceCode.DeviceKey == "" {
 			code, knownDevice, err = database.NewKnownDevice(artist, r)
 			if err != nil {
 				sendError("Bad Credentials", http.StatusForbidden, encoder, w, err)
