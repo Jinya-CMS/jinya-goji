@@ -9,14 +9,6 @@ updates:
     schedule:
       interval: daily
   - package-ecosystem: cargo
-    directory: "/mailing/templating"
-    schedule:
-      interval: daily
-  - package-ecosystem: cargo
-    directory: "/web/engine"
-    schedule:
-      interval: daily
-  - package-ecosystem: cargo
-    directory: "/compiler"
+    directory: "/libgoji"
     schedule:
       interval: daily

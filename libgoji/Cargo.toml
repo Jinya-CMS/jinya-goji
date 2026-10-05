@@ -45,10 +45,10 @@ sea-orm = { version = "2", features = ["sqlx-postgres", "runtime-tokio", "macros
 serde = "1"
 serde_json = "1"
 sql_query_analyzer = "0.16"
-swc = "77"
+swc = "79"
 swc_common = { version = "26", features = ["tty-emitter"] }
 tokio = { version = "1", features = ["full"] }
 url = "2"
-wasmtime = { version = "48", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
-wasmtime-wasi = "48"
+wasmtime = { version = "49", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
+wasmtime-wasi = "49"
 yaml_serde = "0.10"
