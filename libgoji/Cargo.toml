@@ -45,7 +45,7 @@ sea-orm = { version = "2", features = ["sqlx-postgres", "runtime-tokio", "macros
 serde = "1"
 serde_json = "1"
 sql_query_analyzer = "0.16"
-swc = "79"
+swc = "80"
 swc_common = { version = "26", features = ["tty-emitter"] }
 tokio = { version = "1", features = ["full"] }
 url = "2"
