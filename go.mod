@@ -16,8 +16,8 @@ require (
 	github.com/sgtdi/fswatcher v1.3.0
 	github.com/spf13/cast v1.10.0
 	github.com/wneessen/go-mail v0.8.1
-	golang.org/x/crypto v0.57.0
-	golang.org/x/text v0.42.0
+	golang.org/x/crypto v0.58.0
+	golang.org/x/text v0.43.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -29,6 +29,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.3 // indirect
 	github.com/poy/onpar v1.1.2 // indirect
 	github.com/rogpeppe/go-internal v1.15.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
 )
