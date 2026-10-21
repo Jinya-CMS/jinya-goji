@@ -17,8 +17,8 @@ put:
         application/json:
           schema:
             $ref: ../components/schemas/exception.yaml
-  operationId: update_prefered_colorscheme
-  description: Updates the prefered color scheme
+  operationId: update_preferred_colorscheme
+  description: Updates the preferred color scheme
   security:
     - header-auth: []
     - cookie-auth: []

@@ -83,6 +83,7 @@ export class BaseEditorElement extends HTMLElement {
 
   disconnectedCallback() {
     this.editor?.destruct();
+    this.#observer?.disconnect();
   }
 
   attributeChangedCallback(property, oldValue, newValue) {
