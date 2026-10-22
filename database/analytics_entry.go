@@ -178,9 +178,10 @@ func GetAnalyticsPastIntervalGrouped(group string, months *int, entityType *Enti
 		groupColumnsForName = groupColumns[0]
 	}
 
-	query := `
+	var query strings.Builder
+	query.WriteString(`
 select count(*) as visits, ` + groupColumnsForName + ` as "group"
-from analytics`
+from analytics`)
 	args := make([]any, 0)
 
 	whereClauses := make([]string, 0)
@@ -201,18 +202,18 @@ from analytics`
 
 	whereClause := strings.Join(whereClauses, " and ")
 	if whereClause != "" {
-		query += " where " + whereClause
+		query.WriteString(" where " + whereClause)
 	}
 
-	query += " group by "
+	query.WriteString(" group by ")
 	for i, col := range groupColumns {
 		if i > 0 {
-			query += ", "
+			query.WriteString(", ")
 		}
-		query += col
+		query.WriteString(col)
 	}
 
-	return dbMap.SelectType[AnalyticsPastIntervalResult](query, args...)
+	return dbMap.SelectType[AnalyticsPastIntervalResult](query.String(), args...)
 }
 
 func GetTotalAnalyticsPastInterval(months *int) (int, error) {

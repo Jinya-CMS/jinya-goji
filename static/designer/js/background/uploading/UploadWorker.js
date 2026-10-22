@@ -35,7 +35,7 @@ async function worker() {
     }
 
     currentUploadCount += 1;
-    uploadFile(nextUpload).then(() => {
+    uploadFile(nextUpload).finally(() => {
       currentUploadCount -= 1;
     });
   }

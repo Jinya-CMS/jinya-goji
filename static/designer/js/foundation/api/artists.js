@@ -24,18 +24,7 @@ export async function resetTotp(id) {
   await httpDelete(`/api/user/${id}/totp`);
 }
 
-export function createArtist(artistName, email, password, isReader, isWriter, isAdmin) {
-  const roles = [];
-  if (isReader) {
-    roles.push('ROLE_READER');
-  }
-  if (isWriter) {
-    roles.push('ROLE_WRITER');
-  }
-  if (isAdmin) {
-    roles.push('ROLE_ADMIN');
-  }
-
+export function createArtist(artistName, email, password, roles) {
   return post('/api/user', {
     artistName,
     email,

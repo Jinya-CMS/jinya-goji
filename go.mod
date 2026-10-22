@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	github.com/DerKnerd/gorp/v4 v4.0.0
-	github.com/ebitengine/purego v0.11.1
+	github.com/ebitengine/purego v0.11.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/h2non/bimg v1.1.9

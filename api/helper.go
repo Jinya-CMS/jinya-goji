@@ -58,7 +58,7 @@ func GetIntFromBody(body *Body, key string) (int, bool) {
 func GetArrayFromBody[T any](body *Body, key string) ([]T, bool) {
 	res, ok := body.data[key]
 	if ok {
-		data, ok := res.([]interface{})
+		data, ok := res.([]any)
 		if !ok {
 			return nil, false
 		}

@@ -22,5 +22,4 @@ required:
   - from
   - host
   - port
-  - smtp_auth
   - username

@@ -163,9 +163,7 @@ Alpine.data('artistsData', () => ({
       const artistIdx = this.artists.findIndex((a) => a.id === this.selectedArtist.id);
       this.artists[artistIdx].artistName = this.edit.artistName;
       this.artists[artistIdx].email = this.edit.email;
-      this.artists[artistIdx].isReader = this.edit.isReader;
-      this.artists[artistIdx].isWriter = this.edit.isWriter;
-      this.artists[artistIdx].isAdmin = this.edit.isAdmin;
+      this.artists[artistIdx].roles = this.edit.roles;
       this.edit.open = false;
     } catch (e) {
       let message = '';
