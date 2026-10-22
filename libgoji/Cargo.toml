@@ -49,6 +49,6 @@ swc = "80"
 swc_common = { version = "26", features = ["tty-emitter"] }
 tokio = { version = "1", features = ["full"] }
 url = "2"
-wasmtime = { version = "49", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
-wasmtime-wasi = "49"
+wasmtime = { version = "50", features = ["anyhow", "component-model", "cranelift", "runtime", "compile-time-builtins"] }
+wasmtime-wasi = "50"
 yaml_serde = "0.10"
