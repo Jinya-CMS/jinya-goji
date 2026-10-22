@@ -82,11 +82,11 @@ func LocalizeByLanguage(lang, key string, replacementValues ...any) string {
 	}
 
 	for i, value := range replacementValues {
-		data, ok := value.([]interface{})
+		data, ok := value.([]any)
 		if ok && len(data) >= 1 {
 			result = strings.Replace(result, "%"+strconv.Itoa(i+1), cast.ToString(data[0]), -1)
 		} else if !ok {
-			data, ok := value.(interface{})
+			data, ok := value.(any)
 			if ok {
 				result = strings.Replace(result, "%"+strconv.Itoa(i+1), cast.ToString(data), -1)
 			}
