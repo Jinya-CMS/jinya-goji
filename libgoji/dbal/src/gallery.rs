@@ -1,6 +1,6 @@
 use crate::models::gallery_file_position::GalleryFileWithFile;
 use crate::{db, find_by_theme, find_entity, models};
-use sea_orm::{ColumnTrait, EntityTrait, JoinType, QueryFilter, QuerySelect, RelationTrait};
+use sea_orm::{ColumnTrait, EntityTrait, JoinType, QueryFilter, QueryOrder, QuerySelect, RelationTrait};
 
 find_entity!(gallery, Gallery);
 
@@ -19,6 +19,7 @@ pub async fn find_files(gallery_id: i32) -> Option<Vec<GalleryFileWithFile>> {
         .column(models::file::Column::Name)
         .column(models::file::Column::Type)
         .column(models::file::Column::Id)
+        .order_by(models::gallery_file_position::Column::Position)
         .into_model::<GalleryFileWithFile>()
         .all(db().await.ok()?)
         .await
