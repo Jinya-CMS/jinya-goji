@@ -1,6 +1,8 @@
 use crate::models::gallery_file_position::GalleryFileWithFile;
 use crate::{db, find_by_theme, find_entity, models};
-use sea_orm::{ColumnTrait, EntityTrait, JoinType, Order, QueryFilter, QueryOrder, QuerySelect, RelationTrait};
+use sea_orm::{
+    ColumnTrait, EntityTrait, JoinType, QueryFilter, QueryOrder, QuerySelect, RelationTrait,
+};
 
 find_entity!(gallery, Gallery);
 
