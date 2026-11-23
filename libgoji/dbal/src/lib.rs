@@ -5,16 +5,16 @@ pub mod file;
 pub mod gallery;
 pub mod menu;
 pub mod menu_item;
+pub mod models;
 pub mod modern_page;
 pub mod theme;
 pub mod user;
-pub mod models;
 
 use anyhow::anyhow;
 use sea_orm::entity::prelude::*;
 use sea_orm::{ConnectOptions, Database, DbBackend, Statement};
 use sql_query_analyzer::query::{QueryType, SqlDialect};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Formatter};
 
 #[derive(Debug)]
@@ -43,7 +43,7 @@ pub async fn db() -> anyhow::Result<&'static DatabaseConnection> {
             anyhow!(err)
         })
     })
-        .await
+    .await
 }
 
 #[macro_export]
@@ -105,7 +105,7 @@ macro_rules! find_by_theme {
     };
 }
 
-pub async fn select(query: String) -> Vec<HashMap<String, String>> {
+pub async fn select(query: String) -> Vec<BTreeMap<String, String>> {
     let queries = sql_query_analyzer::query::parse_queries(&query, SqlDialect::PostgreSQL)
         .unwrap_or_default();
     if queries.is_empty() || queries.len() > 1 {
@@ -126,9 +126,7 @@ pub async fn select(query: String) -> Vec<HashMap<String, String>> {
     let stmt = Statement::from_string(DbBackend::Postgres, &query);
 
     if let Ok(db) = db().await
-        && let Ok(rows) = db
-        .query_all_raw(stmt)
-        .await
+        && let Ok(rows) = db.query_all_raw(stmt).await
     {
         return rows
             .into_iter()

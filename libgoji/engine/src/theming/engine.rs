@@ -440,7 +440,7 @@ macro_rules! goji_db {
             async fn query_db(
                 &mut self,
                 query: String,
-            ) -> Vec<std::collections::HashMap<String, String>> {
+            ) -> Vec<std::collections::BTreeMap<String, String>> {
                 dbal::select(query).await
             }
         }
