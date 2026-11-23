@@ -22,11 +22,11 @@ require (
 )
 
 require (
-	github.com/boombuler/barcode v1.1.0 // indirect
+	github.com/boombuler/barcode v1.1.1 // indirect
 	github.com/boyter/go-string v1.0.5 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/puddle/v2 v2.2.3 // indirect
+	github.com/jackc/puddle/v2 v2.2.4 // indirect
 	github.com/poy/onpar v1.1.2 // indirect
 	github.com/rogpeppe/go-internal v1.15.0 // indirect
 	golang.org/x/sync v0.25.0 // indirect
